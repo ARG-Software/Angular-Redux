@@ -43,7 +43,7 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  private logIn() {
+  public logIn() {
     const loginFormValues = this.loginForm.value;
     const loginModel: LoginModelUI = {
       username: loginFormValues.username,
