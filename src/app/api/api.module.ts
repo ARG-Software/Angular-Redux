@@ -88,12 +88,4 @@ export class ApiModule {
       ],
     };
   }
-
-  constructor(@Optional() @SkipSelf() parentModule: ApiModule) {
-    if (parentModule) {
-      throw new Error(
-        "ApiModule is already loaded. Import it in the AppModule only"
-      );
-    }
-  }
 }
