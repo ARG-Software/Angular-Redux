@@ -38,7 +38,6 @@ const metaReducers: Array<MetaReducer<any, any>> = [localStorageSyncReducer];
 const RouterRoot = RouterModule.forRoot(routes);
 
 @NgModule({
-  declarations: [AppComponent],
   imports: [
     RouterRoot,
     BrowserModule,
@@ -47,12 +46,12 @@ const RouterRoot = RouterModule.forRoot(routes);
     StoreModule.forRoot({}, { metaReducers }),
     StoreDevtoolsModule.instrument({ maxAge: 15 }),
     ApiModule.forRoot(),
+    AppComponent,
   ],
   providers: [
     provideHttpClient(),
     GlobalEnvironmentService,
     { provide: APP_CONFIG, useValue: AppConfig },
   ],
-  bootstrap: [AppComponent],
 })
 export class AppModule {}
