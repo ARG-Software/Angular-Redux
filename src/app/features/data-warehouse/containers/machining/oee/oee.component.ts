@@ -5,7 +5,6 @@ import {
   GetOeeData,
   GetOeeDataSelectBoxes,
 } from "../../../actions/oee.actions";
-import { MimsSelectBoxModel } from "@mimsUI/input/select-box/models/select-box.model";
 import {
   OeeChartDataModelUI,
   OeeTableDataModelUI,
@@ -14,6 +13,7 @@ import { MachiningRequestModelUI } from "../../../models/downtime.models";
 import { getTodayDateMinusInputDays } from "../../../../../utils/funtion.utils";
 import { PagingModelUI } from "src/app/app.models";
 import { Observable } from "rxjs";
+import { MimsSelectBoxModel } from "src/app/mims-ui/input/select-box/models/select-box.model";
 
 @Component({
   standalone: false,

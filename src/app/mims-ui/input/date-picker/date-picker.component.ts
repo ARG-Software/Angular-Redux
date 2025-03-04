@@ -7,13 +7,13 @@ import {
   Output,
   ChangeDetectionStrategy,
 } from "@angular/core";
-import { BaseControlComponent } from "@mimsUI/base/base.component";
 import {
   NgModel,
   NG_VALUE_ACCESSOR,
   NG_VALIDATORS,
   NG_ASYNC_VALIDATORS,
 } from "@angular/forms";
+import { BaseControlComponent } from "../../base/base.component";
 
 @Component({
   standalone: false,

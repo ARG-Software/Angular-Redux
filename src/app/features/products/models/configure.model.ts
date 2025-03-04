@@ -1,90 +1,88 @@
-import { MimsSelectBoxModel } from '@mimsUI/input/select-box/models/select-box.model';
+import { MimsSelectBoxModel } from "src/app/mims-ui/input/select-box/models/select-box.model";
 
 export interface ProductModelUI {
-    Id: number;
-    Name?: string;
-    TargetHoursPerWeek: number;
-    TargetEfficiency: number;
+  Id: number;
+  Name?: string;
+  TargetHoursPerWeek: number;
+  TargetEfficiency: number;
 }
 
 export interface OperationModelUI {
-    Id: number;
-    ProductId: number;
-    Number: number;
-    Description: string;
-    Subcontractor: SubcontractorModelUI;
+  Id: number;
+  ProductId: number;
+  Number: number;
+  Description: string;
+  Subcontractor: SubcontractorModelUI;
 }
 
 export interface SubcontractorModelUI {
-    Id: number;
-    Name: string;
+  Id: number;
+  Name: string;
 }
 
 export interface MachineOperationModelUI {
-    Id: number;
-    ProductId: number;
-    MachineId: number;
-    MachineName?: string;
-    OperationId: number;
-    OperationName?: string;
-    OEE: number;
-    MDE: number;
+  Id: number;
+  ProductId: number;
+  MachineId: number;
+  MachineName?: string;
+  OperationId: number;
+  OperationName?: string;
+  OEE: number;
+  MDE: number;
 }
 
 export interface MachineModelUI {
-    Id: number;
-    Name: string;
+  Id: number;
+  Name: string;
 }
 
 export interface MoteModelUI {
-    Id: number;
-    ProductId: number;
-    Name: string;
-    MachineId: number;
-    MachineName?: string;
-    EdgeId: number;
-    EdgeName?: string;
-    PollInterval: number;
+  Id: number;
+  ProductId: number;
+  Name: string;
+  MachineId: number;
+  MachineName?: string;
+  EdgeId: number;
+  EdgeName?: string;
+  PollInterval: number;
 }
 
 export interface EdgeModelUI {
-    Id: number;
-    Model: string;
+  Id: number;
+  Model: string;
 }
 
 export interface MessageModelUI {
-    Id: number;
-    Name: string;
+  Id: number;
+  Name: string;
 }
 
 export interface SensorModelUI {
-    Id: number;
-    ProductId: number;
-    ContactMessageId: number;
-    ContactMessageName?: string;
-    MoteId: number;
-    MoteName?: string;
-    MachineInputTerminal: string;
-    MachineMCode: string;
-    LineOut: string;
+  Id: number;
+  ProductId: number;
+  ContactMessageId: number;
+  ContactMessageName?: string;
+  MoteId: number;
+  MoteName?: string;
+  MachineInputTerminal: string;
+  MachineMCode: string;
+  LineOut: string;
 }
 
 export interface ResumeConfigurationModelUI {
-    addedOperations: OperationModelUI[];
-    removedOperations: OperationModelUI[];
-    addedMachines: MachineOperationModelUI[];
-    removedMachines: MachineOperationModelUI[];
-    addedMotes: MoteModelUI[];
-    removedMotes: MoteModelUI[];
-    addedSensors: SensorModelUI[];
-    removedSensors: SensorModelUI[];
+  addedOperations: OperationModelUI[];
+  removedOperations: OperationModelUI[];
+  addedMachines: MachineOperationModelUI[];
+  removedMachines: MachineOperationModelUI[];
+  addedMotes: MoteModelUI[];
+  removedMotes: MoteModelUI[];
+  addedSensors: SensorModelUI[];
+  removedSensors: SensorModelUI[];
 }
 
 export interface GetOperationsSuccessReducerModel {
-    operationList: OperationModelUI[];
-    operationSelectBox: ConfigureSelectBoxModelUI[];
+  operationList: OperationModelUI[];
+  operationSelectBox: ConfigureSelectBoxModelUI[];
 }
 
-export interface ConfigureSelectBoxModelUI extends MimsSelectBoxModel {
-
-}
+export interface ConfigureSelectBoxModelUI extends MimsSelectBoxModel {}

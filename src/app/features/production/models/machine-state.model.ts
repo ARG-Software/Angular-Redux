@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 import * as Factory from "factory.ts";
-import { MimsSelectBoxModel } from "@mimsUI/input/select-box/models/select-box.model";
+import { MimsSelectBoxModel } from "src/app/mims-ui/input/select-box/models/select-box.model";
 
 export interface MachineStateLoadDataModelUI {
   Id: number;

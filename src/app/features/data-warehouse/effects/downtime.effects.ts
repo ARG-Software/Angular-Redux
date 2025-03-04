@@ -4,7 +4,7 @@ import { Actions, createEffect, ofType } from "@ngrx/effects";
 
 import { catchError, switchMap, map, tap, finalize } from "rxjs/operators";
 
-import * as MimsModels from "@api/models/apimodels";
+import * as MimsModels from "src/app/api/models/apimodels";
 
 import * as fromMain from "../../../main/main.reducers.index";
 import * as loadingActions from "../../../main/actions/loading.actions";
@@ -20,11 +20,10 @@ import {
 
 import * as DowntimeModelsUI from "../models/downtime.models";
 
-import { IDownTimeMachiningService } from "@api/services/interfaces/core/data-warehouse/idowntime.service";
-import { IMachineService } from "@api/services/interfaces/core/imachine.service";
-import { IProductService } from "@api/services/interfaces/core/iproduct.service";
-import { DWMachiningDowntimeScreenRequestDto } from "@api/models/apimodels";
 import { forkJoin, of } from "rxjs";
+import { IDownTimeMachiningService } from "src/app/api/services/interfaces/core/data-warehouse/idowntime.service";
+import { IMachineService } from "src/app/api/services/interfaces/core/imachine.service";
+import { IProductService } from "src/app/api/services/interfaces/core/iproduct.service";
 
 @Injectable()
 export class DowntimeEffects {
@@ -41,7 +40,7 @@ export class DowntimeEffects {
       ofType<GetDowntimeData>(DowntimeActionTypes.GetDowntimeData),
       tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
       map((action) => {
-        const request: DWMachiningDowntimeScreenRequestDto = {
+        const request: MimsModels.DWMachiningDowntimeScreenRequestDto = {
           DWMachiningFilterDto: {
             StartDate: new Date(action.payload.Filters.StartDate),
             EndDate: new Date(action.payload.Filters.EndDate),

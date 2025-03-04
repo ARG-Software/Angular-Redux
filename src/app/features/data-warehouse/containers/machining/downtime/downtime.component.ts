@@ -7,7 +7,6 @@ import {
   GetDowntimeData,
   GetDowntimeDataSelectBoxes,
 } from "../../../actions/downtime.actions";
-import { MimsSelectBoxModel } from "@mimsUI/input/select-box/models/select-box.model";
 import {
   ComboChartDataModelUI,
   DowntimeTableDataModelUI,
@@ -15,6 +14,7 @@ import {
 import { getTodayDateMinusInputDays } from "../../../../../utils/funtion.utils";
 import { MachiningRequestModelUI } from "../../../models/downtime.models";
 import { PagingModelUI } from "src/app/app.models";
+import { MimsSelectBoxModel } from "src/app/mims-ui/input/select-box/models/select-box.model";
 
 @Component({
   standalone: false,

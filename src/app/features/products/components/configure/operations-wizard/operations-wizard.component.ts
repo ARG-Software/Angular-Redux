@@ -11,14 +11,14 @@ import {
   FormControl,
   AbstractControl,
 } from "@angular/forms";
-import { MimsValidator } from "@mimsUI/forms/wizard/services/validators";
-import { MimsFormErrorsService } from "@mimsUI/forms/wizard/services/errors.service";
 import {
   OperationModelUI,
   ConfigureSelectBoxModelUI,
   SubcontractorModelUI,
 } from "../../../models/configure.model";
-import { MimsSelectBoxModel } from "@mimsUI/input/select-box/models/select-box.model";
+import { MimsFormErrorsService } from "src/app/mims-ui/forms/wizard/services/errors.service";
+import { MimsValidator } from "src/app/mims-ui/forms/wizard/services/validators";
+import { MimsSelectBoxModel } from "src/app/mims-ui/input/select-box/models/select-box.model";
 
 @Component({
   standalone: false,

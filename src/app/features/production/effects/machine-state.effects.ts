@@ -8,7 +8,6 @@ import { apiRequest } from "../../../utils/funtion.utils";
 import * as loadingActions from "../../../main/actions/loading.actions";
 import * as fromMain from "../../../main/main.reducers.index";
 
-import { IMachineStateService } from "@api/services/interfaces/core/production/imachine-state.service";
 import {
   MachineFailure,
   MachineStateActionTypes,
@@ -23,6 +22,7 @@ import {
   MachineStateLoadDataModelUIFactory,
   MachineStateDataRequestModelUI,
 } from "../models/machine-state.model";
+import { IMachineStateService } from "src/app/api/services/interfaces/core/production/imachine-state.service";
 
 @Injectable()
 export class MachineStateEffects {

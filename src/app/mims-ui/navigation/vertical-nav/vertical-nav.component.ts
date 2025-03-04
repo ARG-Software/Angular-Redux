@@ -8,8 +8,8 @@ import {
   EventEmitter,
 } from "@angular/core";
 import { Subscription } from "rxjs";
-import { CommonNavigationService } from "@mimsUI/navigation/common/services/navigation.service";
-import { SideBarItemModel } from "@mimsUI/navigation/vertical-nav/models/item.model";
+import { CommonNavigationService } from "../common/services/navigation.service";
+import { SideBarItemModel } from "./models/item.model";
 
 @Component({
   standalone: false,

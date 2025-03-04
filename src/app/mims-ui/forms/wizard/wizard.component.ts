@@ -9,7 +9,7 @@ import {
   TemplateRef,
 } from "@angular/core";
 import { ClrWizard } from "@clr/angular";
-import { WizardPageModel } from "@mimsUI/forms/wizard/models/wizard.models";
+import { WizardPageModel } from "./models/wizard.models";
 
 @Component({
   standalone: false,

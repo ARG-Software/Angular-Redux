@@ -9,8 +9,8 @@ import {
 } from "@angular/core";
 import { CommonNavigationService } from "../common/services/navigation.service";
 import { EventEmitter } from "@angular/core";
-import { NavBarSettingsModel } from "@mimsUI/navigation/navbar/models/navbar-settings.model";
 import { Subscription } from "rxjs";
+import { NavBarSettingsModel } from "./models/navbar-settings.model";
 
 @Component({
   standalone: false,

@@ -4,7 +4,7 @@ import { StoreModule } from "@ngrx/store";
 import { reducerName, mainReducers } from "./main.reducers.index";
 import { RouterModule } from "@angular/router";
 import { MainComponent } from "./main.component";
-import { MimsUIModule } from "@mimsUI/mims-ui.module";
+import { MimsUIModule } from "../mims-ui/mims-ui.module";
 
 const MainRoutingModule = RouterModule.forChild([
   {

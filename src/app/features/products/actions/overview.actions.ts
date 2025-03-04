@@ -1,20 +1,23 @@
-import { Action } from '@ngrx/store';
+import { Action } from "@ngrx/store";
 import {
   DownTimeStatisticsChartRequestModel,
-  MachineOperationsRequestModel
-} from '../models/overview.models';
-import { IShiftGraphicDto, IMachineOperationsDto } from '@api/models/apimodels';
+  MachineOperationsRequestModel,
+} from "../models/overview.models";
+import {
+  IMachineOperationsDto,
+  IShiftGraphicDto,
+} from "src/app/api/models/apimodels";
 
 /**
  * For each action type in an action group, make a simple
  * enum object for all of this group's action types.
  */
 export enum OverviewActionTypes {
-  GetDownTimeChart = '[Overview] Get DownTime Chart',
-  GetDownTimeChartSuccess = '[Overview] Get DownTime Chart Success',
-  GetMachineOperationTable = '[Overview] Get Machine Operation Table',
-  GetMachineOperationTableSuccess = '[Overview] Get Machine Operation Table Success',
-  OverviewFailure = '[Overview] Overview Failed'
+  GetDownTimeChart = "[Overview] Get DownTime Chart",
+  GetDownTimeChartSuccess = "[Overview] Get DownTime Chart Success",
+  GetMachineOperationTable = "[Overview] Get Machine Operation Table",
+  GetMachineOperationTableSuccess = "[Overview] Get Machine Operation Table Success",
+  OverviewFailure = "[Overview] Overview Failed",
 }
 
 /**

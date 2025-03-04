@@ -15,7 +15,7 @@ import {
   NG_VALIDATORS,
   NG_ASYNC_VALIDATORS,
 } from "@angular/forms";
-import { BaseControlComponent } from "@mimsUI/base/base.component";
+import { BaseControlComponent } from "../../base/base.component";
 
 @Component({
   standalone: false,

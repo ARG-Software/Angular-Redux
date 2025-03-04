@@ -4,7 +4,7 @@ import { Actions, createEffect, ofType } from "@ngrx/effects";
 
 import { catchError, switchMap, map, tap, finalize } from "rxjs/operators";
 
-import * as MimsModels from "@api/models/apimodels";
+import * as MimsModels from "src/app/api/models/apimodels";
 
 import {
   GetOeeData,
@@ -22,16 +22,14 @@ import {
   OeeTableInformationModelUI,
 } from "../models/oee.models";
 
-import { IOeeMachiningService } from "@api/services/interfaces/core/data-warehouse/ioee.service";
-
 import * as fromMain from "../../../main/main.reducers.index";
 import * as loadingActions from "../../../main/actions/loading.actions";
 
-import { IMachineService } from "@api/services/interfaces/core/imachine.service";
-import { IProductService } from "@api/services/interfaces/core/iproduct.service";
-
 import { convertApiDataToSelectBoxes } from "./downtime.effects";
 import { forkJoin, of } from "rxjs";
+import { IOeeMachiningService } from "src/app/api/services/interfaces/core/data-warehouse/ioee.service";
+import { IMachineService } from "src/app/api/services/interfaces/core/imachine.service";
+import { IProductService } from "src/app/api/services/interfaces/core/iproduct.service";
 
 @Injectable()
 export class OeeEffects {

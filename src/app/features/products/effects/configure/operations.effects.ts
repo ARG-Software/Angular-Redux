@@ -26,10 +26,10 @@ import {
   concatMap,
 } from "rxjs/operators";
 import { OperationModelUI } from "../../models/configure.model";
-import { IOperationService } from "@api/services/interfaces/core/ioperation.service";
-import { IOperationDto } from "@api/models/apimodels";
 import { mapObjectTypeToRequested } from "../../../../utils/funtion.utils";
 import { of } from "rxjs";
+import { IOperationDto } from "src/app/api/models/apimodels";
+import { IOperationService } from "src/app/api/services/interfaces/core/ioperation.service";
 
 @Injectable()
 export class ConfigureOperationsEffects {

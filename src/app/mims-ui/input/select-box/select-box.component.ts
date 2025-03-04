@@ -13,13 +13,13 @@ import {
   OnInit,
 } from "@angular/core";
 import { MimsSelectBoxModel } from "./models/select-box.model";
-import { BaseControlComponent } from "@mimsUI/base/base.component";
 import {
   NgModel,
   NG_ASYNC_VALIDATORS,
   NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
 } from "@angular/forms";
+import { BaseControlComponent } from "../../base/base.component";
 
 @Component({
   standalone: false,

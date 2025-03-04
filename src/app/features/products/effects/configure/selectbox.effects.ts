@@ -33,17 +33,17 @@ import {
   MessageModelUI,
 } from "../../models/configure.model";
 import { of } from "rxjs";
-import { IMachineService } from "@api/services/interfaces/core/imachine.service";
+import { mapObjectTypeToRequested } from "../../../../utils/funtion.utils";
 import {
-  IMachineDto,
-  ISubcontractorsDto,
   IEdgeDto,
   IContactMessageDto,
-} from "@api/models/apimodels";
-import { mapObjectTypeToRequested } from "../../../../utils/funtion.utils";
-import { ISubcontractorService } from "@api/services/interfaces/core/isubcontractor.service";
-import { IEdgeService } from "@api/services/interfaces/core/iedge.service";
-import { IContactMessageService } from "@api/services/interfaces/core/icontactmessage.service";
+  ISubcontractorsDto,
+  IMachineDto,
+} from "src/app/api/models/apimodels";
+import { IContactMessageService } from "src/app/api/services/interfaces/core/icontactmessage.service";
+import { IEdgeService } from "src/app/api/services/interfaces/core/iedge.service";
+import { IMachineService } from "src/app/api/services/interfaces/core/imachine.service";
+import { ISubcontractorService } from "src/app/api/services/interfaces/core/isubcontractor.service";
 
 @Injectable()
 export class ConfigureSelectBoxEffects {

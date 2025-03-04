@@ -1,7 +1,4 @@
 import { Injectable } from "@angular/core";
-import { IMachineOperationsDto, IShiftGraphicDto } from "@api/models/apimodels";
-import { IDownTimeRecordService } from "@api/services/interfaces/core/idowntimerecord.service";
-import { IMachineOperationService } from "@api/services/interfaces/core/imachineoperation.service";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { catchError, finalize, map, switchMap, tap } from "rxjs/operators";
@@ -16,6 +13,12 @@ import {
   OverviewActionTypes,
   OverviewFailure,
 } from "../actions/overview.actions";
+import {
+  IShiftGraphicDto,
+  IMachineOperationsDto,
+} from "src/app/api/models/apimodels";
+import { IDownTimeRecordService } from "src/app/api/services/interfaces/core/idowntimerecord.service";
+import { IMachineOperationService } from "src/app/api/services/interfaces/core/imachineoperation.service";
 
 @Injectable()
 export class OverviewEffects {

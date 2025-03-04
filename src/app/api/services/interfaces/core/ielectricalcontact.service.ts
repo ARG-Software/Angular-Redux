@@ -1,5 +1,5 @@
-import { IElectricalContactDto } from "@api/models/apimodels";
 import { Observable } from "rxjs";
+import { IElectricalContactDto } from "src/app/api/models/apimodels";
 export abstract class IElectricalConcactService {
   public abstract GetECofProduct(
     productId: number

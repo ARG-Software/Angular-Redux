@@ -6,7 +6,7 @@ import {
   Input,
   OnInit,
 } from "@angular/core";
-import { MimsUiUtilsService } from "@mimsUI/mims-ui.utils.service";
+import { MimsUiUtilsService } from "src/app/mims-ui/mims-ui.utils.service";
 
 @Component({
   standalone: false,

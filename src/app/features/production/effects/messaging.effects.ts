@@ -6,7 +6,6 @@ import { catchError, finalize, map, switchMap, tap } from "rxjs/operators";
 
 import * as loadingActions from "../../../main/actions/loading.actions";
 import * as fromMain from "../../../main/main.reducers.index";
-import { IMessagingService } from "@api/services/interfaces/core/production/imessaging.service";
 import {
   MessagingFailure,
   MessagingActionTypes,
@@ -22,6 +21,7 @@ import {
 } from "../models/messaging.model";
 
 import { apiRequest } from "../../../utils/funtion.utils";
+import { IMessagingService } from "src/app/api/services/interfaces/core/production/imessaging.service";
 
 @Injectable()
 export class MessagingEffects {

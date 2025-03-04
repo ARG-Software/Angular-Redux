@@ -2,9 +2,9 @@ import { BaseMimsApi } from "../../classes/base/base.mims.api";
 import { Injectable } from "@angular/core";
 import { IOperationDto } from "../../../models/apimodels";
 import { Observable } from "rxjs";
-import { IOperationService } from "@api/services/interfaces/core/ioperation.service";
 import { HttpClient } from "@angular/common/http";
 import { GlobalEnvironmentService } from "src/app/global.environment.service";
+import { IOperationService } from "../../interfaces/core/ioperation.service";
 
 @Injectable()
 export class OperationService extends BaseMimsApi implements IOperationService {

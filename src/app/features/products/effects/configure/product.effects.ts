@@ -13,10 +13,10 @@ import {
 } from "../../actions/configure.actions";
 import { tap, map, switchMap, finalize, catchError } from "rxjs/operators";
 import { ProductModelUI } from "../../models/configure.model";
-import { IProductService } from "@api/services/interfaces/core/iproduct.service";
-import { IProductsDto } from "@api/models/apimodels";
 import { of } from "rxjs";
 import { mapObjectTypeToRequested } from "../../../../utils/funtion.utils";
+import { IProductsDto } from "src/app/api/models/apimodels";
+import { IProductService } from "src/app/api/services/interfaces/core/iproduct.service";
 
 @Injectable()
 export class ConfigureProductEffects {

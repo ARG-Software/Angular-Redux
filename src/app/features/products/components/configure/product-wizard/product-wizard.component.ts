@@ -13,9 +13,9 @@ import {
   FormBuilder,
   AbstractControl,
 } from "@angular/forms";
-import { MimsFormErrorsService } from "@mimsUI/forms/wizard/services/errors.service";
-import { MimsValidator } from "@mimsUI/forms/wizard/services/validators";
 import { ProductModelUI } from "../../../models/configure.model";
+import { MimsFormErrorsService } from "src/app/mims-ui/forms/wizard/services/errors.service";
+import { MimsValidator } from "src/app/mims-ui/forms/wizard/services/validators";
 
 @Component({
   standalone: false,

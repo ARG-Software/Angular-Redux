@@ -1,5 +1,4 @@
 import { Injectable } from "@angular/core";
-import { ISettingsService } from "@api/services/interfaces/core/isettings.service";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { catchError, finalize, map, switchMap, tap } from "rxjs/operators";
@@ -17,7 +16,8 @@ import {
   UpdateWipSuccess,
 } from "../actions/settings.actions";
 import { KanbanDataModelUI, WipDataModelUI } from "../models/settings.models";
-import * as MimsModels from "@api/models/apimodels";
+import * as MimsModels from "src/app/api/models/apimodels";
+import { ISettingsService } from "src/app/api/services/interfaces/core/isettings.service";
 
 @Injectable()
 export class SettingsEffects {

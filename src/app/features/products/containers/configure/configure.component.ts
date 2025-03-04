@@ -1,6 +1,4 @@
 import { Component, ViewChild, OnInit } from "@angular/core";
-import { WizardPageModel } from "@mimsUI/forms/wizard/models/wizard.models";
-import { WizardComponent } from "@mimsUI/forms/wizard/wizard.component";
 import { Observable } from "rxjs";
 import { Store, select } from "@ngrx/store";
 import * as fromModule from "./../../products.reducers.index";
@@ -35,6 +33,8 @@ import {
   SensorModelUI,
   ResumeConfigurationModelUI,
 } from "../../models/configure.model";
+import { WizardPageModel } from "src/app/mims-ui/forms/wizard/models/wizard.models";
+import { WizardComponent } from "src/app/mims-ui/forms/wizard/wizard.component";
 
 @Component({
   standalone: false,

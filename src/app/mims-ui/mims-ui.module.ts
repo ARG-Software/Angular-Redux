@@ -31,8 +31,6 @@ import { DataGridComponent } from "./tables/data-grid/data-grid.component";
 import { TableComponent } from "./tables/table/table.component";
 
 import { MimsUiUtilsService } from "./mims-ui.utils.service";
-import { PaginationComponent } from "@mimsUI/navigation/pagination/pagination.component";
-import { WizardComponent } from "@mimsUI/forms/wizard/wizard.component";
 
 import { ComboSeriesVerticalComponent } from "./graphics/bar/combo-chart/vertical/vertical-bar/combo-series-vertical.component";
 import { ComboChartVerticalComponent } from "./graphics/bar/combo-chart/vertical/combo-chart-vertical.component";
@@ -41,10 +39,12 @@ import { StackedHorizontalBarChartComponent } from "./graphics/bar/stacked-horiz
 
 import { SpinnerComponent } from "./elements/spinner/spinner.component";
 import { HeaderComponent } from "./elements/header/header.component";
-import { AlertComponent } from "@mimsUI/elements/alert/alert.component";
-import { MimsFormErrorsService } from "@mimsUI/forms/wizard/services/errors.service";
 import { CardImageComponent } from "./elements/cards/card-image/card-image.component";
 import { CheckboxComponent } from "./input/checkbox/checkbox.component";
+import { AlertComponent } from "./elements/alert/alert.component";
+import { MimsFormErrorsService } from "./forms/wizard/services/errors.service";
+import { WizardComponent } from "./forms/wizard/wizard.component";
+import { PaginationComponent } from "./navigation/pagination/pagination.component";
 
 @NgModule({
   imports: [

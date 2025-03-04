@@ -1,3 +1,4 @@
+import { IShiftGraphicDto } from "src/app/api/models/apimodels";
 import {
   OverviewActionTypes,
   OverviewActions,
@@ -6,7 +7,6 @@ import {
   DownTimeRecordChartModel,
   ChartSeriesModel,
 } from "../models/overview.models";
-import { IShiftGraphicDto } from "@api/models/apimodels";
 
 export interface OverviewState {
   downTimeRecordChartData?: DownTimeRecordChartModel[];

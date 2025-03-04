@@ -23,11 +23,11 @@ import {
   catchError,
   finalize,
 } from "rxjs/operators";
-import { IMachineOperationService } from "@api/services/interfaces/core/imachineoperation.service";
-import { IMachineOperationsDto } from "@api/models/apimodels";
 import { mapObjectTypeToRequested } from "../../../../utils/funtion.utils";
 import { of } from "rxjs";
 import { MachineOperationModelUI } from "../../models/configure.model";
+import { IMachineOperationService } from "src/app/api/services/interfaces/core/imachineoperation.service";
+import { IMachineOperationsDto } from "src/app/api/models/apimodels";
 
 @Injectable()
 export class ConfigureMachinesOperationEffects {

@@ -1,4 +1,4 @@
-import { IBufferDto } from "@api/models/apimodels";
+import { IBufferDto } from "src/app/api/models/apimodels";
 import {
   WipDataModelUI,
   KanbanDataModelUI,

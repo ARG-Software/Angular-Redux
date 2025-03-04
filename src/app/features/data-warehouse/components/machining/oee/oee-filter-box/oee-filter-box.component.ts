@@ -8,8 +8,8 @@ import {
   SimpleChanges,
 } from "@angular/core";
 import { FormGroup, FormBuilder, FormControl } from "@angular/forms";
-import { MimsSelectBoxModel } from "@mimsUI/input/select-box/models/select-box.model";
 import { MachiningFilterModelUI } from "../../../../models/downtime.models";
+import { MimsSelectBoxModel } from "src/app/mims-ui/input/select-box/models/select-box.model";
 
 @Component({
   standalone: false,

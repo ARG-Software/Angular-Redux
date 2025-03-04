@@ -24,10 +24,10 @@ import {
   finalize,
 } from "rxjs/operators";
 import { SensorModelUI } from "../../models/configure.model";
-import { IElectricalConcactService } from "@api/services/interfaces/core/ielectricalcontact.service";
-import { IElectricalContactDto } from "@api/models/apimodels";
 import { of } from "rxjs";
 import { mapObjectTypeToRequested } from "../../../../utils/funtion.utils";
+import { IElectricalConcactService } from "src/app/api/services/interfaces/core/ielectricalcontact.service";
+import { IElectricalContactDto } from "src/app/api/models/apimodels";
 
 @Injectable()
 export class ConfigureSensorsEffects {

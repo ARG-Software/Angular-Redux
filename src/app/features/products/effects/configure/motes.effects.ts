@@ -27,10 +27,10 @@ import {
   ConfigureSelectBoxModelUI,
 } from "../../models/configure.model";
 import { Store, select } from "@ngrx/store";
-import { IMoteService } from "@api/services/interfaces/core/imote.service";
-import { IMoteDto } from "@api/models/apimodels";
 import { mapObjectTypeToRequested } from "../../../../utils/funtion.utils";
 import { of } from "rxjs";
+import { IMoteDto } from "src/app/api/models/apimodels";
+import { IMoteService } from "src/app/api/services/interfaces/core/imote.service";
 
 @Injectable()
 export class ConfigureMotesEffects {

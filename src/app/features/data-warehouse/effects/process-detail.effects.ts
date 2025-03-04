@@ -1,7 +1,4 @@
 import { Injectable } from "@angular/core";
-import { IMachineService } from "@api/services/interfaces/core/imachine.service";
-import { MimsSelectBoxModel } from "@mimsUI/input/select-box/models/select-box.model";
-import { IProcessDetailMachiningService } from "@api/services/interfaces/core/data-warehouse/iprocess-detail.service";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { of } from "rxjs";
@@ -24,6 +21,9 @@ import {
   ProcessDetailTableInformationModelUI,
   ProcessDetailChartModelUI,
 } from "../models/process-detail.models";
+import { IProcessDetailMachiningService } from "src/app/api/services/interfaces/core/data-warehouse/iprocess-detail.service";
+import { IMachineService } from "src/app/api/services/interfaces/core/imachine.service";
+import { MimsSelectBoxModel } from "src/app/mims-ui/input/select-box/models/select-box.model";
 
 @Injectable()
 export class ProcessDetailEffects {

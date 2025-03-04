@@ -5,15 +5,15 @@ import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Router } from "@angular/router";
 import { of } from "rxjs";
 import { catchError, switchMap, map, tap } from "rxjs/operators";
-import * as MimsModels from "@api/models/apimodels";
+import * as MimsModels from "src/app/api/models/apimodels";
 import {
   AuthActionTypes,
   Login,
   LoginFailure,
   LoginSuccess,
 } from "../actions/auth.actions";
-import { IAuthorizationService } from "@api/services/interfaces/core/iauthorization.service";
 import { IAppConfig } from "../../app.config";
+import { IAuthorizationService } from "src/app/api/services/interfaces/core/iauthorization.service";
 
 @Injectable()
 export class AuthEffects {

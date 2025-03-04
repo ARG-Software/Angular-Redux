@@ -9,7 +9,7 @@ import {
   MachineStateSaveDataModelUI,
   MachineStateLoadDataModelUI,
 } from "../../models/machine-state.model";
-import { MimsSelectBoxModel } from "@mimsUI/input/select-box/models/select-box.model";
+import { MimsSelectBoxModel } from "src/app/mims-ui/input/select-box/models/select-box.model";
 
 @Component({
   standalone: false,

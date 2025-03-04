@@ -5,19 +5,19 @@ import {
   EventEmitter,
   ChangeDetectionStrategy,
 } from "@angular/core";
-import { MimsSelectBoxModel } from "@mimsUI/input/select-box/models/select-box.model";
 import {
   FormGroup,
   FormBuilder,
   FormControl,
   AbstractControl,
 } from "@angular/forms";
-import { MimsFormErrorsService } from "@mimsUI/forms/wizard/services/errors.service";
-import { MimsValidator } from "@mimsUI/forms/wizard/services/validators";
 import {
   MoteModelUI,
   ConfigureSelectBoxModelUI,
 } from "../../../models/configure.model";
+import { MimsFormErrorsService } from "src/app/mims-ui/forms/wizard/services/errors.service";
+import { MimsValidator } from "src/app/mims-ui/forms/wizard/services/validators";
+import { MimsSelectBoxModel } from "src/app/mims-ui/input/select-box/models/select-box.model";
 
 @Component({
   standalone: false,

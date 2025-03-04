@@ -2,9 +2,9 @@ import { BaseMimsApi } from "../../classes/base/base.mims.api";
 import { Injectable } from "@angular/core";
 import { IElectricalContactDto } from "../../../models/apimodels";
 import { Observable } from "rxjs";
-import { IElectricalConcactService } from "@api/services/interfaces/core/ielectricalcontact.service";
 import { HttpClient } from "@angular/common/http";
 import { GlobalEnvironmentService } from "src/app/global.environment.service";
+import { IElectricalConcactService } from "../../interfaces/core/ielectricalcontact.service";
 
 @Injectable()
 export class ElectricalContactService
