@@ -5,32 +5,27 @@ export const reducerName = "auth";
 
 export type AuthState = fromAuthReducerDefinition.AuthState;
 
-export const reducers = fromAuthReducerDefinition.reducer;
+export const reducers = fromAuthReducerDefinition.authReducer;
 
 const selectAuthState =
   createFeatureSelector<fromAuthReducerDefinition.AuthState>(reducerName);
 
-const selectAuthStatusState = createSelector(
-  selectAuthState,
-  (state: fromAuthReducerDefinition.AuthState) => state
-);
-
 export const getUserAuthorization = createSelector(
-  selectAuthStatusState,
-  fromAuthReducerDefinition.getUserAuthorization
+  selectAuthState,
+  (state) => state.authorized
 );
 
 export const hasLoginError = createSelector(
-  selectAuthStatusState,
-  fromAuthReducerDefinition.hasLoginError
+  selectAuthState,
+  (state) => state.hasLoginError
 );
 
 export const getLoading = createSelector(
-  selectAuthStatusState,
-  fromAuthReducerDefinition.getLoading
+  selectAuthState,
+  (state) => state.loading
 );
 
 export const getLoggedUser = createSelector(
-  selectAuthStatusState,
-  fromAuthReducerDefinition.getLoggedUser
+  selectAuthState,
+  (state) => state.loggedUser
 );

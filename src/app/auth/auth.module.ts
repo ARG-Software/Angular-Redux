@@ -29,7 +29,7 @@ const routes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     StoreModule.forFeature(reducerName, reducers),
-    //EffectsModule.forFeature([AuthEffects]),
+    EffectsModule.forFeature([AuthEffects]),
   ],
   declarations: [AuthComponent, LoginComponent, LogoutComponent],
   providers: [AuthGuard],

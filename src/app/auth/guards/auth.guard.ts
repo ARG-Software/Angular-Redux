@@ -9,7 +9,7 @@ import { Store } from "@ngrx/store";
 import { Observable, of } from "rxjs";
 import { switchMap, catchError, take } from "rxjs/operators";
 import * as fromModule from "../auth.reducers.index";
-import { Logout } from "../actions/auth.actions";
+import { logout } from "../actions/auth.actions";
 
 @Injectable()
 export class AuthGuard implements CanActivate, CanActivateChild {
@@ -46,6 +46,6 @@ export class AuthGuard implements CanActivate, CanActivateChild {
   }
 
   private logout(): void {
-    this.store.dispatch(new Logout({}));
+    this.store.dispatch(logout());
   }
 }

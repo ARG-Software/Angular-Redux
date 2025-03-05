@@ -1,20 +1,14 @@
-import { Login } from "./../actions/auth.actions";
 import {
+  Component,
+  OnInit,
   ChangeDetectionStrategy,
   ViewEncapsulation,
-  OnInit,
-  Component,
 } from "@angular/core";
-import {
-  FormGroup,
-  FormBuilder,
-  FormControl,
-  Validators,
-} from "@angular/forms";
+import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { Store } from "@ngrx/store";
-import * as fromModule from "../auth.reducers.index";
-import { LoginModelUI } from "../models/auth.models";
 import { Observable } from "rxjs";
+import { login } from "../actions/auth.actions";
+import * as fromModule from "../auth.reducers.index";
 
 @Component({
   standalone: false,
@@ -28,27 +22,28 @@ export class LoginComponent implements OnInit {
   protected loginError$: Observable<boolean>;
 
   constructor(
-    private formbuilder: FormBuilder,
+    private formBuilder: FormBuilder,
     private store: Store<fromModule.AuthState>
   ) {}
 
   public ngOnInit(): void {
     this.loginError$ = this.store.select(fromModule.hasLoginError);
-    this.loginForm = this.formbuilder.group({
-      username: new FormControl(""),
-      password: new FormControl(
-        "",
-        Validators.compose([Validators.required, Validators.minLength(5)])
-      ),
+
+    this.loginForm = this.formBuilder.group({
+      username: ["", Validators.required],
+      password: ["", [Validators.required, Validators.minLength(5)]],
     });
   }
 
-  public logIn() {
-    const loginFormValues = this.loginForm.value;
-    const loginModel: LoginModelUI = {
-      username: loginFormValues.username,
-      password: loginFormValues.password,
-    };
-    this.store.dispatch(new Login(loginModel));
+  public logIn(): void {
+    if (this.loginForm.invalid) {
+      console.warn("❌ Login form is invalid!");
+      return;
+    }
+
+    const { username, password } = this.loginForm.value;
+    console.log("🚀 Dispatching login action:", username);
+
+    this.store.dispatch(login({ username, password }));
   }
 }

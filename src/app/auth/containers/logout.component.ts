@@ -1,16 +1,17 @@
 import { Component, OnInit } from "@angular/core";
 import { Store } from "@ngrx/store";
+import { logout } from "../actions/auth.actions";
 import * as fromModule from "../auth.reducers.index";
-import { Logout } from "../actions/auth.actions";
 
 @Component({
   standalone: false,
   template: "",
 })
 export class LogoutComponent implements OnInit {
-  public constructor(private store: Store<fromModule.AuthState>) {}
+  constructor(private store: Store<fromModule.AuthState>) {}
 
   public ngOnInit(): void {
-    this.store.dispatch(new Logout({}));
+    console.log("🔓 Dispatching logout action...");
+    this.store.dispatch(logout());
   }
 }

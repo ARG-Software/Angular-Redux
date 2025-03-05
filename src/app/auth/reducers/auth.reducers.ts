@@ -1,9 +1,15 @@
-import { UserModelUI } from "./../models/auth.models";
-import { AuthActions, AuthActionTypes } from "../actions/auth.actions";
+import { createReducer, on } from "@ngrx/store";
+import { UserModelUI } from "../models/auth.models";
+import {
+  login,
+  loginSuccess,
+  loginFailure,
+  logout,
+} from "../actions/auth.actions";
 
 export interface AuthState {
   authorized: boolean;
-  loggedUser: UserModelUI;
+  loggedUser: UserModelUI | null;
   loading: boolean;
   hasLoginError: boolean;
 }
@@ -15,40 +21,35 @@ export const initialState: AuthState = {
   hasLoginError: false,
 };
 
-export function reducer(state = initialState, action: AuthActions): AuthState {
-  switch (action.type) {
-    case AuthActionTypes.Login: {
-      return { ...state, loading: true };
-    }
+export const authReducer = createReducer(
+  initialState,
 
-    case AuthActionTypes.LoginFailure: {
-      return { ...state, hasLoginError: true };
-    }
+  /** 🔑 Login starts */
+  on(login, (state) => ({
+    ...state,
+    loading: true,
+    hasLoginError: false,
+  })),
 
-    case AuthActionTypes.LoginSuccess: {
-      const auth = {
-        authorized: true,
-        loggedUser: { ...action.payload },
-        loading: false,
-      };
-      return { ...state, ...auth };
-    }
+  on(loginFailure, (state) => ({
+    ...state,
+    hasLoginError: true,
+    loading: false,
+  })),
 
-    case AuthActionTypes.Logout: {
-      return initialState;
-    }
+  on(loginSuccess, (state, { user }) => ({
+    ...state,
+    authorized: true,
+    loggedUser: user,
+    loading: false,
+    hasLoginError: false,
+  })),
 
-    default:
-      return state;
-  }
-}
+  on(logout, () => initialState)
+);
 
 export const getAuthState = (state: AuthState) => state;
-
 export const getUserAuthorization = (state: AuthState) => state.authorized;
-
 export const hasLoginError = (state: AuthState) => state.hasLoginError;
-
 export const getLoading = (state: AuthState) => state.loading;
-
 export const getLoggedUser = (state: AuthState) => state.loggedUser;
