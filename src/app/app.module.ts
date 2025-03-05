@@ -13,7 +13,7 @@ import { EffectsModule } from "@ngrx/effects";
 import { localStorageSync } from "ngrx-store-localstorage";
 
 // ROUTING
-import { RouterModule, RouterOutlet } from "@angular/router";
+import { RouterModule } from "@angular/router";
 
 // CONFIGURATIONS
 import { GlobalEnvironmentService } from "./global.environment.service";
@@ -38,11 +38,11 @@ const metaReducers: Array<MetaReducer<any, any>> = [localStorageSyncReducer];
 @NgModule({
   declarations: [AppComponent],
   imports: [
+    RouterModule.forRoot(routes),
     BrowserModule,
     BrowserAnimationsModule,
+    EffectsModule.forRoot(),
     ApiModule.forRoot(),
-    RouterModule.forRoot(routes),
-    EffectsModule.forRoot([]),
     StoreModule.forRoot({}, { metaReducers }),
     StoreDevtoolsModule.instrument({ maxAge: 15 }),
   ],
