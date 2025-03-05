@@ -29,9 +29,13 @@ const routes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     StoreModule.forFeature(reducerName, reducers),
-    EffectsModule.forFeature([AuthEffects]),
+    //EffectsModule.forFeature([AuthEffects]),
   ],
   declarations: [AuthComponent, LoginComponent, LogoutComponent],
   providers: [AuthGuard],
 })
-export class AuthModule {}
+export class AuthModule {
+  constructor() {
+    console.log("AuthModule Loaded!");
+  }
+}
