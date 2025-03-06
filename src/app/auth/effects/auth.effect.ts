@@ -17,21 +17,17 @@ import { IAuthorizationService } from "src/app/api/services/interfaces/core/iaut
 
 @Injectable()
 export class AuthEffects {
+  private readonly appConfigurations: IAppConfig;
   private readonly accessTokenKey: string;
   private readonly refreshTokenKey: string;
-  private actions$: Actions;
 
   constructor(
-    private injector: Injector,
+    private actions$: Actions,
     private auth: IAuthorizationService,
     private router: Router,
-    @Inject(APP_CONFIG) private readonly appConfigurations: IAppConfig
+    private readonly injector: Injector
   ) {
-    console.log("✅ AuthEffects Loaded!");
-
-    this.actions$ = this.injector.get(Actions);
-    console.log("🔥 Actions$ instance is now available:", this.actions$);
-
+    this.appConfigurations = this.injector.get(APP_CONFIG);
     this.accessTokenKey = this.appConfigurations.accessTokenKey;
     this.refreshTokenKey = this.appConfigurations.refreshTokenKey;
   }
