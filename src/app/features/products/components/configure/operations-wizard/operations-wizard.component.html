@@ -1,30 +1,40 @@
-<ng-container *ngIf="errors.length> 0">
-    <mims-alert [isSmall]="true" [type]="'danger'">
-        <div *ngFor="let error of errors">
-            {{error}}
-        </div>
-    </mims-alert>
+<ng-container *ngIf="errors.length > 0">
+  <mims-alert [isSmall]="true" [type]="'danger'">
+    <div *ngFor="let error of errors">
+      {{ error }}
+    </div>
+  </mims-alert>
 </ng-container>
 <ng-template #addedOperationsTemplate>
-    <ng-container *ngFor="let operation of operationsList;let i = index;">
-      <div class="form-group row">  
+  <ng-container *ngFor="let operation of operationsList; let i = index">
+    <div class="form-group row">
       <div class="col-xs">
-          <mims-input disable="true" value="{{operation.Number}}"></mims-input>
+        <mims-input disable="true" value="{{ operation.Number }}"></mims-input>
       </div>
       <div class="col-xs-4">
-          <mims-input disable="true" value="{{operation.Description}}"></mims-input>
+        <mims-input
+          disable="true"
+          value="{{ operation.Description }}"
+        ></mims-input>
       </div>
       <div class="col-xs">
-        <mims-input disable="true" value="{{operation.Subcontractor?.Name}}"></mims-input>
+        <mims-input
+          disable="true"
+          value="{{ operation.Subcontractor?.Name }}"
+        ></mims-input>
       </div>
       <div class="col-xs">
-          <mims-button-icon icon="times" [buttonsize]="'small'" (click)="onRemoveOperation(operation)"></mims-button-icon>
+        <mims-button-icon
+          icon="times"
+          [buttonsize]="'small'"
+          (click)="onRemoveOperation(operation)"
+        ></mims-button-icon>
       </div>
-      </div>
-      </ng-container>
-    </ng-template>
-  
-  <form [formGroup]="operationForm" class="compact">
+    </div>
+  </ng-container>
+</ng-template>
+
+<form [formGroup]="operationForm" class="compact">
   <section class="form-block">
     <div class="form-group row">
       <div class="col-xs">
@@ -36,25 +46,34 @@
       <div class="col-xs">
         <mims-label>Subcontractor</mims-label>
       </div>
-     <div class="col-xs">
-        </div>                                    
-      </div>
-      </section>
-      <section class="form-block">
-        <div class="form-group row">  
-        <div class="col-xs">
-          <mims-input formControlName="opNumber"></mims-input>
-        </div>
-        <div class="col-xs-4">
-            <mims-input type="'textarea'"  formControlName="description"></mims-input>
-        </div>
-        <div class="col-xs">
-            <mims-select-box [data] ="subcontractorSelectBoxData" formControlName="subcontractor"></mims-select-box>
-        </div>
-        <div class="col-xs">
-            <mims-button-icon icon="plus" [buttonsize]="'small'" (click)="onAddOperation($event)"></mims-button-icon>
-        </div>             
-      </div>
-      <ng-container *ngTemplateOutlet="addedOperationsTemplate"></ng-container>
+      <div class="col-xs"></div>
+    </div>
   </section>
-  </form>
+  <section class="form-block">
+    <div class="form-group row">
+      <div class="col-xs">
+        <mims-input formControlName="opNumber"></mims-input>
+      </div>
+      <div class="col-xs-4">
+        <mims-input
+          type="'textarea'"
+          formControlName="description"
+        ></mims-input>
+      </div>
+      <div class="col-xs">
+        <mims-select-box
+          [data]="subcontractorSelectBoxData"
+          formControlName="subcontractor"
+        ></mims-select-box>
+      </div>
+      <div class="col-xs">
+        <mims-button-icon
+          icon="plus"
+          [buttonsize]="'small'"
+          (click)="onAddOperation()"
+        ></mims-button-icon>
+      </div>
+    </div>
+    <ng-container *ngTemplateOutlet="addedOperationsTemplate"></ng-container>
+  </section>
+</form>

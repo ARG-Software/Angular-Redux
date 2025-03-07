@@ -1,69 +1,74 @@
 <mims-wizard
-#configurationWizard
-[wizardTitle]="'Product Setup'"
-[orderedNavigation]="true"
-[hasCancel]="false"
-[hasBack]="true"
-[disableNavigation]="true"
-[wizardPageTemplate]= "[
-        productWizardPage,
-        operationsWizardPage,
-        machineWizardPage,
-        moteWizardPage,
-        sensorWizardPage,
-        resumeWizardPage]"
-[wizardPageMetaData]="productWizardPageMetaData"
-(onWizardPageChange)="onWizardNextPage($event)"
-(onWizardFinish)="onWizardFinish($event)">
+  #configurationWizard
+  [wizardTitle]="'Product Setup'"
+  [orderedNavigation]="true"
+  [hasCancel]="false"
+  [hasBack]="true"
+  [disableNavigation]="true"
+  [wizardPageTemplate]="[
+    productWizardPage,
+    operationsWizardPage,
+    machineWizardPage,
+    moteWizardPage,
+    sensorWizardPage,
+    resumeWizardPage
+  ]"
+  [wizardPageMetaData]="productWizardPageMetaData"
+  (onWizardPageChange)="onWizardNextPage($event)"
+  (onWizardFinish)="onWizardFinish()"
+>
 </mims-wizard>
 
 <ng-template #productWizardPage>
-<product-wizard-page 
-        (updateProduct)="saveProductDetail($event)" 
-        [productDetailsData]= "productDetailsData$ | async"
-        >
-</product-wizard-page>
+  <product-wizard-page
+    (updateProduct)="saveProductDetail($event)"
+    [productDetailsData]="productDetailsData$ | async"
+  >
+  </product-wizard-page>
 </ng-template>
 
 <ng-template #operationsWizardPage>
-        <operations-wizard-page
-        (addOperation) = "addOperation($event)"
-        (removeOperation) = "removeOperation($event)"
- 	[operationsList] = "operationsData$ | async"
-        [subcontractorSelectBoxData]="subcontractorSelectBoxData$ | async" >
-        </operations-wizard-page>
+  <operations-wizard-page
+    (addOperation)="addOperation($event)"
+    (removeOperation)="removeOperation($event)"
+    [operationsList]="operationsData$ | async"
+    [subcontractorSelectBoxData]="subcontractorSelectBoxData$ | async"
+  >
+  </operations-wizard-page>
 </ng-template>
 
 <ng-template #machineWizardPage>
-        <machine-wizard-page
-        (addMachine) = "addMachine($event)"
-        (removeMachine) = "removeMachine($event)"
-        [machineSelectBoxData]="machineSelectBoxData$ | async" 
-        [operationsSelectBoxData]="operationsSelectBoxData$ | async" 
-        [machinesList]="machinesData$ | async">
-        </machine-wizard-page>
+  <machine-wizard-page
+    (addMachine)="addMachine($event)"
+    (removeMachine)="removeMachine($event)"
+    [machineSelectBoxData]="machineSelectBoxData$ | async"
+    [operationsSelectBoxData]="operationsSelectBoxData$ | async"
+    [machinesList]="machinesData$ | async"
+  >
+  </machine-wizard-page>
 </ng-template>
 
 <ng-template #moteWizardPage>
-        <mote-wizard-page 
-        (addMote) = "addMote($event)"
-        (removeMote) = "removeMote($event)"
-        [motesList] = "motesData$ | async" 
-        [machineSelectBoxData]="machineSelectBoxData$ | async"
-        [edgeSelectBoxData]="edgeSelectBoxData$ | async">
-        </mote-wizard-page>
+  <mote-wizard-page
+    (addMote)="addMote($event)"
+    (removeMote)="removeMote($event)"
+    [motesList]="motesData$ | async"
+    [machineSelectBoxData]="machineSelectBoxData$ | async"
+    [edgeSelectBoxData]="edgeSelectBoxData$ | async"
+  >
+  </mote-wizard-page>
 </ng-template>
 
 <ng-template #sensorWizardPage>
-        <sensor-wizard-page
-        (addSensor) = "addSensor($event)"
-        (removeSensor) = "removeSensor($event)"
-        [sensorsList]= " sensorsData$ | async"
-        [moteSelectBoxData]="moteSelectBoxData$ | async"
-        [messageSelectBoxData] = "messageSelectBoxData$ | async"
-        ></sensor-wizard-page>
+  <sensor-wizard-page
+    (addSensor)="addSensor($event)"
+    (removeSensor)="removeSensor($event)"
+    [sensorsList]="sensorsData$ | async"
+    [moteSelectBoxData]="moteSelectBoxData$ | async"
+    [messageSelectBoxData]="messageSelectBoxData$ | async"
+  ></sensor-wizard-page>
 </ng-template>
 
 <ng-template #resumeWizardPage>
-        <resume-wizard [resumeData]="resumeData$ | async"></resume-wizard>
+  <resume-wizard [resumeData]="resumeData$ | async"></resume-wizard>
 </ng-template>

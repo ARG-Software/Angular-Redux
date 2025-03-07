@@ -1,35 +1,48 @@
-<ng-container *ngIf="errors.length> 0">
-    <mims-alert [isSmall]="true" [type]="'danger'">
-        <div *ngFor="let error of errors">
-            {{error}}
-        </div>
-    </mims-alert>
+<ng-container *ngIf="errors.length > 0">
+  <mims-alert [isSmall]="true" [type]="'danger'">
+    <div *ngFor="let error of errors">
+      {{ error }}
+    </div>
+  </mims-alert>
 </ng-container>
 <ng-template #addedMachinesTemplate>
-    <ng-container *ngFor="let sensor of sensorsList;let i = index;">
-      <div class="form-group row">  
+  <ng-container *ngFor="let sensor of sensorsList; let i = index">
+    <div class="form-group row">
       <div class="col-xs">
-          <mims-input disable="true" value="{{sensor.MoteName}}"></mims-input>
-      </div>
-      <div class="col-xs">
-          <mims-input disable="true" value="{{sensor.ContactMessageName}}"></mims-input>
+        <mims-input disable="true" value="{{ sensor.MoteName }}"></mims-input>
       </div>
       <div class="col-xs">
-          <mims-input disable="true" value="{{sensor.MachineInputTerminal}}"></mims-input>
+        <mims-input
+          disable="true"
+          value="{{ sensor.ContactMessageName }}"
+        ></mims-input>
       </div>
       <div class="col-xs">
-          <mims-input disable="true" value="{{sensor.MachineMCode}}"></mims-input>
+        <mims-input
+          disable="true"
+          value="{{ sensor.MachineInputTerminal }}"
+        ></mims-input>
       </div>
       <div class="col-xs">
-          <mims-input disable="true" value="{{sensor.LineOut}}"></mims-input>
+        <mims-input
+          disable="true"
+          value="{{ sensor.MachineMCode }}"
+        ></mims-input>
       </div>
       <div class="col-xs">
-          <mims-button-icon icon="times" [buttonsize]="'small'" (click)="onRemoveSensor(sensor)"></mims-button-icon>
+        <mims-input disable="true" value="{{ sensor.LineOut }}"></mims-input>
       </div>
+      <div class="col-xs">
+        <mims-button-icon
+          icon="times"
+          [buttonsize]="'small'"
+          (click)="onRemoveSensor(sensor)"
+        ></mims-button-icon>
       </div>
-      </ng-container>
+    </div>
+  </ng-container>
 </ng-template>
-  
+
 <form [formGroup]="sensorsForm" class="compact">
   <section class="form-block">
     <div class="form-group row">
@@ -40,40 +53,49 @@
         <mims-label>Message</mims-label>
       </div>
       <div class="col-xs">
-      <mims-label>Input Terminal</mims-label>
-        </div>
-        <div class="col-xs">
-          <mims-label>MCode</mims-label>
-        </div>
-        <div class="col-xs">
-            <mims-label>Line Out</mims-label>
-        </div>
-          <div class="col-xs">
-        </div>                                          
+        <mims-label>Input Terminal</mims-label>
       </div>
-      </section>
-      
-      <section class="form-block">
-        <div class="form-group row">  
-        <div class="col-xs">
-          <mims-select-box [data] = "moteSelectBoxData" formControlName="mote"></mims-select-box>
-        </div>
-        <div class="col-xs">
-            <mims-select-box [data] ="messageSelectBoxData" formControlName="message"></mims-select-box>
-        </div>
-        <div class="col-xs">
-            <mims-input formControlName="inputTerminal"></mims-input>
-          </div>  
-        <div class="col-xs">
-          <mims-input formControlName="mcode"></mims-input>
-        </div>
-        <div class="col-xs">
-            <mims-input formControlName="lineOut"></mims-input>
-        </div>
-        <div class="col-xs">
-                <mims-button-icon icon="plus" [buttonsize]="'small'" (click)="onAddSensor($event)"></mims-button-icon>
-       </div>                   
+      <div class="col-xs">
+        <mims-label>MCode</mims-label>
       </div>
-      <ng-container *ngTemplateOutlet="addedMachinesTemplate"></ng-container>
+      <div class="col-xs">
+        <mims-label>Line Out</mims-label>
+      </div>
+      <div class="col-xs"></div>
+    </div>
   </section>
-  </form>
+
+  <section class="form-block">
+    <div class="form-group row">
+      <div class="col-xs">
+        <mims-select-box
+          [data]="moteSelectBoxData"
+          formControlName="mote"
+        ></mims-select-box>
+      </div>
+      <div class="col-xs">
+        <mims-select-box
+          [data]="messageSelectBoxData"
+          formControlName="message"
+        ></mims-select-box>
+      </div>
+      <div class="col-xs">
+        <mims-input formControlName="inputTerminal"></mims-input>
+      </div>
+      <div class="col-xs">
+        <mims-input formControlName="mcode"></mims-input>
+      </div>
+      <div class="col-xs">
+        <mims-input formControlName="lineOut"></mims-input>
+      </div>
+      <div class="col-xs">
+        <mims-button-icon
+          icon="plus"
+          [buttonsize]="'small'"
+          (click)="onAddSensor()"
+        ></mims-button-icon>
+      </div>
+    </div>
+    <ng-container *ngTemplateOutlet="addedMachinesTemplate"></ng-container>
+  </section>
+</form>

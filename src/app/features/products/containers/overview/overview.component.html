@@ -1,77 +1,88 @@
-<mims-header [title]="'Overview'"
-             [subTitle]="'Crankshaft'"
-             [color]="'#5965e7'">
-    <div class="col-lg-2">
-        <mims-button-outline [buttontype]="'info'" [value]="'SCHEDULING'"></mims-button-outline>
-    </div>
+<mims-header [title]="'Overview'" [subTitle]="'Crankshaft'" [color]="'#5965e7'">
+  <div class="col-lg-2">
+    <mims-button-outline
+      [buttontype]="'info'"
+      [value]="'SCHEDULING'"
+    ></mims-button-outline>
+  </div>
 </mims-header>
 
 <div class="row">
-    <div class="col-lg-12">
-        <div class="row">
-            <div class="col-lg-4">
-                <mims-card [title]="cardsData[0].title"
-                           [titleColour]="cardsData[0].titleColour"
-                           [text]="cardsData[0].text"
-                           [textColour]="cardsData[0].textColour"
-                           [topRightTitle]="cardsData[0].topRightTitle"
-                           [topRightTitleColor]="cardsData[0].topRightTitleColor"
-                           [midRightTitle]="cardsData[0].midRightTitle"
-                           [midRightTitleColor]="cardsData[0].midRightTitleColor"
-                           [backgroundColour]="cardsData[0].backgroundColour"
-                           [buttonType]="cardsData[0].buttonType"
-                           [buttonText]="cardsData[0].buttonText">
-                </mims-card>
-            </div>
-            <div class="col-lg-4">
-                <mims-card [title]="cardsData[1].title"
-                           [titleColour]="cardsData[1].titleColour"
-                           [text]="cardsData[1].text"
-                           [textColour]="cardsData[1].textColour"
-                           [topRightTitle]="cardsData[1].topRightTitle"
-                           [topRightTitleColor]="cardsData[1].topRightTitleColor"
-                           [midRightTitle]="cardsData[1].midRightTitle"
-                           [midRightTitleColor]="cardsData[1].midRightTitleColor"
-                           [backgroundColour]="cardsData[1].backgroundColour"
-                           [buttonType]="cardsData[1].buttonType"
-                           [buttonText]="cardsData[1].buttonText">
-                </mims-card>
-            </div>
-            <div class="col-lg-4">
-                <mims-card [title]="cardsData[2].title"
-                           [titleColour]="cardsData[2].titleColour"
-                           [text]="cardsData[2].text"
-                           [textColour]="cardsData[2].textColour"
-                           [topRightTitle]="cardsData[2].topRightTitle"
-                           [topRightTitleColor]="cardsData[2].topRightTitleColor"
-                           [midRightTitle]="cardsData[2].midRightTitle"
-                           [midRightTitleColor]="cardsData[2].midRightTitleColor"
-                           [backgroundColour]="cardsData[2].backgroundColour"
-                           [buttonType]="cardsData[2].buttonType"
-                           [buttonText]="cardsData[2].buttonText">
-                </mims-card>
-            </div>
-        </div>
-        <div class="row flex-items-xs-middle">
-            <div class="col-xl-4 col-lg-12 col-md-12">
-                <mims-vertical-bar-chart [data]="chartData$ | async"></mims-vertical-bar-chart>
-            </div>
-            <div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                <div class="row">
-                    <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" *ngFor="let gauge of gaugeData">
-                        <mims-gauge-chart [gaugeData]="gauge"></mims-gauge-chart>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <div class="col-lg-12">
+    <div class="row">
+      <div class="col-lg-4">
+        <mims-card
+          [title]="cardsData[0].title"
+          [titleColour]="cardsData[0].titleColour"
+          [text]="cardsData[0].text"
+          [textColour]="cardsData[0].textColour"
+          [topRightTitle]="cardsData[0].topRightTitle"
+          [topRightTitleColor]="cardsData[0].topRightTitleColor"
+          [midRightTitle]="cardsData[0].midRightTitle"
+          [midRightTitleColor]="cardsData[0].midRightTitleColor"
+          [backgroundColour]="cardsData[0].backgroundColour"
+          [buttonText]="cardsData[0].buttonText"
+        >
+        </mims-card>
+      </div>
+      <div class="col-lg-4">
+        <mims-card
+          [title]="cardsData[1].title"
+          [titleColour]="cardsData[1].titleColour"
+          [text]="cardsData[1].text"
+          [textColour]="cardsData[1].textColour"
+          [topRightTitle]="cardsData[1].topRightTitle"
+          [topRightTitleColor]="cardsData[1].topRightTitleColor"
+          [midRightTitle]="cardsData[1].midRightTitle"
+          [midRightTitleColor]="cardsData[1].midRightTitleColor"
+          [backgroundColour]="cardsData[1].backgroundColour"
+          [buttonText]="cardsData[1].buttonText"
+        >
+        </mims-card>
+      </div>
+      <div class="col-lg-4">
+        <mims-card
+          [title]="cardsData[2].title"
+          [titleColour]="cardsData[2].titleColour"
+          [text]="cardsData[2].text"
+          [textColour]="cardsData[2].textColour"
+          [topRightTitle]="cardsData[2].topRightTitle"
+          [topRightTitleColor]="cardsData[2].topRightTitleColor"
+          [midRightTitle]="cardsData[2].midRightTitle"
+          [midRightTitleColor]="cardsData[2].midRightTitleColor"
+          [backgroundColour]="cardsData[2].backgroundColour"
+          [buttonText]="cardsData[2].buttonText"
+        >
+        </mims-card>
+      </div>
     </div>
+    <div class="row flex-items-xs-middle">
+      <div class="col-xl-4 col-lg-12 col-md-12">
+        <mims-vertical-bar-chart
+          [data]="chartData$ | async"
+        ></mims-vertical-bar-chart>
+      </div>
+      <div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="row">
+          <div
+            class="col-lg-3 col-md-6 col-sm-12 col-xs-12"
+            *ngFor="let gauge of gaugeData"
+          >
+            <mims-gauge-chart [gaugeData]="gauge"></mims-gauge-chart>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 <div class="row">
-    <div class="col-lg-12">
-        <mims-data-grid [headerName]="headerNames$ | async"
-                        [pageSize]="5"
-                        [columName]="columnNames$ | async"
-                        [rowData]="tableData$ | async">
-        </mims-data-grid>
-    </div>
+  <div class="col-lg-12">
+    <mims-data-grid
+      [headerName]="headerNames$ | async"
+      [pageSize]="5"
+      [columName]="columnNames$ | async"
+      [rowData]="tableData$ | async"
+    >
+    </mims-data-grid>
+  </div>
 </div>

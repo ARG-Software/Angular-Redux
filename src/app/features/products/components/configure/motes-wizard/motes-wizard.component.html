@@ -1,70 +1,83 @@
-<ng-container *ngIf="errors.length> 0">
+<ng-container *ngIf="errors.length > 0">
   <mims-alert [isSmall]="true" [type]="'danger'">
-      <div *ngFor="let error of errors">
-          {{error}}
-      </div>
+    <div *ngFor="let error of errors">
+      {{ error }}
+    </div>
   </mims-alert>
 </ng-container>
 <ng-template #addedMotesTemplate>
-  <ng-container *ngFor="let item of motesList;let i = index;">
-    <div class="form-group row">  
-    <div class="col-xs">
-        <mims-input disable="true" value="{{item.Name}}"></mims-input>
+  <ng-container *ngFor="let item of motesList; let i = index">
+    <div class="form-group row">
+      <div class="col-xs">
+        <mims-input disable="true" value="{{ item.Name }}"></mims-input>
+      </div>
+      <div class="col-xs">
+        <mims-input disable="true" value="{{ item.MachineName }}"></mims-input>
+      </div>
+      <div class="col-xs">
+        <mims-input disable="true" value="{{ item.EdgeName }}"></mims-input>
+      </div>
+      <div class="col-xs">
+        <mims-input disable="true" value="{{ item.PollInterval }}"></mims-input>
+      </div>
+      <div class="col-xs">
+        <mims-button-icon
+          icon="times"
+          [buttonsize]="'small'"
+          (click)="onRemoveMote(item)"
+        ></mims-button-icon>
+      </div>
     </div>
-    <div class="col-xs">
-        <mims-input disable="true" value="{{item.MachineName}}"></mims-input>
-    </div>
-    <div class="col-xs">
-        <mims-input disable="true" value="{{item.EdgeName}}"></mims-input>
-    </div>
-    <div class="col-xs">
-        <mims-input disable="true" value="{{item.PollInterval}}"></mims-input>
-    </div>
-    <div class="col-xs">
-        <mims-button-icon icon="times" [buttonsize]="'small'" (click)="onRemoveMote(item)"></mims-button-icon>
-    </div>
-    </div>
-    </ng-container>
-  </ng-template>
+  </ng-container>
+</ng-template>
 
 <form [formGroup]="motesForm" class="compact">
-<section class="form-block">
-  <div class="form-group row">
-    <div class="col-xs">
-      <mims-label>MoteName</mims-label>
-    </div>
-    <div class="col-xs">
-      <mims-label>Machine</mims-label>
-    </div>
-    <div class="col-xs">
-        <mims-label>Edge</mims-label>
-    </div>
-    <div class="col-xs">
-      <mims-label>Poll Interval</mims-label>
-    </div>
+  <section class="form-block">
+    <div class="form-group row">
       <div class="col-xs">
-      </div>                                          
+        <mims-label>MoteName</mims-label>
+      </div>
+      <div class="col-xs">
+        <mims-label>Machine</mims-label>
+      </div>
+      <div class="col-xs">
+        <mims-label>Edge</mims-label>
+      </div>
+      <div class="col-xs">
+        <mims-label>Poll Interval</mims-label>
+      </div>
+      <div class="col-xs"></div>
     </div>
-    </section>
-    
-    <section class="form-block">
-      <div class="form-group row">  
+  </section>
+
+  <section class="form-block">
+    <div class="form-group row">
       <div class="col-xs">
         <mims-input formControlName="name"></mims-input>
       </div>
       <div class="col-xs">
-        <mims-select-box [data] = "machineSelectBoxData" formControlName="machine"></mims-select-box>
+        <mims-select-box
+          [data]="machineSelectBoxData"
+          formControlName="machine"
+        ></mims-select-box>
       </div>
       <div class="col-xs">
-          <mims-select-box [data] ="edgeSelectBoxData" formControlName="edge"></mims-select-box>
+        <mims-select-box
+          [data]="edgeSelectBoxData"
+          formControlName="edge"
+        ></mims-select-box>
       </div>
       <div class="col-xs">
         <mims-input formControlName="pollInterval"></mims-input>
       </div>
       <div class="col-xs">
-          <mims-button-icon icon="plus" [buttonsize]="'small'" (click)="onAddMote($event)"></mims-button-icon>
-     </div>                   
+        <mims-button-icon
+          icon="plus"
+          [buttonsize]="'small'"
+          (click)="onAddMote()"
+        ></mims-button-icon>
+      </div>
     </div>
     <ng-container *ngTemplateOutlet="addedMotesTemplate"></ng-container>
-</section>
+  </section>
 </form>

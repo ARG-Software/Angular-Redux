@@ -1,58 +1,70 @@
-<ng-container *ngIf="errors.length> 0">
+<ng-container *ngIf="errors.length > 0">
   <mims-alert [isSmall]="true" [type]="'danger'">
-      <div *ngFor="let error of errors">
-          {{error}}
-      </div>
+    <div *ngFor="let error of errors">
+      {{ error }}
+    </div>
   </mims-alert>
 </ng-container>
-  <ng-template #addedMachinesTemplate>
-  <ng-container *ngFor="let item of machinesList;let i = index;">
-    <div class="form-group row">  
-    <div class="col-xs">
-        <mims-input disable="true" value="{{item.MachineName}}"></mims-input>
-    </div>
-    <div class="col-xs">
-        <mims-input disable="true" value="{{item.OperationName}}"></mims-input>
-    </div>
-    <div class="col-xs">
-        <mims-input disable="true" value="{{item.MDE}}"></mims-input>
-    </div>
-    <div class="col-xs">
-        <mims-input disable="true" value="{{item.OEE}}"></mims-input>
-    </div>
-    <div class="col-xs right">
-        <mims-button-icon icon="times" [buttonsize]="'small'" (click)="onRemoveMachine(item)"></mims-button-icon>
+<ng-template #addedMachinesTemplate>
+  <ng-container *ngFor="let item of machinesList; let i = index">
+    <div class="form-group row">
+      <div class="col-xs">
+        <mims-input disable="true" value="{{ item.MachineName }}"></mims-input>
+      </div>
+      <div class="col-xs">
+        <mims-input
+          disable="true"
+          value="{{ item.OperationName }}"
+        ></mims-input>
+      </div>
+      <div class="col-xs">
+        <mims-input disable="true" value="{{ item.MDE }}"></mims-input>
+      </div>
+      <div class="col-xs">
+        <mims-input disable="true" value="{{ item.OEE }}"></mims-input>
+      </div>
+      <div class="col-xs right">
+        <mims-button-icon
+          icon="times"
+          [buttonsize]="'small'"
+          (click)="onRemoveMachine(item)"
+        ></mims-button-icon>
       </div>
     </div>
-    </ng-container>
-  </ng-template>
+  </ng-container>
+</ng-template>
 
 <form [formGroup]="machinesForm" class="compact">
-<section class="form-block">
-  <div class="form-group row">
-    <div class="col-xs">
-      <mims-label>Machine</mims-label>
-    </div>
-    <div class="col-xs">
-      <mims-label>Operation</mims-label>
-    </div>
-    <div class="col-xs">
-    <mims-label class="required">MDE</mims-label>
+  <section class="form-block">
+    <div class="form-group row">
+      <div class="col-xs">
+        <mims-label>Machine</mims-label>
+      </div>
+      <div class="col-xs">
+        <mims-label>Operation</mims-label>
+      </div>
+      <div class="col-xs">
+        <mims-label class="required">MDE</mims-label>
       </div>
       <div class="col-xs">
         <mims-label class="required">OEE</mims-label>
       </div>
-      <div class="col-xs">
-      </div>                                    
+      <div class="col-xs"></div>
     </div>
-    </section>
-    <section class="form-block">
-      <div class="form-group row">  
+  </section>
+  <section class="form-block">
+    <div class="form-group row">
       <div class="col-xs">
-        <mims-select-box formControlName="machine" [data]  = "machineSelectBoxData"></mims-select-box>
+        <mims-select-box
+          formControlName="machine"
+          [data]="machineSelectBoxData"
+        ></mims-select-box>
       </div>
       <div class="col-xs">
-          <mims-select-box formControlName="operation" [data] = "operationsSelectBoxData"></mims-select-box>
+        <mims-select-box
+          formControlName="operation"
+          [data]="operationsSelectBoxData"
+        ></mims-select-box>
       </div>
       <div class="col-xs">
         <mims-input formControlName="mde"></mims-input>
@@ -61,9 +73,13 @@
         <mims-input formControlName="oee"></mims-input>
       </div>
       <div class="col-xs">
-          <mims-button-icon icon="plus" [buttonsize]="'small'" (click)="onAddMachine($event)"></mims-button-icon>
-      </div>             
+        <mims-button-icon
+          icon="plus"
+          [buttonsize]="'small'"
+          (click)="onAddMachine()"
+        ></mims-button-icon>
+      </div>
     </div>
     <ng-container *ngTemplateOutlet="addedMachinesTemplate"></ng-container>
-</section>
+  </section>
 </form>

@@ -1,25 +1,37 @@
-<ng-container *ngIf="errors.length> 0">
-        <mims-alert [isSmall]="true" [type]="'danger'">
-            <div *ngFor="let error of errors">
-                {{error}}
-            </div>
-        </mims-alert>
+<ng-container *ngIf="errors.length > 0">
+  <mims-alert [isSmall]="true" [type]="'danger'">
+    <div *ngFor="let error of errors">
+      {{ error }}
+    </div>
+  </mims-alert>
 </ng-container>
 <section class="form-block">
-        <form [formGroup]="productsForm">
-            <div class="form-group">
-                <label>Name</label>
-                <mims-input value="{{productDetailsData?.Name}}" [formControlName]="'Name'"></mims-input>
-            </div>
-            <div class="form-group">
-                <label>Target Hours Per Week</label>
-                <mims-input value="{{productDetailsData?.TargetHoursPerWeek}}" [formControlName]="'TargetHoursPerWeek'"></mims-input>
-            </div>
-            <div class="form-group">
-                <label>Target Efficiency</label>
-                <mims-input value="{{productDetailsData?.TargetEfficiency}}" [formControlName]="'TargetEfficiency'"></mims-input>
-            </div>
-            <mims-button-outline [buttontype]="'success'" value="Save Product" (click)="onSaveProduct($event)"></mims-button-outline>
-        </form>
+  <form [formGroup]="productsForm">
+    <div class="form-group">
+      <label>Name</label>
+      <mims-input
+        value="{{ productDetailsData?.Name }}"
+        [formControlName]="'Name'"
+      ></mims-input>
+    </div>
+    <div class="form-group">
+      <label>Target Hours Per Week</label>
+      <mims-input
+        value="{{ productDetailsData?.TargetHoursPerWeek }}"
+        [formControlName]="'TargetHoursPerWeek'"
+      ></mims-input>
+    </div>
+    <div class="form-group">
+      <label>Target Efficiency</label>
+      <mims-input
+        value="{{ productDetailsData?.TargetEfficiency }}"
+        [formControlName]="'TargetEfficiency'"
+      ></mims-input>
+    </div>
+    <mims-button-outline
+      [buttontype]="'success'"
+      value="Save Product"
+      (click)="onSaveProduct()"
+    ></mims-button-outline>
+  </form>
 </section>
-

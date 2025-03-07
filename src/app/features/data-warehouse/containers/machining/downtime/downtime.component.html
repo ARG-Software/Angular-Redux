@@ -1,18 +1,23 @@
-<mims-header [title]="'Pareto Chart'"
-             [subTitle]="'Downtime'"
-             [color]="'#5965e7'">
-    <downtime-filter-box [productSelectBoxData]="productSelectBoxData$ | async"
-                         [machineSelectBoxData]="machineSelectBoxData$ | async"
-                         [defaultFilters]="request.Filters"
-                         (OnFilterApply)="filtersOptions($event)">
-    </downtime-filter-box>
+<mims-header
+  [title]="'Pareto Chart'"
+  [subTitle]="'Downtime'"
+  [color]="'#5965e7'"
+>
+  <downtime-filter-box
+    [productSelectBoxData]="productSelectBoxData$ | async"
+    [machineSelectBoxData]="machineSelectBoxData$ | async"
+    [defaultFilters]="request.Filters"
+    (OnFilterApply)="filtersOptions($event)"
+  >
+  </downtime-filter-box>
 </mims-header>
 
-<downtime-information [chartData]="chartData$ | async"
-                      [tableData]="tableData$ | async"
-                      [chartColors]="chartColors"
-                      [chartSize]="chartSize"
-                      [tableHeaders]="tableHeaders"
-                      [paginationDetails]="tablePaging$ | async"
-                      (changePage)="requestNewPage($event)">
+<downtime-information
+  [chartData]="chartData$ | async"
+  [tableData]="tableData$ | async"
+  [chartColors]="chartColors"
+  [chartSize]="chartSize"
+  [paginationDetails]="tablePaging$ | async"
+  (changePage)="requestNewPage($event)"
+>
 </downtime-information>

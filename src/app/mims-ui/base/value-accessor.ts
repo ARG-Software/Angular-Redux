@@ -1,6 +1,7 @@
-import { Input } from "@angular/core";
+import { Directive, Input } from "@angular/core";
 import { ControlValueAccessor } from "@angular/forms";
 
+@Directive()
 export abstract class ValueAccessorBase<T> implements ControlValueAccessor {
   private _value: T;
 

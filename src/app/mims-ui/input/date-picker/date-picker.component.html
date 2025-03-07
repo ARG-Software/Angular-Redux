@@ -1,12 +1,10 @@
 <input
   id="{{ id }}"
-  [attr.type]="date"
   [attr.disabled]="disable ? 'disabled' : null"
   [attr.size]="size"
   [(ngModel)]="value"
   #txt="ngModel"
   (ngModelChange)="dateChange($event)"
   placeholder="{{ placeholder }}"
-  hidden="{{ hidden }}"
   clrDate
 />
