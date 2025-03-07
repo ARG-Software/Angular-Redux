@@ -17,7 +17,8 @@ const routes: Routes = [
   { path: "logout", component: LogoutComponent },
   {
     path: "main",
-    canActivate: [AuthGuard],
+    //TODO activate this
+    //canActivate: [AuthGuard],
     loadChildren: () => import("../main/main.module").then((m) => m.MainModule),
   },
 ];

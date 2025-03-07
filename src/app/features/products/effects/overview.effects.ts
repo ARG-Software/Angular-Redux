@@ -88,7 +88,6 @@ export class OverviewEffects {
     )
   );
 
-  // ✅ Handle Success Action for Machine Operation Table
   public getMachineOperationTableSuccess$ = createEffect(
     () =>
       this.actions$.pipe(
@@ -99,7 +98,6 @@ export class OverviewEffects {
     { dispatch: false }
   );
 
-  // ✅ Handle Overview Failure Effect
   public overviewFailure$ = createEffect(
     () =>
       this.actions$.pipe(
