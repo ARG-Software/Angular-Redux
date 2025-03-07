@@ -29,7 +29,7 @@ export class OeeComponent implements OnInit {
   public machineSelectBoxData$: Observable<MimsSelectBoxModel[]>;
   public productSelectBoxData$: Observable<MimsSelectBoxModel[]>;
 
-  private request: MachiningRequestModelUI = {
+  public request: MachiningRequestModelUI = {
     Filters: {
       MachineId: 0,
       ProductId: 0,
@@ -50,9 +50,9 @@ export class OeeComponent implements OnInit {
     },
   };
 
-  private tableHeaders = ["Product", "Availability", "Production", "Quality"];
+  public tableHeaders = ["Product", "Availability", "Production", "Quality"];
 
-  private chartSize = [1100, 400];
+  public chartSize = [1100, 400];
 
   constructor(private store: Store<fromReducer.DataWarehouseState>) {
     this.chartData$ = this.store.select(fromReducer.getOeeChart);
@@ -84,7 +84,7 @@ export class OeeComponent implements OnInit {
    * Request data with new filters
    * @param filters new selected filters
    */
-  private filtersOptions(filters: any) {
+  public filtersOptions(filters: any) {
     this.request.Filters = filters;
     this.store.dispatch(new GetOeeData(this.request));
   }

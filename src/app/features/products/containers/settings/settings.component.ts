@@ -17,8 +17,8 @@ import * as fromActions from "../../actions/settings.actions";
 export class SettingsComponent implements OnInit {
   private productId = 2;
 
-  private wipData$: Observable<WipDataModelUI[]>;
-  private kanBanData$: Observable<KanbanDataModelUI[]>;
+  public wipData$: Observable<WipDataModelUI[]>;
+  public kanBanData$: Observable<KanbanDataModelUI[]>;
 
   public constructor(private store: Store<fromReducer.ProductState>) {
     this.wipData$ = this.store.select(fromReducer.getWipData);
@@ -29,11 +29,11 @@ export class SettingsComponent implements OnInit {
     this.store.dispatch(new fromActions.LoadData(this.productId));
   }
 
-  private saveWipData(data: WipDataModelUI[]) {
+  public saveWipData(data: WipDataModelUI[]) {
     this.store.dispatch(new fromActions.UpdateWip(data));
   }
 
-  private saveKanBanData(data: KanbanDataModelUI[]) {
+  public saveKanBanData(data: KanbanDataModelUI[]) {
     this.store.dispatch(new fromActions.UpdateKanBan(data));
   }
 }

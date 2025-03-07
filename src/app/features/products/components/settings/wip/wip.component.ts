@@ -51,7 +51,7 @@ export class WipComponent implements OnChanges {
     this.wipForm.setControl("wip", wipFormArray);
   }
 
-  private saveNewWipData() {
+  public saveNewWipData() {
     this.wipDataEmitter.emit(this.wipForm.value.wip);
   }
 }

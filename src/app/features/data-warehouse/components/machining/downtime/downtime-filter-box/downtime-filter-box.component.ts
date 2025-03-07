@@ -54,7 +54,7 @@ export class DowntimeFilterBoxComponent implements OnChanges {
     });
   }
 
-  private submitFilters() {
+  public submitFilters() {
     this.OnFilterApply.emit(this.downtimeForm.value);
   }
 }

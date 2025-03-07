@@ -51,7 +51,7 @@ export class ProcessDetailFilterBoxComponent implements OnChanges {
     });
   }
 
-  private submitFilters() {
+  public submitFilters() {
     this.OnFilterApply.emit(this.processDetailForm.value);
   }
 }

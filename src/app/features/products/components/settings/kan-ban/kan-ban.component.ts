@@ -54,7 +54,7 @@ export class KanBanComponent implements OnChanges {
     this.kanBanForm.setControl("kanBan", kanBanFormArray);
   }
 
-  private saveNewKanBanData() {
+  public saveNewKanBanData() {
     this.kanBanDataEmitter.emit(this.kanBanForm.value.kanBan);
   }
 }

@@ -46,7 +46,7 @@ export class MessagingInformationComponent {
   /**
    * Emit that submit button was clicked!
    */
-  private submitChanges() {
+  public submitChanges() {
     this.saveEmitter.emit();
   }
 }

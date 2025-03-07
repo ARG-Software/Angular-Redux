@@ -71,7 +71,7 @@ export class MessagingComponent implements OnInit, OnDestroy {
   /**
    * Dispatch action to save messaging changes
    */
-  private saveMessaging() {
+  public saveMessaging() {
     if (this.messagingToSave.length > 0) {
       this.store.dispatch(
         new fromActions.UpdateMessagingData(this.messagingToSave)

@@ -19,7 +19,7 @@ export class MainComponent {
   public readonly sideBarPath: string;
   private readonly appConfigurations: IAppConfig;
 
-  private getLoading$: Observable<boolean>;
+  public getLoading$: Observable<boolean>;
 
   public constructor(
     private injector: Injector,

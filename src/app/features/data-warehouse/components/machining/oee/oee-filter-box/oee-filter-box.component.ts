@@ -56,7 +56,7 @@ export class OeeFilterBoxComponent implements OnChanges {
     });
   }
 
-  private submitFilters() {
+  public submitFilters() {
     this.OnFilterApply.emit(this.oeeForm.value);
   }
 }

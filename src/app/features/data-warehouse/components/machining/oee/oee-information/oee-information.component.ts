@@ -19,8 +19,8 @@ import { PagingModelUI } from "src/app/app.models";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OeeInformationComponent {
-  @Input() private chartData: OeeChartDataModelUI[];
-  @Input() private tableData: OeeTableDataModelUI[];
+  @Input() public chartData: OeeChartDataModelUI[];
+  @Input() public tableData: OeeTableDataModelUI[];
   @Input() private paginationDetails: PagingModelUI;
   @Input() private chartSize: any;
   @Input() private tableHeaders: any;

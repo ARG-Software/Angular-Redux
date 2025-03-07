@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "aot": false,
+            "aot": true,
             "outputPath": "dist/angular-redux-updated",
             "index": "src/index.html",
             "browser": "src/main.ts",
@@ -31,7 +31,6 @@
               }
             ],
             "styles": [
-              "src/styles.scss",
               "node_modules/@clr/ui/clr-ui.min.css",
               "node_modules/@clr/icons/clr-icons.min.css"
             ],

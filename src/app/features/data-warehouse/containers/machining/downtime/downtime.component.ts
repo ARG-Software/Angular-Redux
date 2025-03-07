@@ -41,7 +41,7 @@ export class DowntimeComponent implements OnInit {
     },
   };
 
-  private request: MachiningRequestModelUI = {
+  public request: MachiningRequestModelUI = {
     Filters: {
       MachineId: 0,
       ProductId: 0,
@@ -62,9 +62,9 @@ export class DowntimeComponent implements OnInit {
     },
   };
 
-  private tableHeaders = ["Machine", "Downtime", "Instances"];
+  private public = ["Machine", "Downtime", "Instances"];
 
-  private chartSize = [1100, 400];
+  public chartSize = [1100, 400];
 
   constructor(private store: Store<fromReducer.DataWarehouseState>) {
     this.chartData$ = this.store.select(fromReducer.getDownTimeChart);
@@ -87,7 +87,7 @@ export class DowntimeComponent implements OnInit {
    * Request new page to backend
    * @param pageNumber the numer of the page that we want
    */
-  private requestNewPage(pageNumber: number) {
+  public requestNewPage(pageNumber: number) {
     this.request.Paging.CurrentIndex = pageNumber - 1;
     this.store.dispatch(new GetDowntimeData(this.request));
   }
@@ -95,7 +95,7 @@ export class DowntimeComponent implements OnInit {
    * Request data with new filters
    * @param filters new selected filters
    */
-  private filtersOptions(filters: any) {
+  public filtersOptions(filters: any) {
     this.request.Filters = filters;
     this.store.dispatch(new GetDowntimeData(this.request));
   }

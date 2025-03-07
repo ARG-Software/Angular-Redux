@@ -18,7 +18,7 @@ export class GaugeChartComponent implements OnChanges {
 
   @Input() public gaugeData: any;
 
-  private valueFormatting: any;
+  public valueFormatting: any;
 
   public constructor(private mimsUIUtilServices: MimsUiUtilsService) {
     this.labelEmpty();

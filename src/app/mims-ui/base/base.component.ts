@@ -2,7 +2,7 @@ import { NgModel } from "@angular/forms";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { ValueAccessorBase } from "./value-accessor";
-import { Input } from "@angular/core";
+import { Directive, Input } from "@angular/core";
 
 import {
   AsyncValidatorArray,
@@ -12,6 +12,7 @@ import {
   validate,
 } from "./validations/validate-functions";
 
+@Directive()
 export abstract class BaseControlComponent<T> extends ValueAccessorBase<T> {
   @Input() public id: string;
   @Input() public label: string;

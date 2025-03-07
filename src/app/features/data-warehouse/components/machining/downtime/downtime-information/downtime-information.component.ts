@@ -27,7 +27,7 @@ export class DowntimeInformationComponent {
   @Input() protected tableHeaders: any;
   @Input() protected paginationDetails: PagingModelUI;
 
-  private changePagination(pageNumber: number) {
+  public changePagination(pageNumber: number) {
     this.changePage.emit(pageNumber);
   }
 }
