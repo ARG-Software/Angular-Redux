@@ -31,8 +31,9 @@
               }
             ],
             "styles": [
-              "node_modules/@clr/ui/clr-ui.min.css",
-              "node_modules/@clr/icons/clr-icons.min.css"
+              "src/assets/styles/mims.style.css",
+              "node_modules/@cds/core/global.min.css",
+              "node_modules/@clr/ui/clr-ui.min.css"
             ],
             "scripts": [],
             "allowedCommonJsDependencies": [

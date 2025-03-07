@@ -1,17 +1,29 @@
 <div class="login-wrapper login-wrapper-background">
-    <form [formGroup]="loginForm" class="login" (ngSubmit)="logIn()">
-        <label class="title">
-            <h3 class="welcome">Welcome to</h3>
-            Mims
-            <h5 class="hint">Use your login to sign in</h5>
-        </label>
-        <div class="login-group">
-            <input class="username" type="text" formControlName="username" id="login_username" placeholder="Username">
-            <input class="password" type="password" formControlName="password" id="login_password" placeholder="Password">
-            <div class="error" [ngClass]="{'active': loginError$ | async}">
-                Invalid user name or password
-            </div>
-            <button type="submit" class="btn btn-primary">NEXT</button>
-        </div>
-    </form>
+  <form [formGroup]="loginForm" class="login" (ngSubmit)="logIn()">
+    <label class="title">
+      <h3 class="welcome">Welcome to</h3>
+      Mims
+      <h5 class="hint">Use your login to sign in</h5>
+    </label>
+    <div class="login-group">
+      <input
+        class="username"
+        type="text"
+        formControlName="username"
+        id="login_username"
+        placeholder="Username"
+      />
+      <input
+        class="password"
+        type="password"
+        formControlName="password"
+        id="login_password"
+        placeholder="Password"
+      />
+      <div class="error" [ngClass]="{ active: loginError$ | async }">
+        Invalid user name or password
+      </div>
+      <button type="submit" class="btn btn-primary">NEXT</button>
+    </div>
+  </form>
 </div>
