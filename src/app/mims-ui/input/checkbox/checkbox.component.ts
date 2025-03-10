@@ -24,7 +24,6 @@ import { BaseControlComponent } from "../../base/base.component";
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      // tslint:disable-next-line:no-forward-ref
       useExisting: forwardRef(() => CheckboxComponent),
       multi: true,
     },
