@@ -38,7 +38,14 @@ export class MachineStateComponent implements OnInit {
    * Dispatch action to update machine state with new option
    */
   public saveMachine(data: MachineStateSaveDataModelUI) {
-    data.Option.selected = true;
-    this.store.dispatch(new fromActions.UpdateMachineData(data));
+    const updatedData: MachineStateSaveDataModelUI = {
+      ...data,
+      Option: {
+        ...data.Option,
+        selected: true,
+      },
+    };
+
+    this.store.dispatch(new fromActions.UpdateMachineData(updatedData));
   }
 }
