@@ -19,11 +19,12 @@ import {
 } from "src/app/api/models/apimodels";
 import { IDownTimeRecordService } from "src/app/api/services/interfaces/core/idowntimerecord.service";
 import { IMachineOperationService } from "src/app/api/services/interfaces/core/imachineoperation.service";
+import { inject } from "@angular/core";
 
 @Injectable()
 export class OverviewEffects {
+  private actions$ = inject(Actions);
   constructor(
-    private actions$: Actions,
     private machineOperationService: IMachineOperationService,
     private downTimeRecordService: IDownTimeRecordService,
     private mainStore$: Store<fromMain.MainState>

@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import * as loadingActions from "../../../../main/actions/loading.actions";
 import * as fromMain from "../../../../main/main.reducers.index";
 import * as fromModule from "../../products.reducers.index";
@@ -47,10 +47,11 @@ import { ISubcontractorService } from "src/app/api/services/interfaces/core/isub
 
 @Injectable()
 export class ConfigureSelectBoxEffects {
+  private actions$ = inject(Actions);
+  private moduleStore$ = inject<Store<fromModule.ProductState>>(Store);
+  private mainStore$ = inject<Store<fromMain.MainState>>(Store);
+
   constructor(
-    private actions$: Actions,
-    private moduleStore$: Store<fromModule.ProductState>,
-    private mainStore$: Store<fromMain.MainState>,
     private machineService: IMachineService,
     private subcontractorService: ISubcontractorService,
     private edgeService: IEdgeService,

@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { Actions, ofType, createEffect } from "@ngrx/effects";
 import { Store, select } from "@ngrx/store";
 import * as loadingActions from "../../../../main/actions/loading.actions";
@@ -31,12 +31,12 @@ import { IMachineOperationsDto } from "src/app/api/models/apimodels";
 
 @Injectable()
 export class ConfigureMachinesOperationEffects {
-  constructor(
-    private actions$: Actions,
-    private moduleStore$: Store<fromModule.ProductState>,
-    private mainStore$: Store<fromMain.MainState>,
-    private machineOperationService: IMachineOperationService
-  ) {}
+  private actions$ = inject(Actions);
+  private moduleStore$ = inject<Store<fromModule.ProductState>>(Store);
+  private mainStore$ = inject<Store<fromMain.MainState>>(Store);
+  private machineOperationService = inject<IMachineOperationService>(
+    IMachineOperationService
+  );
 
   getMachineOperations$ = createEffect(() =>
     this.actions$.pipe(

@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import * as loadingActions from "../../../../main/actions/loading.actions";
 import * as fromMain from "../../../../main/main.reducers.index";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
@@ -20,8 +20,8 @@ import { IProductService } from "src/app/api/services/interfaces/core/iproduct.s
 
 @Injectable()
 export class ConfigureProductEffects {
+  private actions$ = inject(Actions);
   constructor(
-    private actions$: Actions,
     private mainStore$: Store<fromMain.MainState>,
     private productService: IProductService
   ) {}

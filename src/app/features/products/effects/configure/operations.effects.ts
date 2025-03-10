@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import * as loadingActions from "../../../../main/actions/loading.actions";
 import * as fromMain from "../../../../main/main.reducers.index";
 import * as fromModule from "../../products.reducers.index";
@@ -33,12 +33,10 @@ import { IOperationService } from "src/app/api/services/interfaces/core/ioperati
 
 @Injectable()
 export class ConfigureOperationsEffects {
-  constructor(
-    private actions$: Actions,
-    private moduleStore$: Store<fromModule.ProductState>,
-    private mainStore$: Store<fromMain.MainState>,
-    private operationService: IOperationService
-  ) {}
+  private actions$ = inject(Actions);
+  private moduleStore$ = inject<Store<fromModule.ProductState>>(Store);
+  private mainStore$ = inject<Store<fromMain.MainState>>(Store);
+  private operationService = inject<IOperationService>(IOperationService);
 
   public getOperations$ = createEffect(() =>
     this.actions$.pipe(

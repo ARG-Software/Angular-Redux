@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import * as loadingActions from "../../../../main/actions/loading.actions";
 import * as fromMain from "../../../../main/main.reducers.index";
 import * as fromModule from "../../products.reducers.index";
@@ -34,6 +34,11 @@ import { IMoteService } from "src/app/api/services/interfaces/core/imote.service
 
 @Injectable()
 export class ConfigureMotesEffects {
+  private actions$ = inject(Actions);
+  private moteService = inject<IMoteService>(IMoteService);
+  private moduleStore$ = inject<Store<fromModule.ProductState>>(Store);
+  private mainStore$ = inject<Store<fromMain.MainState>>(Store);
+
   public getMotes$ = createEffect(() =>
     this.actions$.pipe(
       ofType<ConfigureActions>(ConfigurationActionTypes.GetMotes),
@@ -110,11 +115,4 @@ export class ConfigureMotesEffects {
       )
     )
   );
-
-  constructor(
-    private actions$: Actions,
-    private moteService: IMoteService,
-    private moduleStore$: Store<fromModule.ProductState>,
-    private mainStore$: Store<fromMain.MainState>
-  ) {}
 }

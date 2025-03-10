@@ -1,6 +1,6 @@
 import { APP_CONFIG } from "../../app.config";
 import { UserModelUI } from "../models/auth.models";
-import { Injectable, Inject, Injector, inject } from "@angular/core";
+import { Injectable, Injector, inject } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Router } from "@angular/router";
 import { EMPTY, of } from "rxjs";

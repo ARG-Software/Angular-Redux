@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { catchError, finalize, map, switchMap, tap } from "rxjs/operators";
@@ -21,8 +21,8 @@ import { ISettingsService } from "src/app/api/services/interfaces/core/isettings
 
 @Injectable()
 export class SettingsEffects {
+  private actions$ = inject(Actions);
   constructor(
-    private actions$: Actions,
     private settingsService: ISettingsService,
     private mainStore$: Store<fromMain.MainState>
   ) {}
