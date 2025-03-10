@@ -69,22 +69,18 @@ export function reducer(
  * @param obj object with the messaging Id and with the new option
  */
 export function updateOptionLoadData(messagingData: any[], obj: any) {
-  const messagingToUpdate = Object.assign(
-    {},
-    messagingData.find((elem) => {
-      return elem.Id === obj.Id;
-    })
+  return messagingData.map((message) =>
+    message.Id === obj.Id
+      ? {
+          ...message,
+          Options: message.Options.map((option) => ({
+            ...option,
+            selected: option.value === obj.Option.value,
+          })),
+        }
+      : message
   );
-
-  messagingToUpdate["Options"].forEach((elem: any) => {
-    elem.value === obj.Option.value
-      ? (elem.selected = true)
-      : (elem.selected = false);
-  });
-
-  return messagingData;
 }
-
 /**
  * Update array with messagings with the new selected option
  * @param messagingToSave state with messagings to save
