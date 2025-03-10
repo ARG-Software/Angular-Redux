@@ -85,7 +85,13 @@ export class ProcessDetailComponent implements OnInit {
    * @param pageNumber the numer of the page that we want
    */
   protected requestNewPage(pageNumber: number) {
-    this.request.Paging.CurrentIndex = pageNumber - 1;
+    this.request = {
+      ...this.request,
+      Paging: {
+        ...this.request.Paging,
+        CurrentIndex: pageNumber - 1,
+      },
+    };
     this.store.dispatch(new GetProcessDetailData(this.request));
   }
 
