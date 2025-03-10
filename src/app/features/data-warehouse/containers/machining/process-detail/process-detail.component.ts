@@ -94,7 +94,10 @@ export class ProcessDetailComponent implements OnInit {
    * @param filters new selected filters
    */
   protected filtersOptions(filters: any) {
-    this.request.Filters = filters;
+    this.request = {
+      ...this.request,
+      Filters: { ...filters },
+    };
     this.store.dispatch(new GetProcessDetailData(this.request));
   }
 }
