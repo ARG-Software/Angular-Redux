@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { of } from "rxjs";
@@ -25,11 +25,10 @@ import { IMessagingService } from "src/app/api/services/interfaces/core/producti
 
 @Injectable()
 export class MessagingEffects {
-  constructor(
-    private actions$: Actions,
-    private mainStore$: Store<fromMain.MainState>,
-    private messagingService: IMessagingService
-  ) {}
+  private actions$ = inject(Actions);
+  private mainStore$ = inject<Store<fromMain.MainState>>(Store);
+
+  constructor(private messagingService: IMessagingService) {}
 
   getMessagingData$ = createEffect(() =>
     this.actions$.pipe(

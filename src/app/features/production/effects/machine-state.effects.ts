@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { catchError, finalize, map, switchMap, tap } from "rxjs/operators";
@@ -26,11 +26,10 @@ import { IMachineStateService } from "src/app/api/services/interfaces/core/produ
 
 @Injectable()
 export class MachineStateEffects {
-  constructor(
-    private actions$: Actions,
-    private mainStore$: Store<fromMain.MainState>,
-    private machineStateService: IMachineStateService
-  ) {}
+  private actions$ = inject(Actions);
+  private mainStore$ = inject<Store<fromMain.MainState>>(Store);
+
+  constructor(private machineStateService: IMachineStateService) {}
 
   getMachineStateData$ = createEffect(() =>
     this.actions$.pipe(
