@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { of } from "rxjs";
@@ -27,11 +27,12 @@ import { MimsSelectBoxModel } from "src/app/mims-ui/input/select-box/models/sele
 
 @Injectable()
 export class ProcessDetailEffects {
+  private actions$ = inject(Actions);
+  private mainStore$ = inject<Store<fromMain.MainState>>(Store);
+
   constructor(
     private processDetailService: IProcessDetailMachiningService,
-    private machineService: IMachineService,
-    private actions$: Actions,
-    private mainStore$: Store<fromMain.MainState>
+    private machineService: IMachineService
   ) {}
 
   public getProcessDetailData$ = createEffect(() =>

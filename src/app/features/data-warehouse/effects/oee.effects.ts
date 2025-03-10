@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 
@@ -33,12 +33,13 @@ import { IProductService } from "src/app/api/services/interfaces/core/iproduct.s
 
 @Injectable()
 export class OeeEffects {
+  private actions$ = inject(Actions);
+  private mainStore$ = inject<Store<fromMain.MainState>>(Store);
+
   constructor(
     private oeeService: IOeeMachiningService,
     private machineService: IMachineService,
-    private productService: IProductService,
-    private actions$: Actions,
-    private mainStore$: Store<fromMain.MainState>
+    private productService: IProductService
   ) {}
 
   public getOeeData$ = createEffect(() =>
