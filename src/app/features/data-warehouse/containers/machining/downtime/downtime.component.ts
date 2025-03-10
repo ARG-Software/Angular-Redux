@@ -96,7 +96,10 @@ export class DowntimeComponent implements OnInit {
    * @param filters new selected filters
    */
   public filtersOptions(filters: any) {
-    this.request.Filters = filters;
+    this.request = {
+      ...this.request,
+      Filters: { ...filters },
+    };
     this.store.dispatch(new GetDowntimeData(this.request));
   }
 }
