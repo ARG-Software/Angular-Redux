@@ -17,7 +17,7 @@ import { MimsUiUtilsService } from "../../../mims-ui.utils.service";
 export class VerticalChartBarComponent implements OnChanges {
   public hasContent = false;
   public multi: any[] = [];
-  public view: any[] = [400, 400];
+  public view: [number, number] = [400, 400];
 
   public showXAxis = true;
   public showYAxis = true;
@@ -25,9 +25,13 @@ export class VerticalChartBarComponent implements OnChanges {
   public showXAxisLabel = true;
   public xAxisLabel = "Machine";
   public showYAxisLabel = true;
-  public colorScheme = {
+  public colorScheme: any = {
     domain: ["#5AA454", "#A10A28", "#C7B42C", "#AAAAAA"],
+    name: "custom",
+    selectable: true,
+    group: "Ordinal",
   };
+
   @Input() public data: any[] = [];
 
   public constructor(private mimsUIUtilServices: MimsUiUtilsService) {}
