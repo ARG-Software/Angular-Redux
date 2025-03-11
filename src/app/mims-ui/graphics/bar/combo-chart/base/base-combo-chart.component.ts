@@ -15,6 +15,7 @@ import {
   BaseChartComponent,
   Color,
   LineSeriesComponent,
+  Orientation,
   ScaleType,
   ViewDimensions,
 } from "@swimlane/ngx-charts";
@@ -61,6 +62,7 @@ export class BaseComboChartComponent
   @Input() public yLeftAxisScaleFactor: any;
   @Input() public yRightAxisScaleFactor: any;
   @Input() public rangeFillOpacity: number = 0;
+  @Input() public clipPath: string = "";
 
   @Output() public activate: EventEmitter<any> = new EventEmitter();
   @Output() public deactivate: EventEmitter<any> = new EventEmitter();
@@ -81,7 +83,7 @@ export class BaseComboChartComponent
   public xAxisHeight: number = 0;
   public yAxisWidth: number = 0;
   public legendOptions: any;
-  public scaleType = "linear";
+  public scaleType: ScaleType = ScaleType.Linear;
   public xScaleLine: any;
   public yScaleLine: any;
   public xDomainLine: any;
@@ -92,8 +94,8 @@ export class BaseComboChartComponent
   public xSet: any;
   public filteredDomain: any;
   public hoveredVertical: any;
-  public yOrientLeft = "left";
-  public yOrientRight = "right";
+  public yOrientLeft: Orientation = Orientation.Left;
+  public yOrientRight: Orientation = Orientation.Right;
   public legendSpacing = 0;
   public bandwidth: any;
   public barPadding = 8;
@@ -208,7 +210,7 @@ export class BaseComboChartComponent
     return false;
   }
 
-  public getScaleType(values: any): string {
+  public getScaleType(values: any): ScaleType {
     let date = true;
     let num = true;
 
@@ -223,12 +225,12 @@ export class BaseComboChartComponent
     }
 
     if (date) {
-      return "time";
+      return ScaleType.Time;
     }
     if (num) {
-      return "linear";
+      return ScaleType.Linear;
     }
-    return "ordinal";
+    return ScaleType.Ordinal;
   }
 
   public getXDomainLine(): any[] {
@@ -357,8 +359,8 @@ export class BaseComboChartComponent
     }
   }
 
-  public onClick(data: any) {
-    this.select.emit(data);
+  public onClick(data: any, series?: any): void {
+    this.select.emit({ data, series });
   }
 
   public setColors(): void {
