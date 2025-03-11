@@ -63,12 +63,17 @@ export class SelectBoxComponent
     }
   }
 
-  public onSelectValue(selectedValue: number) {
-    const selectedItem = this.data.find((elem) => {
-      // tslint:disable-next-line:triple-equals
-      return elem.value == selectedValue;
-    }) as MimsSelectBoxModel;
-    this.value = selectedItem;
-    this.changed.emit(selectedItem);
+  public onSelectValue(event: Event) {
+    const target = event.target as HTMLSelectElement;
+    if (target) {
+      const selectedValue = target.value;
+      const selectedItem = this.data.find(
+        (elem) => elem.value == selectedValue
+      );
+      if (selectedItem) {
+        this.value = selectedItem;
+        this.changed.emit(selectedItem);
+      }
+    }
   }
 }

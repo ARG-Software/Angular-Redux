@@ -1,11 +1,14 @@
-<div class="select" [ngStyle]="{'display': display!='undefined' ? display:'block'}">
-  <select [(ngModel)]="selected" 
-    (change)="onSelectValue($event.target.value)"
-    #change
+<div
+  class="select"
+  [ngStyle]="{ display: display != 'undefined' ? display : 'block' }"
+>
+  <select
+    [(ngModel)]="selected"
+    (change)="onSelectValue($event)"
     [attr.disabled]="disable ? 'disabled' : null"
-    >
-    <ng-container *ngFor="let item of data;">
-      <option value="{{item.value}}" [title]="item.name">{{item.name}}</option>
+  >
+    <ng-container *ngFor="let item of data">
+      <option [value]="item.value" [title]="item.name">{{ item.name }}</option>
     </ng-container>
   </select>
 </div>
