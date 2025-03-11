@@ -17,7 +17,7 @@ export interface OverviewState {
 
 export const initialState: OverviewState = {
   downTimeRecordChartData: undefined,
-  machineOperationTableData: undefined,
+  machineOperationTableData: [],
   machineOperationTableColumns: ["AssetNumber", "OEE", "MDE"],
   machineOperationsTableHeaderName: ["Asset", "OEE", "MDE"],
 };
@@ -34,7 +34,7 @@ export function reducer(
       return { ...state, downTimeRecordChartData: chartData };
     }
     case OverviewActionTypes.GetMachineOperationTableSuccess: {
-      const tableDataPayload = action.payload;
+      const tableDataPayload = action.payload || [];
       return { ...state, machineOperationTableData: tableDataPayload };
     }
     default:

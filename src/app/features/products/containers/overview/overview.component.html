@@ -81,7 +81,7 @@
       [headerName]="headerNames$ | async"
       [pageSize]="5"
       [columName]="columnNames$ | async"
-      [rowData]="tableData$ | async"
+      [rowData]="(tableData$ | async) ?? []"
     >
     </mims-data-grid>
   </div>

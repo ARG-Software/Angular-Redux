@@ -1,4 +1,4 @@
-import { Observable } from "rxjs";
+import { Observable, startWith } from "rxjs";
 import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { Store, select } from "@ngrx/store";
 import * as fromModule from "./../../products.reducers.index";
@@ -8,6 +8,7 @@ import {
   MachineOperationsRequestModel,
   DownTimeRecordChartModel,
 } from "../../models/overview.models";
+import { DataGridCellModel } from "src/app/mims-ui/tables/data-grid/models/data-grid-cell.model";
 
 @Component({
   standalone: false,
@@ -139,7 +140,7 @@ export class OverviewComponent implements OnInit {
   public gaugeLabels = ["20-30", "30-40", "50-Inspect", "Inspect-Dowa"];
 
   public chartData$: Observable<DownTimeRecordChartModel[]>;
-  public tableData$: Observable<object>;
+  public tableData$: Observable<DataGridCellModel[]>;
   public headerNames$: Observable<string[]>;
   public columnNames$: Observable<string[]>;
   private date = new Date();
@@ -165,7 +166,8 @@ export class OverviewComponent implements OnInit {
       select(fromModule.getDownTimeRecordChart)
     );
     this.tableData$ = this.store.pipe(
-      select(fromModule.getMachineOpertationTableData)
+      select(fromModule.getMachineOperationTableData),
+      startWith([] as DataGridCellModel[])
     );
     this.headerNames$ = this.store.pipe(
       select(fromModule.getMachineOperationsTableHeaderName)

@@ -2,6 +2,8 @@ import * as fromOverviewReducerDefinition from "./reducers/overview.reducers";
 import * as fromSettingsReducerDefinition from "./reducers/settings.reducers";
 import * as fromConfigureReducerDefiniton from "./reducers/configure.reducers";
 import { createSelector, createFeatureSelector } from "@ngrx/store";
+import { OverviewState } from "./reducers/overview.reducers";
+import { DataGridCellModel } from "src/app/mims-ui/tables/data-grid/models/data-grid-cell.model";
 
 export const reducerName = "products";
 
@@ -31,9 +33,10 @@ export const getDownTimeRecordChart = createSelector(
   fromOverviewReducerDefinition.getDownTimeRecordChartData
 );
 
-export const getMachineOpertationTableData = createSelector(
+export const getMachineOperationTableData = createSelector(
   getOverviewState,
-  fromOverviewReducerDefinition.getMachineOperationTableData
+  (state: OverviewState): DataGridCellModel[] =>
+    (state?.machineOperationTableData as DataGridCellModel[]) ?? []
 );
 
 export const getMachineOperationTableColumns = createSelector(
