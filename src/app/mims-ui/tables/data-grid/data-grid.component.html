@@ -1,18 +1,24 @@
-<clr-datagrid >
-    <clr-dg-column *ngFor="let headerName of headerName">
-        {{ headerName }}
-    </clr-dg-column>
-    
-    <clr-dg-row *clrDgItems=" let data of rowData">
-        <ng-container *ngFor=" let column of columName">
-            <clr-dg-cell>{{data[column]}}</clr-dg-cell>
-        </ng-container>
-    </clr-dg-row>
-    <clr-dg-footer>
-        <ng-container *ngIf="rowData!==null && rowData!==undefined">
-        <ng-container *ngIf="rowData.length > pageSize && hasPagination">
-            <mims-pagination (OnChangePage)="OnChangePage($event)" [hasNavigation]="true" [hasBoundary]="true" [numItems]="totalItems" [itemsPerPage]="pageSize"></mims-pagination>
-        </ng-container>
+<clr-datagrid>
+  <clr-dg-column *ngFor="let headerName of headerName">
+    {{ headerName }}
+  </clr-dg-column>
+
+  <clr-dg-row *clrDgItems="let data of rowData">
+    <ng-container *ngFor="let column of columName">
+      <clr-dg-cell>{{ (data as any)[column]?.value }}</clr-dg-cell>
     </ng-container>
-    </clr-dg-footer>
+  </clr-dg-row>
+  <clr-dg-footer>
+    <ng-container *ngIf="rowData !== null && rowData !== undefined">
+      <ng-container *ngIf="rowData.length > pageSize && hasPagination">
+        <mims-pagination
+          (OnChangePage)="OnChangePage($event)"
+          [hasNavigation]="true"
+          [hasBoundary]="true"
+          [numItems]="totalItems"
+          [itemsPerPage]="pageSize"
+        ></mims-pagination>
+      </ng-container>
+    </ng-container>
+  </clr-dg-footer>
 </clr-datagrid>
