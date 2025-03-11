@@ -12,11 +12,10 @@ import { reducers, reducerName } from "./auth.reducers.index";
 import { LogoutComponent } from "./containers/logout.component";
 
 const routes: Routes = [
-  { path: "", component: LoginComponent },
   { path: "login", component: LoginComponent },
   { path: "logout", component: LogoutComponent },
   {
-    path: "main",
+    path: "",
     //TODO activate this
     //canActivate: [AuthGuard],
     loadChildren: () => import("../main/main.module").then((m) => m.MainModule),
