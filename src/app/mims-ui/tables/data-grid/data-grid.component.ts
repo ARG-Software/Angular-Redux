@@ -32,4 +32,8 @@ export class DataGridComponent {
   public OnChangePage(pageNumber: number) {
     this.changePagination.emit(pageNumber);
   }
+
+  public getCellValue(data: any, column: string): any {
+    return data && data[column] ? data[column].value : "";
+  }
 }

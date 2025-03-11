@@ -5,7 +5,7 @@
 
   <clr-dg-row *clrDgItems="let data of rowData">
     <ng-container *ngFor="let column of columName">
-      <clr-dg-cell>{{ (data as any)[column]?.value }}</clr-dg-cell>
+      <clr-dg-cell> {{ getCellValue(data, column) }} </clr-dg-cell>
     </ng-container>
   </clr-dg-row>
   <clr-dg-footer>
