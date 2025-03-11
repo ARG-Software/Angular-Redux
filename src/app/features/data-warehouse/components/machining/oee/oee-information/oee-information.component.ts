@@ -21,13 +21,13 @@ import { PagingModelUI } from "src/app/app.models";
 export class OeeInformationComponent {
   @Input() public chartData: OeeChartDataModelUI[];
   @Input() public tableData: OeeTableDataModelUI[];
-  @Input() private paginationDetails: PagingModelUI;
-  @Input() private chartSize: any;
-  @Input() private tableHeaders: any;
+  @Input() public paginationDetails: PagingModelUI;
+  @Input() public chartSize: any;
+  @Input() public tableHeaders: any;
 
   @Output() private changePage: EventEmitter<number> = new EventEmitter();
 
-  private changePagination(pageNumber: number) {
+  public changePagination(pageNumber: number) {
     this.changePage.emit(pageNumber);
   }
 }

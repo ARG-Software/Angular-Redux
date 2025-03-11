@@ -27,7 +27,7 @@ export class MachineStateInformationComponent {
   /**
    * Emit machineId with the new selected option
    */
-  private selectBoxChange(option: MimsSelectBoxModel, machineId: number) {
+  public selectBoxChange(option: MimsSelectBoxModel, machineId: number) {
     this.changedMachineEmitter.emit({
       Id: machineId,
       Option: option,

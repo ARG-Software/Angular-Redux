@@ -18,18 +18,18 @@ import { PagingModelUI } from "src/app/app.models";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProcessDetailInformationComponent {
-  @Input() protected chartData: ProcessDetailChartModelUI[];
-  @Input() protected tableData: ProcessDetailTableModelUI[];
-  @Input() protected chartSize: any;
-  @Input() protected tableHeaders: any;
-  @Input() protected columnNames: any;
-  @Input() protected paginationDetails: PagingModelUI;
+  @Input() public chartData: ProcessDetailChartModelUI[];
+  @Input() public tableData: ProcessDetailTableModelUI[];
+  @Input() public chartSize: any;
+  @Input() public tableHeaders: any;
+  @Input() public columnNames: any;
+  @Input() public paginationDetails: PagingModelUI;
 
   @Output() protected changePage: EventEmitter<number> = new EventEmitter();
 
   protected startDate = new Date("2018-11-08T00:00:00");
 
-  private changePagination(pageNumber: number) {
+  public changePagination(pageNumber: number) {
     this.changePage.emit(pageNumber);
   }
 }

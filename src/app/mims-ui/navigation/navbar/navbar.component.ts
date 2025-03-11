@@ -22,7 +22,7 @@ export class NavbarComponent implements OnInit {
   public contextMenu: NavBarContextItemModel[];
   public settings: NavBarSettingsModel;
   @Output() public navigate = new EventEmitter();
-  @Input() private menuPath: string;
+  @Input() public menuPath: string;
   private menuSubscription: Subscription;
 
   public constructor(

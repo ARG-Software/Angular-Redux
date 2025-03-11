@@ -10,6 +10,7 @@ import {
   ComboChartDataModelUI,
 } from "../../../../models/downtime.models";
 import { PagingModelUI } from "src/app/app.models";
+import { DataGridCellModel } from "src/app/mims-ui/tables/data-grid/models/data-grid-cell.model";
 
 @Component({
   standalone: false,
@@ -20,14 +21,24 @@ import { PagingModelUI } from "src/app/app.models";
 export class DowntimeInformationComponent {
   @Output() public changePage: EventEmitter<number> = new EventEmitter();
 
-  @Input() protected chartData: ComboChartDataModelUI;
-  @Input() protected tableData: DowntimeTableDataModelUI[];
-  @Input() protected chartColors: any;
-  @Input() protected chartSize: any;
-  @Input() protected tableHeaders: any;
-  @Input() protected paginationDetails: PagingModelUI;
+  @Input() public chartData: ComboChartDataModelUI;
+  @Input() public tableData: DowntimeTableDataModelUI[];
+  @Input() public chartColors: any;
+  @Input() public chartSize: any;
+  @Input() public tableHeaders: any;
+  @Input() public paginationDetails: PagingModelUI;
 
   public changePagination(pageNumber: number) {
     this.changePage.emit(pageNumber);
+  }
+
+  get formattedTableData(): DataGridCellModel[] {
+    return (
+      this.tableData?.flatMap((item) => [
+        { value: item.Machine },
+        { value: item.Downtime },
+        { value: item.Instances },
+      ]) ?? []
+    );
   }
 }

@@ -21,7 +21,7 @@ import { SideBarItemModel } from "./models/item.model";
 export class VerticalNavComponent implements OnInit {
   public menu: any[];
   @Output() public navigate = new EventEmitter();
-  @Input() private menuPath: string;
+  @Input() public menuPath: string;
   private menuSubscription: Subscription;
   public constructor(
     private sideBarService: CommonNavigationService,

@@ -1,20 +1,26 @@
 <div class="row">
-    <div class="col-lg-12" *ngIf="chartData.Bar.length > 0 || chartData.Line.length > 0">
-        <combo-chart-vertical
-            [scheme]="chartColors"
-            [results]="chartData"
-            [view]="chartSize">
-        </combo-chart-vertical>
-    </div>
+  <div
+    class="col-lg-12"
+    *ngIf="chartData.Bar.length > 0 || chartData.Line.length > 0"
+  >
+    <combo-chart-vertical
+      [scheme]="chartColors"
+      [results]="chartData"
+      [view]="chartSize"
+    >
+    </combo-chart-vertical>
+  </div>
 </div>
 <div class="row">
-    <div class="col-lg-12">
-        <mims-data-grid [rowData]="tableData"
-                        [headerName]="tableHeaders"
-                        [columName]="tableHeaders"
-                        [pageSize]="paginationDetails.HowManyPerPage"
-                        [totalItems]="paginationDetails.Total"
-                        (changePagination)="changePagination($event)">
-        </mims-data-grid>
-    </div>
+  <div class="col-lg-12">
+    <mims-data-grid
+      [rowData]="formattedTableData"
+      [headerName]="tableHeaders"
+      [columName]="tableHeaders"
+      [pageSize]="paginationDetails.HowManyPerPage"
+      [totalItems]="paginationDetails.Total"
+      (changePagination)="changePagination($event)"
+    >
+    </mims-data-grid>
+  </div>
 </div>
