@@ -7,7 +7,11 @@ import {
   OnChanges,
   Output,
 } from "@angular/core";
-import { formatLabel } from "@swimlane/ngx-charts";
+import {
+  BarOrientation,
+  formatLabel,
+  PlacementTypes,
+} from "@swimlane/ngx-charts";
 
 @Component({
   standalone: false,
@@ -39,7 +43,9 @@ export class ComboSeriesVerticalComponent implements OnChanges {
   @Input() public activeEntries: any[];
   @Input() public seriesName: string;
   @Input() public animations: boolean = true;
-
+  @Input() public orientation: BarOrientation = "vertical" as BarOrientation;
+  @Input() public tooltipPlacement: PlacementTypes = "top" as PlacementTypes;
+  @Input() public tooltipType: any = "tooltip";
   @Output() public select = new EventEmitter();
   @Output() public activate = new EventEmitter();
   @Output() public deactivate = new EventEmitter();
@@ -180,5 +186,9 @@ export class ComboSeriesVerticalComponent implements OnChanges {
 
   public trackBy(_index: any, bar: any): string {
     return bar.label;
+  }
+
+  public onClick(event: any): void {
+    this.select.emit(event);
   }
 }
