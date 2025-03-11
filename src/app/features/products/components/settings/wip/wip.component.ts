@@ -7,7 +7,7 @@ import {
   Output,
   SimpleChanges,
 } from "@angular/core";
-import { FormBuilder, FormGroup } from "@angular/forms";
+import { FormArray, FormBuilder, FormGroup } from "@angular/forms";
 import { WipDataModelUI } from "../../../models/settings.models";
 
 @Component({
@@ -53,5 +53,9 @@ export class WipComponent implements OnChanges {
 
   public saveNewWipData() {
     this.wipDataEmitter.emit(this.wipForm.value.wip);
+  }
+
+  get wipControls(): FormArray {
+    return this.wipForm.get("wip") as FormArray;
   }
 }

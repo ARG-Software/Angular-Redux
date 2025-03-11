@@ -1,22 +1,31 @@
 <form [formGroup]="wipForm">
-    <section class="form-block">
-        <div class="row">
-            <div class="col-lg-3">
-                <h3 class="space-up-down-s">WIP</h3>
-            </div>
-            <div class="col-lg-6" style="margin-top: 2%;">
-                <mims-button-outline buttonsize="small" [buttontype]="'info'" [value]="'Reset'" (click)="saveNewWipData()"></mims-button-outline>
-            </div>
+  <section class="form-block">
+    <div class="row">
+      <div class="col-lg-3">
+        <h3 class="space-up-down-s">WIP</h3>
+      </div>
+      <div class="col-lg-6" style="margin-top: 2%">
+        <mims-button-outline
+          buttonsize="small"
+          [buttontype]="'info'"
+          [value]="'Reset'"
+          (click)="saveNewWipData()"
+        ></mims-button-outline>
+      </div>
+    </div>
+    <div formArrayName="wip">
+      <div
+        class="form-group row"
+        *ngFor="let w of wipControls.controls; let i = index"
+        [formGroupName]="i"
+      >
+        <div class="col-lg-4">
+          <mims-label text="{{ wipData[i].Name }}"></mims-label>
         </div>
-        <div formArrayName="wip">
-            <div class="form-group row" *ngFor="let w of wipForm?.controls.wip?.controls; let i=index" [formGroupName]="i">
-                <div class="col-lg-4">
-                    <mims-label text="{{ wipData[i].Name }}"></mims-label>
-                </div>
-                <div class="col">
-                    <mims-input size="3" formControlName="Count"></mims-input>
-                </div>
-            </div>
+        <div class="col">
+          <mims-input [size]="3" formControlName="Count"></mims-input>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 </form>
