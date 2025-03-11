@@ -25,15 +25,18 @@ export class LineChartComponent implements OnInit, OnChanges {
   public showYAxisLabel = true;
   public xAxisLabel: any;
   public yAxisLabel: any;
-  public colorScheme = {
+  public colorScheme: any = {
     domain: ["#5AA454", "#A10A28", "#C7B42C", "#AAAAAA"],
+    name: "custom",
+    selectable: true,
+    group: "Ordinal",
   };
   public autoScale = true;
   public hasContent = false;
   @Input() public data: any[];
   @Input() public xLabelName: string;
   @Input() public yLabelName: string;
-  @Input() public view: any[] = [700, 400];
+  @Input() public view: [number, number] = [700, 400];
 
   public constructor(private mimsUIUtilServices: MimsUiUtilsService) {}
 
