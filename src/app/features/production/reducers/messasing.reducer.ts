@@ -73,7 +73,7 @@ export function updateOptionLoadData(messagingData: any[], obj: any) {
     message.Id === obj.Id
       ? {
           ...message,
-          Options: message.Options.map((option) => ({
+          Options: message.Options.map((option: any) => ({
             ...option,
             selected: option.value === obj.Option.value,
           })),
