@@ -10,6 +10,7 @@ import {
   ProcessDetailTableModelUI,
 } from "../../../../models/process-detail.models";
 import { PagingModelUI } from "src/app/app.models";
+import { DataGridCellModel } from "src/app/mims-ui/tables/data-grid/models/data-grid-cell.model";
 
 @Component({
   standalone: false,
@@ -31,5 +32,14 @@ export class ProcessDetailInformationComponent {
 
   public changePagination(pageNumber: number) {
     this.changePage.emit(pageNumber);
+  }
+
+  public get formattedTableData(): DataGridCellModel[] {
+    return (
+      this.tableData?.map((row) => ({
+        value: row.MachineState,
+        otherProperty: row.Reason,
+      })) ?? []
+    );
   }
 }

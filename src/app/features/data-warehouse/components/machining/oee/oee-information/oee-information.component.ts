@@ -10,6 +10,7 @@ import {
   OeeChartDataModelUI,
 } from "../../../../models/oee.models";
 import { PagingModelUI } from "src/app/app.models";
+import { DataGridCellModel } from "src/app/mims-ui/tables/data-grid/models/data-grid-cell.model";
 
 @Component({
   standalone: false,
@@ -29,5 +30,16 @@ export class OeeInformationComponent {
 
   public changePagination(pageNumber: number) {
     this.changePage.emit(pageNumber);
+  }
+
+  public get formattedTableData(): DataGridCellModel[] {
+    return (
+      this.tableData?.map((row) => ({
+        value: row.Product,
+        availability: row.Availability.toString(),
+        production: row.Production.toString(),
+        quality: row.Quality.toString(),
+      })) ?? []
+    );
   }
 }

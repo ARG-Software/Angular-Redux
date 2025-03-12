@@ -1,21 +1,24 @@
 <div class="row">
-    <div class="col-lg-12" *ngIf="chartData.length > 0">
-        <mims-stacked-horizontal-bar-chart [data]="chartData"
-                                           [view]="chartSize"
-                                           [startDate]="startDate"
-                                           [timeline]="true"
-                                           >
-        </mims-stacked-horizontal-bar-chart>
-    </div>
+  <div class="col-lg-12" *ngIf="chartData.length > 0">
+    <mims-stacked-horizontal-bar-chart
+      [data]="chartData"
+      [view]="chartSize"
+      [startDate]="startDate"
+      [timeline]="true"
+    >
+    </mims-stacked-horizontal-bar-chart>
+  </div>
 </div>
 <div class="row">
-    <div class="col-lg-12" *ngIf="tableData.length > 0">
-        <mims-data-grid [rowData]="tableData"
-                        [headerName]="tableHeaders"
-                        [columName]="columnNames"
-                        [pageSize]="paginationDetails.HowManyPerPage"
-                        [totalItems]="paginationDetails.Total"
-                        (changePagination)="changePagination($event)">   
-        </mims-data-grid>
-    </div>
+  <div class="col-lg-12" *ngIf="tableData.length > 0">
+    <mims-data-grid
+      [rowData]="formattedTableData"
+      [headerName]="tableHeaders"
+      [columName]="columnNames"
+      [pageSize]="paginationDetails.HowManyPerPage"
+      [totalItems]="paginationDetails.Total"
+      (changePagination)="changePagination($event)"
+    >
+    </mims-data-grid>
+  </div>
 </div>

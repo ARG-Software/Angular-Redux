@@ -16,7 +16,7 @@ import { MimsUiUtilsService } from "../../../mims-ui.utils.service";
 export class StackedHorizontalBarChartComponent implements OnChanges {
   public hasContent = false;
 
-  public view: [number, number] = [400, 400];
+  @Input() public view: [number, number] = [400, 400];
   @Input() public data: any[];
   @Input() public showXAxis = true;
   @Input() public showYAxis = true;

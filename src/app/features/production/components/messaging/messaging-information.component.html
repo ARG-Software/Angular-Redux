@@ -1,61 +1,64 @@
 <div class="row">
-    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
-        <mims-table>
-            <tbody>
-                <tr *ngFor="let message of messagingData">
-                    <td>
-                        <mims-checkbox [label]="message.name"
-                                       [data]="message.Id"
-                                       (OnChangeSaveInformation)="checkboxChange($event)">
-                        </mims-checkbox>
-                    </td>
-                    <td class="left">
-                        <h4 class="remove-margin">
-                            {{ message.DowntimeName }}
-                        </h4>
-                    </td>
-                    <td class="left">
-                        <h4 class="remove-margin">
-                            {{ message.Duration }}
-                            <clr-icon shape="clock" class="is-error" size="36"></clr-icon>
-                        </h4>
-                    </td>
-                    <td>
-                        <div class="row flex-items-lg-left add-margin-top">
-                            <div class="col-lg-3">
-                                <div class="row flex-items-lg-left">
-                                    <div class="h4-grey col-lg-4">
-                                        Start:
-                                    </div>
-                                    <div class="col-lg-8">
-                                        {{ message.StartTime }}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-3">
-                                <div class="row flex-items-lg-left">
-                                    <div class="h4-grey col-lg-4">
-                                        End:
-                                    </div>
-                                    <div class="col-lg-8">
-                                        {{ message.EndTime }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <mims-select-box [data]="message.Options"
-                                         (changed)="selectboxChange($event, message.Id)">
-                        </mims-select-box>
-                    </td>
-                </tr>
-            </tbody>
-        </mims-table>
-    </div>
+  <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    <mims-table>
+      <tbody>
+        <tr *ngFor="let message of messagingData">
+          <td>
+            <mims-checkbox
+              [label]="message.DowntimeName"
+              [data]="message.Id"
+              (OnChangeSaveInformation)="checkboxChange($event)"
+            >
+            </mims-checkbox>
+          </td>
+          <td class="left">
+            <h4 class="remove-margin">
+              {{ message.DowntimeName }}
+            </h4>
+          </td>
+          <td class="left">
+            <h4 class="remove-margin">
+              {{ message.Duration }}
+              <clr-icon shape="clock" class="is-error" size="36"></clr-icon>
+            </h4>
+          </td>
+          <td>
+            <div class="row flex-items-lg-left add-margin-top">
+              <div class="col-lg-3">
+                <div class="row flex-items-lg-left">
+                  <div class="h4-grey col-lg-4">Start:</div>
+                  <div class="col-lg-8">
+                    {{ message.StartTime }}
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-3">
+                <div class="row flex-items-lg-left">
+                  <div class="h4-grey col-lg-4">End:</div>
+                  <div class="col-lg-8">
+                    {{ message.EndTime }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td>
+            <mims-select-box
+              [data]="message.Options"
+              (changed)="selectboxChange($event, message.Id)"
+            >
+            </mims-select-box>
+          </td>
+        </tr>
+      </tbody>
+    </mims-table>
+  </div>
 </div>
 <div class="row flex-items-xs-right">
-    <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">
-        <mims-button-solid (click)="submitChanges()" [value]="buttonText"></mims-button-solid>
-    </div>
+  <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">
+    <mims-button-solid
+      (click)="submitChanges()"
+      [value]="buttonText"
+    ></mims-button-solid>
+  </div>
 </div>
