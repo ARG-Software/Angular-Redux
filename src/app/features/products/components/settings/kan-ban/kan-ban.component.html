@@ -1,31 +1,60 @@
 <form [formGroup]="kanBanForm">
-    <section class="form-block">
-        <div class="row">
-            <div class="col-lg-6">
-                <h3 class="space-up-down-s">Kan-Ban Limits</h3>
-            </div>
-            <div class="col-lg-1 kanban-reset-button">
-                <mims-button-outline buttonsize="small" [buttontype]="'info'" [value]="'Reset'" (click)="saveNewKanBanData()"></mims-button-outline>
-            </div>
+  <section class="form-block">
+    <div class="row">
+      <div class="col-lg-6">
+        <h3 class="space-up-down-s">Kan-Ban Limits</h3>
+      </div>
+      <div class="col-lg-1 kanban-reset-button">
+        <mims-button-outline
+          buttonsize="small"
+          [buttontype]="'info'"
+          [value]="'Reset'"
+          (click)="saveNewKanBanData()"
+        >
+        </mims-button-outline>
+      </div>
+    </div>
+    <div formArrayName="kanBan">
+      <div
+        class="form-group row"
+        *ngFor="let kanban of kanBanControls.controls; let i = index"
+        [formGroupName]="i"
+      >
+        <div class="col-lg-2">
+          <mims-label
+            class="space-between-s"
+            text="{{ kanBanData[i].Name }}"
+          ></mims-label>
         </div>
-        <div formArrayName="kanBan">
-            <div class="form-group row" *ngFor="let kanban of kanBanForm?.controls?.kanBan?.controls; let i = index" [formGroupName]="i">
-                <div class="col-lg-2">
-                    <mims-label class="space-between-s" text="{{kanBanData[i].Name}}"></mims-label>
-                </div>
-                <div class="col-lg-1" style="margin-right: 20px">
-                    <mims-input class="space-right-s" size="3" formControlName="LowAlertLowWarning"></mims-input>
-                </div>
-                <div class="col-lg-1" style="margin-right: 20px">
-                    <mims-input class="space-right-s" size="3" formControlName="LowWarningTarget"></mims-input>
-                </div>
-                <div class="col-lg-1" style="margin-right: 20px">
-                    <mims-input class="space-right-s" size="3" formControlName="TargetHighWarning"></mims-input>
-                </div>
-                <div class="col-lg-1">
-                    <mims-input class="space-right-s" size="3" formControlName="HighWarningHighAlert"></mims-input>
-                </div>
-            </div>
+        <div class="col-lg-1" style="margin-right: 20px">
+          <mims-input
+            class="space-right-s"
+            [size]="3"
+            formControlName="LowAlertLowWarning"
+          ></mims-input>
         </div>
-    </section>
+        <div class="col-lg-1" style="margin-right: 20px">
+          <mims-input
+            class="space-right-s"
+            [size]="3"
+            formControlName="LowWarningTarget"
+          ></mims-input>
+        </div>
+        <div class="col-lg-1" style="margin-right: 20px">
+          <mims-input
+            class="space-right-s"
+            [size]="3"
+            formControlName="TargetHighWarning"
+          ></mims-input>
+        </div>
+        <div class="col-lg-1">
+          <mims-input
+            class="space-right-s"
+            [size]="3"
+            formControlName="HighWarningHighAlert"
+          ></mims-input>
+        </div>
+      </div>
+    </div>
+  </section>
 </form>

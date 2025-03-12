@@ -7,7 +7,7 @@ import {
   Output,
   SimpleChanges,
 } from "@angular/core";
-import { FormBuilder, FormGroup } from "@angular/forms";
+import { FormArray, FormBuilder, FormGroup } from "@angular/forms";
 
 import { KanbanDataModelUI } from "../../../models/settings.models";
 
@@ -29,9 +29,16 @@ export class KanBanComponent implements OnChanges {
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
-    if (changes["kanBanData"].currentValue) {
+    if (changes["kanBanData"] && changes["kanBanData"].currentValue) {
       this.setKanBanDataToForm(this.kanBanData);
     }
+  }
+
+  /**
+   * Getter to return the FormArray for "kanBan"
+   */
+  get kanBanControls(): FormArray {
+    return this.kanBanForm.get("kanBan") as FormArray;
   }
 
   /**
@@ -44,7 +51,7 @@ export class KanBanComponent implements OnChanges {
   }
 
   /**
-   * Add kanban data into kanBanForm in order to fullfill the html form
+   * Add kanban data into kanBanForm in order to fulfill the html form
    */
   private setKanBanDataToForm(kanBanInfo: any[]) {
     const kanBanFormGroup = kanBanInfo.map((kanBan) =>
