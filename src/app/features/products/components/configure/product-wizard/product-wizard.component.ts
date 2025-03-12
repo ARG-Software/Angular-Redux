@@ -16,6 +16,7 @@ import {
 import { ProductModelUI } from "../../../models/configure.model";
 import { MimsFormErrorsService } from "src/app/mims-ui/forms/wizard/services/errors.service";
 import { MimsValidator } from "src/app/mims-ui/forms/wizard/services/validators";
+import { AlertType } from "src/app/mims-ui/elements/alert/alert.component";
 
 @Component({
   standalone: false,
@@ -27,6 +28,7 @@ export class ProductWizardComponent implements OnChanges {
   public productsForm: FormGroup;
   @Input() public productDetailsData: ProductModelUI;
   @Output() public updateProduct = new EventEmitter();
+  public dangerType: AlertType = AlertType.DANGER;
 
   protected errors: any[] = [];
   protected get name(): AbstractControl {

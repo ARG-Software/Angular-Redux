@@ -18,6 +18,7 @@ import {
 import { MimsFormErrorsService } from "src/app/mims-ui/forms/wizard/services/errors.service";
 import { MimsValidator } from "src/app/mims-ui/forms/wizard/services/validators";
 import { MimsSelectBoxModel } from "src/app/mims-ui/input/select-box/models/select-box.model";
+import { AlertType } from "src/app/mims-ui/elements/alert/alert.component";
 
 @Component({
   standalone: false,
@@ -33,6 +34,7 @@ export class MoteWizardComponent {
   @Output() public removeMote = new EventEmitter();
 
   public motesForm: FormGroup;
+  public dangerType: AlertType = AlertType.DANGER;
   protected errors: any[] = [];
 
   protected get machine(): AbstractControl {
