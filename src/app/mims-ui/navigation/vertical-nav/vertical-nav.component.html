@@ -1,45 +1,61 @@
-<ng-container *ngIf="menu!==null && menu!==undefined">
-    <div class="vertical-navbar-container colour">
-        <clr-vertical-nav [clrVerticalNavCollapsible]="true">  
-          
-            <ng-template #recursiveMenu let-list>
-                <ng-container *ngFor="let item of list">
-                    <ng-container *ngIf="item.type=='menu'">
-                        <clr-vertical-nav-group routerLinkActive="active">
-                        <clr-icon [attr.shape]="item.icon" clrVerticalNavIcon></clr-icon>
-                        {{item.name}}
-                        <clr-vertical-nav-group-children>
-                        <ng-container *ngIf="item.children.length>0">
-                            <ng-container *ngTemplateOutlet="recursiveMenu; context:{ $implicit: item.children }"></ng-container>                   
-                        </ng-container>
-                        </clr-vertical-nav-group-children>    
-                        </clr-vertical-nav-group>
-                    </ng-container>
-                    
-                    <ng-container *ngIf="item.type=='submenu'">
-                        <clr-vertical-nav-group routerLinkActive="active">
-                            <div class="second-level-menu">{{item.name}}</div>
-                        <clr-vertical-nav-group-children>
-                        <div class="second-level-menu" *ngIf="item.children.length>0">
-                            <ng-container *ngTemplateOutlet="recursiveMenu; context:{ $implicit: item.children }"></ng-container>                 
-                        </div>
-                        </clr-vertical-nav-group-children>
-                        </clr-vertical-nav-group>
-                    </ng-container>
-                    
-                    <ng-container *ngIf="item.type=='link'">
-                            <li class="clickable-element" clrVerticalNavLink
-                            routerLink="item.route"
-                            routerLinkActive="active"
-                            (click)="onMenuClick(item)"
-                            >
-                             {{item.name}}
-                        </li>
-                    </ng-container>
+<ng-container *ngIf="(menu?.length ?? 0) > 0">
+  <div class="vertical-navbar-container colour">
+    <clr-vertical-nav [clrVerticalNavCollapsible]="true">
+      <ng-template #recursiveMenu let-list>
+        <ng-container *ngFor="let item of list">
+          <ng-container *ngIf="item.type === 'menu'">
+            <clr-vertical-nav-group routerLinkActive="active">
+              <clr-icon [attr.shape]="item.icon" clrVerticalNavIcon></clr-icon>
+              {{ item.name }}
+              <clr-vertical-nav-group-children>
+                <ng-container *ngIf="item.children?.length > 0">
+                  <ng-container
+                    *ngTemplateOutlet="
+                      recursiveMenu;
+                      context: { $implicit: item.children }
+                    "
+                  ></ng-container>
                 </ng-container>
-            </ng-template>
-        <ng-container *ngTemplateOutlet="recursiveMenu; context:{ $implicit: menu }"></ng-container>
-        
-        </clr-vertical-nav> 
-    </div>
+              </clr-vertical-nav-group-children>
+            </clr-vertical-nav-group>
+          </ng-container>
+
+          <ng-container *ngIf="item.type === 'submenu'">
+            <clr-vertical-nav-group routerLinkActive="active">
+              <div class="second-level-menu">{{ item.name }}</div>
+              <clr-vertical-nav-group-children>
+                <div
+                  class="second-level-menu"
+                  *ngIf="item.children?.length > 0"
+                >
+                  <ng-container
+                    *ngTemplateOutlet="
+                      recursiveMenu;
+                      context: { $implicit: item.children }
+                    "
+                  ></ng-container>
+                </div>
+              </clr-vertical-nav-group-children>
+            </clr-vertical-nav-group>
+          </ng-container>
+
+          <ng-container *ngIf="item.type === 'link'">
+            <li
+              class="clickable-element"
+              clrVerticalNavLink
+              [routerLink]="item.route"
+              routerLinkActive="active"
+              (click)="onMenuClick(item)"
+            >
+              {{ item.name }}
+            </li>
+          </ng-container>
+        </ng-container>
+      </ng-template>
+
+      <ng-container
+        *ngTemplateOutlet="recursiveMenu; context: { $implicit: menu }"
+      ></ng-container>
+    </clr-vertical-nav>
+  </div>
 </ng-container>

@@ -45,6 +45,7 @@ import { AlertComponent } from "./elements/alert/alert.component";
 import { MimsFormErrorsService } from "./forms/wizard/services/errors.service";
 import { WizardComponent } from "./forms/wizard/wizard.component";
 import { PaginationComponent } from "./navigation/pagination/pagination.component";
+import { RouterModule } from "@angular/router";
 
 @NgModule({
   imports: [
@@ -53,6 +54,7 @@ import { PaginationComponent } from "./navigation/pagination/pagination.componen
     FormsModule,
     ReactiveFormsModule,
     NgxChartsModule,
+    RouterModule,
   ],
   declarations: [
     AlertComponent,

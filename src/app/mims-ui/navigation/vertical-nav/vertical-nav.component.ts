@@ -19,10 +19,10 @@ import { SideBarItemModel } from "./models/item.model";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VerticalNavComponent implements OnInit {
-  public menu: any[];
+  public menu: any[] = [];
   @Output() public navigate = new EventEmitter();
-  @Input() public menuPath: string;
-  private menuSubscription: Subscription;
+  @Input() public menuPath: string = "";
+  private menuSubscription: Subscription = new Subscription();
   public constructor(
     private sideBarService: CommonNavigationService,
     private ref: ChangeDetectorRef

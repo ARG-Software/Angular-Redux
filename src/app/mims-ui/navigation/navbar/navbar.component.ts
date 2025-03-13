@@ -19,11 +19,11 @@ import { NavBarSettingsModel } from "./models/navbar-settings.model";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NavbarComponent implements OnInit {
-  public contextMenu: NavBarContextItemModel[];
-  public settings: NavBarSettingsModel;
+  public contextMenu: NavBarContextItemModel[] = [];
+  public settings: NavBarSettingsModel = { name: "", icon: "" };
   @Output() public navigate = new EventEmitter();
-  @Input() public menuPath: string;
-  private menuSubscription: Subscription;
+  @Input() public menuPath: string = "";
+  private menuSubscription: Subscription = new Subscription();
 
   public constructor(
     private navbarService: CommonNavigationService,
