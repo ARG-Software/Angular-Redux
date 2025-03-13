@@ -19,10 +19,10 @@ import { KanbanDataModelUI } from "../../../models/settings.models";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class KanBanComponent implements OnChanges {
-  @Input() public kanBanData: KanbanDataModelUI[];
+  @Input() public kanBanData: KanbanDataModelUI[] = [];
   @Output() public kanBanDataEmitter = new EventEmitter();
 
-  protected kanBanForm: FormGroup;
+  protected kanBanForm!: FormGroup;
 
   public constructor(private formbuilder: FormBuilder) {
     this.createForm();

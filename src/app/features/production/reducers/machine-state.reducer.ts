@@ -1,40 +1,46 @@
-import { MachineStateActionTypes, MachineActions } from '../actions/machine-state.actions';
-import { MachineStateLoadDataModelUI, MachineStateSaveDataModelUI } from '../models/machine-state.model';
+import {
+  MachineStateActionTypes,
+  MachineActions,
+} from "../actions/machine-state.actions";
+import {
+  MachineStateLoadDataModelUI,
+  MachineStateSaveDataModelUI,
+} from "../models/machine-state.model";
 
 export interface MachineState {
-    machineData: MachineStateLoadDataModelUI[];
+  machineData: MachineStateLoadDataModelUI[];
 }
 
 export const initialState: MachineState = {
-    machineData: []
+  machineData: [],
 };
 
-export function reducer(state: MachineState = initialState, action: MachineActions): MachineState {
-
-    switch (action.type) {
-
-        case MachineStateActionTypes.GetMachineDataSuccess: {
-            return {
-                ...state,
-                machineData: action.payload
-            };
-        }
-
-        case MachineStateActionTypes.UpdateMachineData: {
-
-            return {
-                ...state,
-                machineData: findAndUpdateMachine(state.machineData, action.payload)
-            };
-        }
-
-        case MachineStateActionTypes.UpdateMachineDataSuccess: {
-            return state;
-        }
-
-        default:
-            return state;
+export function reducer(
+  state: MachineState = initialState,
+  action: MachineActions
+): MachineState {
+  switch (action.type) {
+    case MachineStateActionTypes.GetMachineDataSuccess: {
+      return {
+        ...state,
+        machineData: action.payload,
+      };
     }
+
+    case MachineStateActionTypes.UpdateMachineData: {
+      return {
+        ...state,
+        machineData: findAndUpdateMachine(state.machineData, action.payload),
+      };
+    }
+
+    case MachineStateActionTypes.UpdateMachineDataSuccess: {
+      return state;
+    }
+
+    default:
+      return state;
+  }
 }
 
 /**
@@ -43,14 +49,13 @@ export function reducer(state: MachineState = initialState, action: MachineActio
  * @param machine machine to be updated
  */
 export function findAndUpdateMachine(
-    stateMachines: MachineStateLoadDataModelUI[],
-    machine: MachineStateSaveDataModelUI
+  stateMachines: MachineStateLoadDataModelUI[],
+  machine: MachineStateSaveDataModelUI
 ): MachineStateLoadDataModelUI[] {
+  const machines = Object.assign([], stateMachines) as any;
+  machines[machines.indexOf(machine)] = machine;
 
-    const machines = Object.assign([], stateMachines);
-    machines[machines.indexOf(machine)] = machine;
-
-    return machines;
+  return machines;
 }
 
 /*

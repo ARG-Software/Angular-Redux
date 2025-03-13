@@ -24,9 +24,9 @@ import { AlertType } from "src/app/mims-ui/elements/alert/alert.component";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MachineWizardComponent {
-  @Input() public machineSelectBoxData: MimsSelectBoxModel[];
-  @Input() public operationsSelectBoxData: MimsSelectBoxModel[];
-  @Input() public machinesList: MachineOperationModelUI[];
+  @Input() public machineSelectBoxData: MimsSelectBoxModel[] = [];
+  @Input() public operationsSelectBoxData: MimsSelectBoxModel[] = [];
+  @Input() public machinesList: MachineOperationModelUI[] = [];
   @Output() public addMachine = new EventEmitter();
   @Output() public removeMachine = new EventEmitter();
   public machinesForm: FormGroup;
@@ -54,24 +54,24 @@ export class MachineWizardComponent {
     });
   }
   protected get machine(): AbstractControl {
-    return this.machinesForm.get("machine");
+    return this.machinesForm.get("machine")!;
   }
   protected get operation(): AbstractControl {
-    return this.machinesForm.get("operation");
+    return this.machinesForm.get("operation")!;
   }
   protected get oee(): AbstractControl {
-    return this.machinesForm.get("oee");
+    return this.machinesForm.get("oee")!;
   }
   protected get mde(): AbstractControl {
-    return this.machinesForm.get("mde");
+    return this.machinesForm.get("mde")!;
   }
   protected get machineSelectedId(): number | string {
-    const machineSelectedId = this.machinesForm.get("machine")
+    const machineSelectedId = this.machinesForm.get("machine")!
       .value as any as MimsSelectBoxModel;
     return machineSelectedId.value;
   }
   protected get operationSelectedId(): number | string {
-    const machineSelectedId = this.machinesForm.get("operation")
+    const machineSelectedId = this.machinesForm.get("operation")!
       .value as any as MimsSelectBoxModel;
     return machineSelectedId.value;
   }

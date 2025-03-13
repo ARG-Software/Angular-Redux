@@ -24,9 +24,9 @@ import { AlertType } from "src/app/mims-ui/elements/alert/alert.component";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SensorWizardComponent {
-  @Input() public moteSelectBoxData: MimsSelectBoxModel[];
-  @Input() public messageSelectBoxData: MimsSelectBoxModel[];
-  @Input() public sensorsList: SensorModelUI[];
+  @Input() public moteSelectBoxData: MimsSelectBoxModel[] = [];
+  @Input() public messageSelectBoxData: MimsSelectBoxModel[] = [];
+  @Input() public sensorsList: SensorModelUI[] = [];
   @Output() public addSensor = new EventEmitter();
   @Output() public removeSensor = new EventEmitter();
 
@@ -35,27 +35,27 @@ export class SensorWizardComponent {
   public sensorsForm: FormGroup;
 
   protected get mote(): AbstractControl {
-    return this.sensorsForm.get("mote");
+    return this.sensorsForm.get("mote")!;
   }
   protected get message(): AbstractControl {
-    return this.sensorsForm.get("message");
+    return this.sensorsForm.get("message")!;
   }
   protected get inputTerminal(): AbstractControl {
-    return this.sensorsForm.get("inputTerminal");
+    return this.sensorsForm.get("inputTerminal")!;
   }
   protected get mcode(): AbstractControl {
-    return this.sensorsForm.get("mcode");
+    return this.sensorsForm.get("mcode")!;
   }
   protected get lineOut(): AbstractControl {
-    return this.sensorsForm.get("lineOut");
+    return this.sensorsForm.get("lineOut")!;
   }
   protected get messageId(): number {
-    const selectedMessage = this.sensorsForm.get("message")
+    const selectedMessage = this.sensorsForm.get("message")!
       .value as any as MimsSelectBoxModel;
     return selectedMessage.value as number;
   }
   protected get moteId(): number {
-    const selectedMote = this.sensorsForm.get("mote")
+    const selectedMote = this.sensorsForm.get("mote")!
       .value as any as MimsSelectBoxModel;
     return selectedMote.value as number;
   }

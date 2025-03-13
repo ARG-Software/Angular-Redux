@@ -113,7 +113,7 @@ export function findAndUpdateMessagingToSave(
   const messagingSave = Object.assign([], messagingToSaveState);
   const messagingData = Object.assign([], messagingDataState);
 
-  const index = messagingSave.findIndex((elem) => {
+  const index = messagingSave.findIndex((elem: any) => {
     return elem.Id === payload;
   });
 
@@ -140,9 +140,9 @@ export function convertDataToSave(
 
   convertedMessaging = {
     Id: messagingId,
-    Option: toConvert.Options.find((elem) => {
+    Option: toConvert!.Options.find((elem) => {
       return elem.selected === true;
-    }),
+    })!,
   };
 
   return convertedMessaging;

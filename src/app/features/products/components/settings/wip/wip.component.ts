@@ -18,10 +18,10 @@ import { WipDataModelUI } from "../../../models/settings.models";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WipComponent implements OnChanges {
-  @Input() public wipData: WipDataModelUI[];
+  @Input() public wipData: WipDataModelUI[] = [];
   @Output() public wipDataEmitter = new EventEmitter();
 
-  protected wipForm: FormGroup;
+  protected wipForm!: FormGroup;
 
   public constructor(private formbuilder: FormBuilder) {
     this.createForm();

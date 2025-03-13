@@ -9,7 +9,7 @@ export interface ProductModelUI {
 
 export interface OperationModelUI {
   Id: number;
-  ProductId: number;
+  ProductId: number | undefined;
   Number: number;
   Description: string;
   Subcontractor: SubcontractorModelUI;
@@ -22,7 +22,7 @@ export interface SubcontractorModelUI {
 
 export interface MachineOperationModelUI {
   Id: number;
-  ProductId: number;
+  ProductId: number | undefined;
   MachineId: number;
   MachineName?: string;
   OperationId: number;
@@ -38,7 +38,7 @@ export interface MachineModelUI {
 
 export interface MoteModelUI {
   Id: number;
-  ProductId: number;
+  ProductId: number | undefined;
   Name: string;
   MachineId: number;
   MachineName?: string;
@@ -59,7 +59,7 @@ export interface MessageModelUI {
 
 export interface SensorModelUI {
   Id: number;
-  ProductId: number;
+  ProductId: number | undefined;
   ContactMessageId: number;
   ContactMessageName?: string;
   MoteId: number;

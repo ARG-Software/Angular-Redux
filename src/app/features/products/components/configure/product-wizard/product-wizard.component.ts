@@ -26,19 +26,19 @@ import { AlertType } from "src/app/mims-ui/elements/alert/alert.component";
 })
 export class ProductWizardComponent implements OnChanges {
   public productsForm: FormGroup;
-  @Input() public productDetailsData: ProductModelUI;
+  @Input() public productDetailsData!: ProductModelUI;
   @Output() public updateProduct = new EventEmitter();
   public dangerType: AlertType = AlertType.DANGER;
 
   protected errors: any[] = [];
   protected get name(): AbstractControl {
-    return this.productsForm.get("Name");
+    return this.productsForm.get("Name")!;
   }
   protected get targetHoursPerWeek(): AbstractControl {
-    return this.productsForm.get("TargetHoursPerWeek");
+    return this.productsForm.get("TargetHoursPerWeek")!;
   }
   protected get targetEfficiency(): AbstractControl {
-    return this.productsForm.get("TargetEfficiency");
+    return this.productsForm.get("TargetEfficiency")!;
   }
 
   constructor(

@@ -8,5 +8,5 @@ import { ResumeConfigurationModelUI } from "../../../models/configure.model";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ResumeWizardComponent {
-  @Input() public resumeData: ResumeConfigurationModelUI;
+  @Input() public resumeData!: ResumeConfigurationModelUI;
 }

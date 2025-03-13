@@ -28,8 +28,8 @@ import { AlertType } from "src/app/mims-ui/elements/alert/alert.component";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OperationsWizardComponent {
-  @Input() public operationsList: OperationModelUI[];
-  @Input() public subcontractorSelectBoxData: ConfigureSelectBoxModelUI[];
+  @Input() public operationsList: OperationModelUI[] = [];
+  @Input() public subcontractorSelectBoxData: ConfigureSelectBoxModelUI[] = [];
   @Output() public addOperation = new EventEmitter();
   @Output() public removeOperation = new EventEmitter();
   public operationForm: FormGroup;
@@ -39,16 +39,16 @@ export class OperationsWizardComponent {
   protected errors: any[] = [];
 
   protected get opNumber(): AbstractControl {
-    return this.operationForm.get("opNumber");
+    return this.operationForm.get("opNumber")!;
   }
   protected get description(): AbstractControl {
-    return this.operationForm.get("description");
+    return this.operationForm.get("description")!;
   }
   protected get subcontractor(): AbstractControl {
-    return this.operationForm.get("subcontractor");
+    return this.operationForm.get("subcontractor")!;
   }
   protected get subcontractorCovertedToModel(): SubcontractorModelUI {
-    const subcontractorSelected = this.operationForm.get("subcontractor")
+    const subcontractorSelected = this.operationForm.get("subcontractor")!
       .value as any as MimsSelectBoxModel;
     const subContractorConvertedModel: SubcontractorModelUI = {
       Id: subcontractorSelected.value as number,

@@ -27,9 +27,9 @@ import { AlertType } from "src/app/mims-ui/elements/alert/alert.component";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MoteWizardComponent {
-  @Input() public motesList: MoteModelUI[];
-  @Input() public machineSelectBoxData: ConfigureSelectBoxModelUI[];
-  @Input() public edgeSelectBoxData: ConfigureSelectBoxModelUI[];
+  @Input() public motesList: MoteModelUI[] = [];
+  @Input() public machineSelectBoxData: ConfigureSelectBoxModelUI[] = [];
+  @Input() public edgeSelectBoxData: ConfigureSelectBoxModelUI[] = [];
   @Output() public addMote = new EventEmitter();
   @Output() public removeMote = new EventEmitter();
 
@@ -38,24 +38,24 @@ export class MoteWizardComponent {
   protected errors: any[] = [];
 
   protected get machine(): AbstractControl {
-    return this.motesForm.get("machine");
+    return this.motesForm.get("machine")!;
   }
   protected get name(): AbstractControl {
-    return this.motesForm.get("name");
+    return this.motesForm.get("name")!;
   }
   protected get edge(): AbstractControl {
-    return this.motesForm.get("edge");
+    return this.motesForm.get("edge")!;
   }
   protected get pollInterval(): AbstractControl {
-    return this.motesForm.get("pollInterval");
+    return this.motesForm.get("pollInterval")!;
   }
   protected get machineId(): number {
-    const selectedMachine = this.motesForm.get("machine")
+    const selectedMachine = this.motesForm.get("machine")!
       .value as any as MimsSelectBoxModel;
     return selectedMachine.value as number;
   }
   protected get edgeId(): number {
-    const selectedEdge = this.motesForm.get("edge")
+    const selectedEdge = this.motesForm.get("edge")!
       .value as any as MimsSelectBoxModel;
     return selectedEdge.value as number;
   }
