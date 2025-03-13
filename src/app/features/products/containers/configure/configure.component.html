@@ -22,7 +22,10 @@
 <ng-template #productWizardPage>
   <product-wizard-page
     (updateProduct)="saveProductDetail($event)"
-    [productDetailsData]="productDetailsData$ | async"
+    [productDetailsData]="
+      (productDetailsData$ | async) ??
+      { Id: 0, TargetHoursPerWeek: 0, TargetEfficiency: 0 }
+    "
   >
   </product-wizard-page>
 </ng-template>
@@ -31,8 +34,8 @@
   <operations-wizard-page
     (addOperation)="addOperation($event)"
     (removeOperation)="removeOperation($event)"
-    [operationsList]="operationsData$ | async"
-    [subcontractorSelectBoxData]="subcontractorSelectBoxData$ | async"
+    [operationsList]="(operationsData$ | async) ?? []"
+    [subcontractorSelectBoxData]="(subcontractorSelectBoxData$ | async) ?? []"
   >
   </operations-wizard-page>
 </ng-template>
@@ -41,9 +44,9 @@
   <machine-wizard-page
     (addMachine)="addMachine($event)"
     (removeMachine)="removeMachine($event)"
-    [machineSelectBoxData]="machineSelectBoxData$ | async"
-    [operationsSelectBoxData]="operationsSelectBoxData$ | async"
-    [machinesList]="machinesData$ | async"
+    [machineSelectBoxData]="(machineSelectBoxData$ | async) ?? []"
+    [operationsSelectBoxData]="(operationsSelectBoxData$ | async) ?? []"
+    [machinesList]="(machinesData$ | async) ?? []"
   >
   </machine-wizard-page>
 </ng-template>
@@ -52,9 +55,9 @@
   <mote-wizard-page
     (addMote)="addMote($event)"
     (removeMote)="removeMote($event)"
-    [motesList]="motesData$ | async"
-    [machineSelectBoxData]="machineSelectBoxData$ | async"
-    [edgeSelectBoxData]="edgeSelectBoxData$ | async"
+    [motesList]="(motesData$ | async) ?? []"
+    [machineSelectBoxData]="(machineSelectBoxData$ | async) ?? []"
+    [edgeSelectBoxData]="(edgeSelectBoxData$ | async) ?? []"
   >
   </mote-wizard-page>
 </ng-template>
@@ -63,12 +66,26 @@
   <sensor-wizard-page
     (addSensor)="addSensor($event)"
     (removeSensor)="removeSensor($event)"
-    [sensorsList]="sensorsData$ | async"
-    [moteSelectBoxData]="moteSelectBoxData$ | async"
-    [messageSelectBoxData]="messageSelectBoxData$ | async"
+    [sensorsList]="(sensorsData$ | async) ?? []"
+    [moteSelectBoxData]="(moteSelectBoxData$ | async) ?? []"
+    [messageSelectBoxData]="(messageSelectBoxData$ | async) ?? []"
   ></sensor-wizard-page>
 </ng-template>
 
 <ng-template #resumeWizardPage>
-  <resume-wizard [resumeData]="resumeData$ | async"></resume-wizard>
+  <resume-wizard
+    [resumeData]="
+      (resumeData$ | async) ??
+      {
+        addedOperations: [],
+        removedOperations: [],
+        addedMachines: [],
+        removedMachines: [],
+        addedMotes: [],
+        removedMotes: [],
+        addedSensors: [],
+        removedSensors: []
+      }
+    "
+  ></resume-wizard>
 </ng-template>

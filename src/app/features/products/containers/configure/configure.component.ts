@@ -1,5 +1,5 @@
-import { Component, ViewChild, OnInit } from "@angular/core";
-import { Observable } from "rxjs";
+import { Component, ViewChild, OnInit, TemplateRef } from "@angular/core";
+import { map, Observable } from "rxjs";
 import { Store, select } from "@ngrx/store";
 import * as fromModule from "./../../products.reducers.index";
 import {
@@ -41,7 +41,7 @@ import { WizardComponent } from "src/app/mims-ui/forms/wizard/wizard.component";
   templateUrl: "./configure.component.html",
 })
 export class ConfigureComponent implements OnInit {
-  public productWizardPageMetaData: WizardPageModel[];
+  public productWizardPageMetaData: WizardPageModel[] = [];
 
   public productDetailsData$: Observable<ProductModelUI>;
   public operationsData$: Observable<OperationModelUI[]>;
@@ -58,10 +58,70 @@ export class ConfigureComponent implements OnInit {
   public messageSelectBoxData$: Observable<ConfigureSelectBoxModelUI[]>;
 
   @ViewChild("configurationWizard")
-  private configurationWizard: WizardComponent;
+  private configurationWizard!: WizardComponent;
   private productId = 1;
 
-  constructor(private store: Store<fromModule.ProductState>) {}
+  constructor(private store: Store<fromModule.ProductState>) {
+    this.productDetailsData$ = this.store.pipe(
+      select(fromModule.getProductDetail),
+      map((data) => data ?? ({} as ProductModelUI))
+    );
+
+    this.operationsData$ = this.store.pipe(
+      select(fromModule.getOperationsDetails),
+      map((data) => data ?? [])
+    );
+
+    this.machinesData$ = this.store.pipe(
+      select(fromModule.getMachineOperationsDetails),
+      map((data) => data ?? [])
+    );
+
+    this.motesData$ = this.store.pipe(
+      select(fromModule.getMotesDetails),
+      map((data) => data ?? [])
+    );
+
+    this.sensorsData$ = this.store.pipe(
+      select(fromModule.getSensorsDetails),
+      map((data) => data ?? [])
+    );
+
+    this.resumeData$ = this.store.pipe(
+      select(fromModule.getResumePage),
+      map((data) => data ?? ({} as ResumeConfigurationModelUI))
+    );
+
+    this.machineSelectBoxData$ = this.store.pipe(
+      select(fromModule.getMachineSelectBox),
+      map((data) => data ?? [])
+    );
+
+    this.moteSelectBoxData$ = this.store.pipe(
+      select(fromModule.getMotesSelectBox),
+      map((data) => data ?? [])
+    );
+
+    this.operationsSelectBoxData$ = this.store.pipe(
+      select(fromModule.getOperationsSelectBox),
+      map((data) => data ?? [])
+    );
+
+    this.edgeSelectBoxData$ = this.store.pipe(
+      select(fromModule.getEdgeSelectBox),
+      map((data) => data ?? [])
+    );
+
+    this.subcontractorSelectBoxData$ = this.store.pipe(
+      select(fromModule.getSubContractorsSelectBox),
+      map((data) => data ?? [])
+    );
+
+    this.messageSelectBoxData$ = this.store.pipe(
+      select(fromModule.getMessagesSelectBox),
+      map((data) => data ?? [])
+    );
+  }
 
   public ngOnInit(): void {
     this.setWizardsPageTitlesAndPageIds();
