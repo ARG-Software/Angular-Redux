@@ -1,4 +1,4 @@
-import { Observable, startWith } from "rxjs";
+import { Observable, startWith, map } from "rxjs";
 import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { Store, select } from "@ngrx/store";
 import * as fromModule from "./../../products.reducers.index";
@@ -19,53 +19,38 @@ export class OverviewComponent implements OnInit {
   public cardsData = [
     {
       backgroundColour: "#fafafa",
-
       title: "Production graph",
       titleColour: "black",
-
       text: "78%",
       textColour: "black",
-
       topRightTitle: "January 2018",
       topRightTitleColor: "black",
-
       midRightTitle: "+5 631",
       midRightTitleColor: "black",
-
       buttonText: "Open statistic",
     },
     {
       backgroundColour: "#fafafa",
-
       title: "Lots at Dowa",
       titleColour: "black",
-
       text: "04",
       textColour: "black",
-
       topRightTitle: "January 2018",
       topRightTitleColor: "black",
-
       midRightTitle: "-119",
       midRightTitleColor: "black",
-
       buttonText: "Open statistic",
     },
     {
       backgroundColour: "#fafafa",
-
       title: "Hours per week",
       titleColour: "black",
-
       text: "42h",
       textColour: "black",
-
       topRightTitle: "January 2018",
       topRightTitleColor: "black",
-
       midRightTitle: "+5 631",
       midRightTitleColor: "black",
-
       buttonText: "Open statistic",
     },
   ];
@@ -73,12 +58,7 @@ export class OverviewComponent implements OnInit {
   public gaugeData = [
     {
       view: [200, 125],
-      results: [
-        {
-          name: "Germany",
-          value: 50,
-        },
-      ],
+      results: [{ name: "Germany", value: 50 }],
       colorScheme: { domain: ["#ecfb3c"] },
       min: 0,
       max: 100,
@@ -89,12 +69,7 @@ export class OverviewComponent implements OnInit {
     },
     {
       view: [200, 125],
-      results: [
-        {
-          name: "France",
-          value: 30,
-        },
-      ],
+      results: [{ name: "France", value: 30 }],
       colorScheme: { domain: ["#2ecc71"] },
       min: 0,
       max: 100,
@@ -105,12 +80,7 @@ export class OverviewComponent implements OnInit {
     },
     {
       view: [200, 125],
-      results: [
-        {
-          name: "United States",
-          value: 80,
-        },
-      ],
+      results: [{ name: "United States", value: 80 }],
       colorScheme: { domain: ["#2ecc71"] },
       min: 0,
       max: 100,
@@ -121,12 +91,7 @@ export class OverviewComponent implements OnInit {
     },
     {
       view: [200, 125],
-      results: [
-        {
-          name: "Spain",
-          value: 60,
-        },
-      ],
+      results: [{ name: "Spain", value: 60 }],
       colorScheme: { domain: ["#f44336"] },
       min: 0,
       max: 100,
@@ -143,6 +108,7 @@ export class OverviewComponent implements OnInit {
   public tableData$: Observable<DataGridCellModel[]>;
   public headerNames$: Observable<string[]>;
   public columnNames$: Observable<string[]>;
+
   private date = new Date();
 
   public constructor(private store: Store<fromModule.ProductState>) {
@@ -155,25 +121,30 @@ export class OverviewComponent implements OnInit {
     };
 
     this.store.dispatch(new Actions.GetDownTimeChart(requestChartModel));
-
     this.store.dispatch(
       new Actions.GetMachineOperationTable(requestTableModel)
     );
-  }
 
-  public ngOnInit(): void {
     this.chartData$ = this.store.pipe(
-      select(fromModule.getDownTimeRecordChart)
+      select(fromModule.getDownTimeRecordChart),
+      map((data) => data ?? [])
     );
+
     this.tableData$ = this.store.pipe(
       select(fromModule.getMachineOperationTableData),
-      startWith([] as DataGridCellModel[])
+      startWith([])
     );
+
     this.headerNames$ = this.store.pipe(
-      select(fromModule.getMachineOperationsTableHeaderName)
+      select(fromModule.getMachineOperationsTableHeaderName),
+      map((data) => data ?? [])
     );
+
     this.columnNames$ = this.store.pipe(
-      select(fromModule.getMachineOperationTableColumns)
+      select(fromModule.getMachineOperationTableColumns),
+      map((data) => data ?? [])
     );
   }
+
+  public ngOnInit(): void {}
 }
