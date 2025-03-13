@@ -48,7 +48,7 @@ export function convertShiftGraphicListTodownTimeRecordChartDataModel(
   const downTimeRecordChartDataModel: any[] = [];
   data.forEach((element) => {
     const graphicItem = {} as DownTimeRecordChartModel;
-    graphicItem.name = element.Name;
+    graphicItem.name = element.Name ?? "";
     graphicItem.series = [];
     const uptimeObject = {} as ChartSeriesModel;
     const downtimeObject = {} as ChartSeriesModel;

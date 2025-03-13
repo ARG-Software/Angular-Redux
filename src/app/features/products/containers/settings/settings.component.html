@@ -1,14 +1,22 @@
-<mims-header [title]="'Settings'"
-             [subTitle]="'Crankshaft'"
-             [color]="'#5965e7'">
+<mims-header [title]="'Settings'" [subTitle]="'Crankshaft'" [color]="'#5965e7'">
 </mims-header>
 
 <div class="row">
-    <div class="col-lg-3">
-        <wip [wipData]="wipData$ | async" (wipDataEmitter)="saveWipData($event)"></wip>
-    </div>
-    <div class="col-lg-6">
-        <kan-ban [kanBanData]="kanBanData$ | async" (kanBanDataEmitter)="saveKanBanData($event)"></kan-ban>
-    </div>
+  <div class="col-lg-3">
+    <wip
+      *ngIf="wipData$ | async as wipData"
+      [wipData]="wipData"
+      (wipDataEmitter)="saveWipData($event)"
+    >
+    </wip>
+  </div>
+  <div class="col-lg-6">
+    <kan-ban
+      *ngIf="kanBanData$ | async as kanBanData"
+      [kanBanData]="kanBanData"
+      (kanBanDataEmitter)="saveKanBanData($event)"
+    >
+    </kan-ban>
+  </div>
 </div>
 <div class="row horizontal-line"></div>

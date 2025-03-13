@@ -3,7 +3,7 @@ import { ControlValueAccessor } from "@angular/forms";
 
 @Directive()
 export abstract class ValueAccessorBase<T> implements ControlValueAccessor {
-  private _value: T;
+  private _value: T = {} as T;
 
   public get value(): T {
     return this._value;
