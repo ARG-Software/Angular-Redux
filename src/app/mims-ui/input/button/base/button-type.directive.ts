@@ -5,7 +5,7 @@ import { Directive, ElementRef, Renderer2, Input, OnInit } from "@angular/core";
   selector: "[buttontype]",
 })
 export class ButtonTypeDirective implements OnInit {
-  @Input() public buttontype: string;
+  @Input() public buttontype: string = "";
   constructor(private elementRef: ElementRef, private renderer: Renderer2) {}
 
   public ngOnInit(): void {

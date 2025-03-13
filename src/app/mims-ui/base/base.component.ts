@@ -14,14 +14,14 @@ import {
 
 @Directive()
 export abstract class BaseControlComponent<T> extends ValueAccessorBase<T> {
-  @Input() public id: string;
-  @Input() public label: string;
-  @Input() public placeholder: string;
-  @Input() public type: string;
-  @Input() public size: number;
+  @Input() public id: string = "";
+  @Input() public label: string = "";
+  @Input() public placeholder: string = "";
+  @Input() public type: string = "";
+  @Input() public size: number = 0;
   @Input() public disable: any;
-  @Input() public name: string;
-  @Input() public display: string;
+  @Input() public name: string = "";
+  @Input() public display: string = "";
 
   protected abstract model: NgModel;
 

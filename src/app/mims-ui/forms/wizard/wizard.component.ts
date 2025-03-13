@@ -26,10 +26,10 @@ export class WizardComponent {
   @Input() public orderedNavigation: boolean = true;
   @Input() public hasCancel: boolean = true;
   @Input() public hasBack: boolean = true;
-  @Input() public wizardTitle: string;
-  @Input() public wizardPageMetaData: WizardPageModel[];
-  @Input() public wizardPageTemplate: Array<TemplateRef<any>>;
-  @ViewChild("wizard") public wizard: ClrWizard;
+  @Input() public wizardTitle: string = "";
+  @Input() public wizardPageMetaData: WizardPageModel[] = [];
+  @Input() public wizardPageTemplate: Array<TemplateRef<any>> = [];
+  @ViewChild("wizard") public wizard!: ClrWizard;
 
   public navigateToNextPage(): void {
     this.wizard.next();

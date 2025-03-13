@@ -11,17 +11,17 @@ import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardComponent {
-  @Input() public title: string;
-  @Input() public titleColour: string;
-  @Input() public text: string;
-  @Input() public textColour: string;
-  @Input() public backgroundColour: string;
+  @Input() public title: string = "";
+  @Input() public titleColour: string = "";
+  @Input() public text: string = "";
+  @Input() public textColour: string = "";
+  @Input() public backgroundColour: string = "";
 
-  @Input() public topRightTitle: string;
-  @Input() public topRightTitleColor: string;
+  @Input() public topRightTitle: string = "";
+  @Input() public topRightTitleColor: string = "";
 
-  @Input() public midRightTitle: string;
-  @Input() public midRightTitleColor: string;
+  @Input() public midRightTitle: string = "";
+  @Input() public midRightTitleColor: string = "";
 
   @Input() public buttonText: string = "OK";
   @Input() public buttonSize: string = "";

@@ -7,5 +7,5 @@ import { ButtonBaseComponent } from "../base/button-base.component";
   templateUrl: "./button-outline.component.html",
 })
 export class ButtonOutlineComponent extends ButtonBaseComponent {
-  @Input() public buttontype: string;
+  @Input() public buttontype: string = "";
 }

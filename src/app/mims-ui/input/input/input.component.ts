@@ -32,9 +32,9 @@ import { BaseControlComponent } from "../../base/base.component";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InputComponent extends BaseControlComponent<string> {
-  @Input() public rows: string;
-  @Input() public cols: string;
-  protected model: NgModel;
+  @Input() public rows: string = "";
+  @Input() public cols: string = "";
+  protected model!: NgModel;
   constructor(
     @Optional() @Inject(NG_VALIDATORS) validators: any[],
     @Optional() @Inject(NG_ASYNC_VALIDATORS) asyncValidators: any[]

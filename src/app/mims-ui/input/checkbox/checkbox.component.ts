@@ -40,7 +40,7 @@ export class CheckboxComponent extends BaseControlComponent<any> {
   @Output() public OnChangeSaveInformation: EventEmitter<any> =
     new EventEmitter();
 
-  protected model: NgModel;
+  protected model!: NgModel;
 
   constructor(
     @Optional() @Inject(NG_VALIDATORS) validators: any[],

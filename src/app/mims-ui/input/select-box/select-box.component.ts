@@ -39,9 +39,9 @@ export class SelectBoxComponent
   extends BaseControlComponent<MimsSelectBoxModel>
   implements OnChanges
 {
-  @Input() public data: MimsSelectBoxModel[];
+  @Input() public data: MimsSelectBoxModel[] = [];
   @Output() public changed = new EventEmitter<MimsSelectBoxModel>();
-  protected model: NgModel;
+  protected model!: NgModel;
   protected selected: string | number | undefined;
 
   constructor(

@@ -7,5 +7,5 @@ import { Component, Input, ChangeDetectionStrategy } from "@angular/core";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LabelComponent {
-  @Input() public text: string;
+  @Input() public text: string = "";
 }

@@ -40,8 +40,8 @@ export class ComboSeriesVerticalComponent implements OnChanges {
   @Input() public colors: any;
   @Input() public tooltipDisabled: boolean = false;
   @Input() public gradient: any;
-  @Input() public activeEntries: any[];
-  @Input() public seriesName: string;
+  @Input() public activeEntries: any[] = [];
+  @Input() public seriesName: string = "";
   @Input() public animations: boolean = true;
   @Input() public orientation: BarOrientation = "vertical" as BarOrientation;
   @Input() public tooltipPlacement: PlacementTypes = "top" as PlacementTypes;
