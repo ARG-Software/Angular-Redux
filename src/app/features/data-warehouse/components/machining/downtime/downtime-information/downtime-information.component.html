@@ -17,10 +17,10 @@
       [rowData]="formattedTableData"
       [headerName]="tableHeaders"
       [columName]="tableHeaders"
-      [pageSize]="paginationDetails?.HowManyPerPage ?? 10"
-      [totalItems]="paginationDetails?.Total ?? 0"
-      (changePagination)="changePagination($event)"
+      [pageSize]="paginationDetails.HowManyPerPage"
+      [totalItems]="paginationDetails.Total ?? 0"
     >
+      (changePagination)="changePagination($event)" >
     </mims-data-grid>
   </div>
 </div>
