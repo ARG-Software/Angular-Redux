@@ -9,8 +9,8 @@
       [rowData]="formattedTableData"
       [headerName]="tableHeaders"
       [columName]="tableHeaders"
-      [pageSize]="paginationDetails.HowManyPerPage"
-      [totalItems]="paginationDetails.Total"
+      [pageSize]="paginationDetails?.HowManyPerPage ?? 5"
+      [totalItems]="paginationDetails?.Total ?? 0"
       (changePagination)="changePagination($event)"
     >
     </mims-data-grid>

@@ -19,12 +19,12 @@ import { DataGridCellModel } from "src/app/mims-ui/tables/data-grid/models/data-
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProcessDetailInformationComponent {
-  @Input() public chartData: ProcessDetailChartModelUI[];
-  @Input() public tableData: ProcessDetailTableModelUI[];
+  @Input() public chartData: ProcessDetailChartModelUI[] = [];
+  @Input() public tableData: ProcessDetailTableModelUI[] = [];
   @Input() public chartSize: any;
   @Input() public tableHeaders: any;
   @Input() public columnNames: any;
-  @Input() public paginationDetails: PagingModelUI;
+  @Input() public paginationDetails!: PagingModelUI;
 
   @Output() protected changePage: EventEmitter<number> = new EventEmitter();
 

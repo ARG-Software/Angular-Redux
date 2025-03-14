@@ -20,9 +20,9 @@ import { DataGridCellModel } from "src/app/mims-ui/tables/data-grid/models/data-
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OeeInformationComponent {
-  @Input() public chartData: OeeChartDataModelUI[];
-  @Input() public tableData: OeeTableDataModelUI[];
-  @Input() public paginationDetails: PagingModelUI;
+  @Input() public chartData: OeeChartDataModelUI[] = [];
+  @Input() public tableData: OeeTableDataModelUI[] = [];
+  @Input() public paginationDetails!: PagingModelUI;
   @Input() public chartSize: any;
   @Input() public tableHeaders: any;
 
