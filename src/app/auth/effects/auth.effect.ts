@@ -54,14 +54,14 @@ export class AuthEffects {
 
             console.log("🔑 Received user from API:", user);
 
-            localStorage.setItem(this.accessTokenKey, user.AccessToken);
-            localStorage.setItem(this.refreshTokenKey, user.RefreshToken);
+            localStorage.setItem(this.accessTokenKey, user.AccessToken ?? "");
+            localStorage.setItem(this.refreshTokenKey, user.RefreshToken ?? "");
 
             const newActionPayload: UserModelUI = {
-              Id: user.User.Id,
-              Name: user.User.Name,
-              Email: user.User.Email,
-              Login: user.User.Login,
+              Id: user.User?.Id ?? 0,
+              Name: user.User?.Name ?? "Unknown",
+              Email: user.User?.Email ?? "Unknown",
+              Login: user.User?.Login ?? "Unknown",
             };
 
             console.log("✅ Dispatching loginSuccess:", newActionPayload);

@@ -17,13 +17,13 @@ import { MimsSelectBoxModel } from "src/app/mims-ui/input/select-box/models/sele
   templateUrl: "downtime-filter-box.component.html",
 })
 export class DowntimeFilterBoxComponent implements OnChanges {
-  @Input() public machineSelectBoxData: MimsSelectBoxModel[];
-  @Input() public productSelectBoxData: MimsSelectBoxModel[];
-  @Input() public defaultFilters: MachiningFilterModelUI;
+  @Input() public machineSelectBoxData: MimsSelectBoxModel[] = [];
+  @Input() public productSelectBoxData: MimsSelectBoxModel[] = [];
+  @Input() public defaultFilters!: MachiningFilterModelUI;
 
   @Output() public OnFilterApply: EventEmitter<any> = new EventEmitter();
 
-  protected downtimeForm: FormGroup;
+  protected downtimeForm!: FormGroup;
 
   public constructor(private formbuilder: FormBuilder) {
     this.createForm();

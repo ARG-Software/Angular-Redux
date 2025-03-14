@@ -21,12 +21,12 @@ import { DataGridCellModel } from "src/app/mims-ui/tables/data-grid/models/data-
 export class DowntimeInformationComponent {
   @Output() public changePage: EventEmitter<number> = new EventEmitter();
 
-  @Input() public chartData: ComboChartDataModelUI;
-  @Input() public tableData: DowntimeTableDataModelUI[];
+  @Input() public chartData!: ComboChartDataModelUI;
+  @Input() public tableData: DowntimeTableDataModelUI[] = [];
   @Input() public chartColors: any;
   @Input() public chartSize: any;
   @Input() public tableHeaders: any;
-  @Input() public paginationDetails: PagingModelUI;
+  @Input() public paginationDetails!: PagingModelUI;
 
   public changePagination(pageNumber: number) {
     this.changePage.emit(pageNumber);

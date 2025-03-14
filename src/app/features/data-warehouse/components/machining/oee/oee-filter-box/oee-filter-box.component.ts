@@ -19,13 +19,13 @@ import { MimsSelectBoxModel } from "src/app/mims-ui/input/select-box/models/sele
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OeeFilterBoxComponent implements OnChanges {
-  @Input() public machineSelectBoxData: MimsSelectBoxModel[];
-  @Input() public productSelectBoxData: MimsSelectBoxModel[];
-  @Input() public defaultFilters: MachiningFilterModelUI;
+  @Input() public machineSelectBoxData: MimsSelectBoxModel[] = [];
+  @Input() public productSelectBoxData: MimsSelectBoxModel[] = [];
+  @Input() public defaultFilters!: MachiningFilterModelUI;
 
   @Output() public OnFilterApply: EventEmitter<any> = new EventEmitter();
 
-  protected oeeForm: FormGroup;
+  protected oeeForm!: FormGroup;
 
   public constructor(private formbuilder: FormBuilder) {
     this.createForm();

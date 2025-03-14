@@ -14,7 +14,7 @@ export class TokenInterceptor implements HttpInterceptor {
   private refreshTokenInProgress = false;
   private tokenRefreshedSource = new Subject<void>();
   private tokenRefreshed$ = this.tokenRefreshedSource.asObservable();
-  private apiAuth: ApiAuthService;
+  private apiAuth!: ApiAuthService;
 
   constructor(private injector: Injector) {}
 

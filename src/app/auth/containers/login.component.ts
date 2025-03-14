@@ -18,8 +18,8 @@ import * as fromModule from "../auth.reducers.index";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent implements OnInit {
-  protected loginForm: FormGroup;
-  protected loginError$: Observable<boolean>;
+  protected loginForm!: FormGroup;
+  protected loginError$!: Observable<boolean>;
 
   constructor(
     private formBuilder: FormBuilder,
