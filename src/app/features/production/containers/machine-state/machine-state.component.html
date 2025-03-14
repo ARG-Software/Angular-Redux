@@ -1,8 +1,13 @@
-<mims-header [title]="header.HeaderTitle"
-             [subTitle]="header.HeaderSubTitle"
-             [color]="header.Color">
+<mims-header
+  [title]="header.HeaderTitle"
+  [subTitle]="header.HeaderSubTitle"
+  [color]="header.Color"
+>
 </mims-header>
 
-<machine-state-information [machineData]="machineData$ | async"
-                           (changedMachineEmitter)="saveMachine($event)">
+<machine-state-information
+  *ngIf="machineData$ | async as machineData"
+  [machineData]="machineData"
+  (changedMachineEmitter)="saveMachine($event)"
+>
 </machine-state-information>

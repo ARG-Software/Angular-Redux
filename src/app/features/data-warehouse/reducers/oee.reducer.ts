@@ -9,7 +9,7 @@ export interface OeeState {
   oeeTableData: {
     Information: OeeTableDataModelUI[];
     CurrentPaging: PagingModelUI;
-    RequestedPaging: PagingModelUI;
+    RequestedPaging: PagingModelUI | null;
   };
   machineSelectBox: MimsSelectBoxModel[];
   productSelectBox: MimsSelectBoxModel[];

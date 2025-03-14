@@ -15,7 +15,7 @@ export interface DowntimeState {
   downtimeTableData: {
     Information: DowntimeTableDataModelUI[];
     CurrentPaging: PagingModelUI;
-    RequestedPaging: PagingModelUI;
+    RequestedPaging: PagingModelUI | null;
   };
   downtimeChartData: ComboChartDataModelUI;
   machineSelectBox: MimsSelectBoxModel[];

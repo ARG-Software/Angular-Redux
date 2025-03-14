@@ -16,8 +16,8 @@ import { MimsSelectBoxModel } from "src/app/mims-ui/input/select-box/models/sele
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MessagingInformationComponent {
-  @Input() public buttonText: string;
-  @Input() public messagingData: MessagingLoadDataModelUI[];
+  @Input() public buttonText: string = "";
+  @Input() public messagingData: MessagingLoadDataModelUI[] = [];
 
   @Output() public checkboxEmitter: EventEmitter<number> = new EventEmitter();
   @Output() public selectboxEmitter: EventEmitter<any> = new EventEmitter();

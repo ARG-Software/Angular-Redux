@@ -16,7 +16,7 @@ export interface ProcessDetailState {
   processDetailTableData: {
     Information: ProcessDetailTableModelUI[];
     CurrentPaging: PagingModelUI;
-    RequestedPaging: PagingModelUI;
+    RequestedPaging: PagingModelUI | null;
   };
   machineSelectBox: MimsSelectBoxModel[];
 }

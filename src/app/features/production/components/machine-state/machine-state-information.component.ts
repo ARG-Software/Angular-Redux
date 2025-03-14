@@ -18,7 +18,7 @@ import { MimsSelectBoxModel } from "src/app/mims-ui/input/select-box/models/sele
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MachineStateInformationComponent {
-  @Input() public machineData: MachineStateLoadDataModelUI[];
+  @Input() public machineData: MachineStateLoadDataModelUI[] = [];
 
   @Output()
   public changedMachineEmitter: EventEmitter<MachineStateSaveDataModelUI> =

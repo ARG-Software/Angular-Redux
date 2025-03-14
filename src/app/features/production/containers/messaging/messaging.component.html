@@ -6,7 +6,8 @@
 </mims-header>
 
 <messaging-information
-  [messagingData]="messagingData$ | async"
+  *ngIf="messagingData$ | async as messagingData"
+  [messagingData]="messagingData"
   [buttonText]="buttonText"
   (checkboxEmitter)="checkboxChange($event)"
   (selectboxEmitter)="selectboxChange($event)"
