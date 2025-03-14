@@ -4,20 +4,27 @@
   [color]="'#5965e7'"
 >
   <downtime-filter-box
-    [productSelectBoxData]="productSelectBoxData$ | async"
-    [machineSelectBoxData]="machineSelectBoxData$ | async"
+    *ngIf="productSelectBoxData$ | async as productSelectBoxData"
+    [productSelectBoxData]="productSelectBoxData"
+    [machineSelectBoxData]="(machineSelectBoxData$ | async) || []"
     [defaultFilters]="request.Filters"
     (OnFilterApply)="filtersOptions($event)"
   >
   </downtime-filter-box>
 </mims-header>
 
-<downtime-information
-  [chartData]="chartData$ | async"
-  [tableData]="tableData$ | async"
-  [chartColors]="chartColors"
-  [chartSize]="chartSize"
-  [paginationDetails]="tablePaging$ | async"
-  (changePage)="requestNewPage($event)"
->
-</downtime-information>
+<ng-container *ngIf="chartData$ | async as chartData">
+  <ng-container *ngIf="tableData$ | async as tableData">
+    <ng-container *ngIf="tablePaging$ | async as paginationDetails">
+      <downtime-information
+        [chartData]="chartData"
+        [tableData]="tableData"
+        [chartColors]="chartColors"
+        [chartSize]="chartSize"
+        [paginationDetails]="paginationDetails"
+        (changePage)="requestNewPage($event)"
+      >
+      </downtime-information>
+    </ng-container>
+  </ng-container>
+</ng-container>

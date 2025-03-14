@@ -1,17 +1,26 @@
-<mims-header [title]="'Line Chart'"
-             [subTitle]="'OEE'"
-             [color]="'#5965e7'">
-    <oee-filter-box [productSelectBoxData]="productSelectBoxData$ | async"
-                    [machineSelectBoxData]="machineSelectBoxData$ | async"
-                    [defaultFilters]="request.Filters"
-                    (OnFilterApply)="filtersOptions($event)">
-    </oee-filter-box>
+<mims-header [title]="'Line Chart'" [subTitle]="'OEE'" [color]="'#5965e7'">
+  <oee-filter-box
+    *ngIf="productSelectBoxData$ | async as productSelectBoxData"
+    [productSelectBoxData]="productSelectBoxData"
+    [machineSelectBoxData]="(machineSelectBoxData$ | async) || []"
+    [defaultFilters]="request.Filters"
+    (OnFilterApply)="filtersOptions($event)"
+  >
+  </oee-filter-box>
 </mims-header>
 
-<oee-information [chartData]="chartData$ | async"
-                 [tableData]="tableData$ | async"
-                 [paginationDetails]="tablePaging$ | async"
-                 [chartSize]="chartSize"
-                 [tableHeaders]="tableHeaders"
-                 (changePage)="requestNewPage($event)">
-</oee-information>
+<ng-container *ngIf="chartData$ | async as chartData">
+  <ng-container *ngIf="tableData$ | async as tableData">
+    <ng-container *ngIf="tablePaging$ | async as paginationDetails">
+      <oee-information
+        [chartData]="chartData"
+        [tableData]="tableData"
+        [paginationDetails]="paginationDetails"
+        [chartSize]="chartSize"
+        [tableHeaders]="tableHeaders"
+        (changePage)="requestNewPage($event)"
+      >
+      </oee-information>
+    </ng-container>
+  </ng-container>
+</ng-container>
