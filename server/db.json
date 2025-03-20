@@ -1,0 +1,420 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "name": "John Doe",
+      "email": "john@example.com"
+    },
+    {
+      "id": "2",
+      "name": "Jane Smith",
+      "email": "jane@example.com"
+    }
+  ],
+  "Machine": [
+    {
+      "Id": 101,
+      "Name": "CNC Machine 1",
+      "Manufacturer": "XYZ Corp",
+      "Model": "X1000",
+      "Serial": "SN12345",
+      "MachineType": {
+        "Id": 1,
+        "Type": "CNC"
+      },
+      "id": "ccf3"
+    },
+    {
+      "Id": 102,
+      "Name": "Laser Cutter",
+      "Manufacturer": "ABC Inc",
+      "Model": "L500",
+      "Serial": "SN67890",
+      "MachineType": {
+        "Id": 2,
+        "Type": "Laser"
+      },
+      "id": "a864"
+    }
+  ],
+  "Product": [
+    {
+      "Id": 201,
+      "Name": "Product A",
+      "id": "d24b"
+    },
+    {
+      "Id": 202,
+      "Name": "Product B",
+      "id": "0c57"
+    }
+  ],
+  "DataWarehouse_graphics_DowntimePareto": [
+    {
+      "ChartData": [
+        {
+          "AssetNumber": "Machine-1",
+          "DowntimeInMinutes": 452,
+          "InstancesOfDowntime": 6
+        },
+        {
+          "AssetNumber": "Machine-2",
+          "DowntimeInMinutes": 335,
+          "InstancesOfDowntime": 3
+        },
+        {
+          "AssetNumber": "Machine-3",
+          "DowntimeInMinutes": 349,
+          "InstancesOfDowntime": 7
+        },
+        {
+          "AssetNumber": "Machine-4",
+          "DowntimeInMinutes": 76,
+          "InstancesOfDowntime": 9
+        },
+        {
+          "AssetNumber": "Machine-5",
+          "DowntimeInMinutes": 221,
+          "InstancesOfDowntime": 3
+        }
+      ],
+      "TableData": {
+        "Result": [
+          {
+            "AssetNumber": "Machine-1",
+            "DowntimeInMinutes": 162,
+            "InstancesOfDowntime": 1
+          },
+          {
+            "AssetNumber": "Machine-2",
+            "DowntimeInMinutes": 309,
+            "InstancesOfDowntime": 1
+          },
+          {
+            "AssetNumber": "Machine-3",
+            "DowntimeInMinutes": 179,
+            "InstancesOfDowntime": 1
+          },
+          {
+            "AssetNumber": "Machine-4",
+            "DowntimeInMinutes": 311,
+            "InstancesOfDowntime": 2
+          },
+          {
+            "AssetNumber": "Machine-5",
+            "DowntimeInMinutes": 338,
+            "InstancesOfDowntime": 7
+          }
+        ],
+        "Total": 5
+      },
+      "id": "3f8d"
+    },
+    {
+      "id": "b4d1",
+      "DWMachiningFilterDto": {
+        "StartDate": "2025-03-04T23:00:00.000Z",
+        "EndDate": "2025-03-18T23:00:00.000Z",
+        "MachineId": 0,
+        "ProductId": 0
+      },
+      "Paging": {
+        "CurrentIndex": 0,
+        "HowManyPerPage": 5,
+        "PropertyToOrderBy": "AssetNumber",
+        "Total": 0,
+        "Ordered": true,
+        "IsDescending": true
+      }
+    },
+    {
+      "id": "3c43",
+      "DWMachiningFilterDto": {
+        "StartDate": "2025-03-04T23:00:00.000Z",
+        "EndDate": "2025-03-18T23:00:00.000Z",
+        "MachineId": 0,
+        "ProductId": 0
+      },
+      "Paging": {
+        "CurrentIndex": 0,
+        "HowManyPerPage": 5,
+        "PropertyToOrderBy": "AssetNumber",
+        "Total": 0,
+        "Ordered": true,
+        "IsDescending": true
+      }
+    },
+    {
+      "id": "20b9",
+      "DWMachiningFilterDto": {
+        "StartDate": "2025-03-04T23:00:00.000Z",
+        "EndDate": "2025-03-18T23:00:00.000Z",
+        "MachineId": 0,
+        "ProductId": 0
+      },
+      "Paging": {
+        "CurrentIndex": 0,
+        "HowManyPerPage": 5,
+        "PropertyToOrderBy": "AssetNumber",
+        "Total": 0,
+        "Ordered": true,
+        "IsDescending": true
+      }
+    },
+    {
+      "id": "53ca",
+      "DWMachiningFilterDto": {
+        "StartDate": "2025-03-04T23:00:00.000Z",
+        "EndDate": "2025-03-18T23:00:00.000Z",
+        "MachineId": 0,
+        "ProductId": 0
+      },
+      "Paging": {
+        "CurrentIndex": 0,
+        "HowManyPerPage": 5,
+        "PropertyToOrderBy": "AssetNumber",
+        "Total": 0,
+        "Ordered": true,
+        "IsDescending": true
+      }
+    },
+    {
+      "id": "222f",
+      "DWMachiningFilterDto": {
+        "StartDate": "2025-03-04T23:00:00.000Z",
+        "EndDate": "2025-03-18T23:00:00.000Z",
+        "MachineId": 0,
+        "ProductId": 0
+      },
+      "Paging": {
+        "CurrentIndex": 0,
+        "HowManyPerPage": 5,
+        "PropertyToOrderBy": "AssetNumber",
+        "Total": 0,
+        "Ordered": true,
+        "IsDescending": true
+      }
+    },
+    {
+      "id": "d80a",
+      "DWMachiningFilterDto": {
+        "StartDate": "2025-03-04T23:00:00.000Z",
+        "EndDate": "2025-03-18T23:00:00.000Z",
+        "MachineId": 0,
+        "ProductId": 0
+      },
+      "Paging": {
+        "CurrentIndex": 0,
+        "HowManyPerPage": 5,
+        "PropertyToOrderBy": "AssetNumber",
+        "Total": 0,
+        "Ordered": true,
+        "IsDescending": true
+      }
+    },
+    {
+      "id": "3c24",
+      "DWMachiningFilterDto": {
+        "StartDate": "2025-03-04T23:00:00.000Z",
+        "EndDate": "2025-03-18T23:00:00.000Z",
+        "MachineId": 0,
+        "ProductId": 0
+      },
+      "Paging": {
+        "CurrentIndex": 0,
+        "HowManyPerPage": 5,
+        "PropertyToOrderBy": "AssetNumber",
+        "Total": 0,
+        "Ordered": true,
+        "IsDescending": true
+      }
+    },
+    {
+      "id": "f2eb",
+      "DWMachiningFilterDto": {
+        "StartDate": "2025-03-04T23:00:00.000Z",
+        "EndDate": "2025-03-18T23:00:00.000Z",
+        "MachineId": 0,
+        "ProductId": 0
+      },
+      "Paging": {
+        "CurrentIndex": 0,
+        "HowManyPerPage": 5,
+        "PropertyToOrderBy": "AssetNumber",
+        "Total": 0,
+        "Ordered": true,
+        "IsDescending": true
+      }
+    },
+    {
+      "id": "8468",
+      "DWMachiningFilterDto": {
+        "StartDate": "2025-03-04T23:00:00.000Z",
+        "EndDate": "2025-03-18T23:00:00.000Z",
+        "MachineId": 0,
+        "ProductId": 0
+      },
+      "Paging": {
+        "CurrentIndex": 0,
+        "HowManyPerPage": 5,
+        "PropertyToOrderBy": "AssetNumber",
+        "Total": 0,
+        "Ordered": true,
+        "IsDescending": true
+      }
+    },
+    {
+      "id": "5c20",
+      "DWMachiningFilterDto": {
+        "StartDate": "2025-03-04T23:00:00.000Z",
+        "EndDate": "2025-03-18T23:00:00.000Z",
+        "MachineId": 0,
+        "ProductId": 0
+      },
+      "Paging": {
+        "CurrentIndex": 0,
+        "HowManyPerPage": 5,
+        "PropertyToOrderBy": "AssetNumber",
+        "Total": 0,
+        "Ordered": true,
+        "IsDescending": true
+      }
+    },
+    {
+      "id": "cd66",
+      "DWMachiningFilterDto": {
+        "StartDate": "2025-03-04T23:00:00.000Z",
+        "EndDate": "2025-03-18T23:00:00.000Z",
+        "MachineId": 0,
+        "ProductId": 0
+      },
+      "Paging": {
+        "CurrentIndex": 0,
+        "HowManyPerPage": 5,
+        "PropertyToOrderBy": "AssetNumber",
+        "Total": 0,
+        "Ordered": true,
+        "IsDescending": true
+      }
+    },
+    {
+      "id": "fa5e",
+      "DWMachiningFilterDto": {
+        "StartDate": "2025-03-04T23:00:00.000Z",
+        "EndDate": "2025-03-18T23:00:00.000Z",
+        "MachineId": 0,
+        "ProductId": 0
+      },
+      "Paging": {
+        "CurrentIndex": 0,
+        "HowManyPerPage": 5,
+        "PropertyToOrderBy": "AssetNumber",
+        "Total": 0,
+        "Ordered": true,
+        "IsDescending": true
+      }
+    },
+    {
+      "id": "7821",
+      "DWMachiningFilterDto": {
+        "StartDate": "2025-03-04T23:00:00.000Z",
+        "EndDate": "2025-03-18T23:00:00.000Z",
+        "MachineId": 0,
+        "ProductId": 0
+      },
+      "Paging": {
+        "CurrentIndex": 0,
+        "HowManyPerPage": 5,
+        "PropertyToOrderBy": "AssetNumber",
+        "Total": 0,
+        "Ordered": true,
+        "IsDescending": true
+      }
+    },
+    {
+      "id": "7526",
+      "DWMachiningFilterDto": {
+        "StartDate": "2025-03-04T23:00:00.000Z",
+        "EndDate": "2025-03-18T23:00:00.000Z",
+        "MachineId": 0,
+        "ProductId": 0
+      },
+      "Paging": {
+        "CurrentIndex": 0,
+        "HowManyPerPage": 5,
+        "PropertyToOrderBy": "AssetNumber",
+        "Total": 0,
+        "Ordered": true,
+        "IsDescending": true
+      }
+    },
+    {
+      "id": "5921",
+      "DWMachiningFilterDto": {
+        "StartDate": "2025-03-04T23:00:00.000Z",
+        "EndDate": "2025-03-18T23:00:00.000Z",
+        "MachineId": 0,
+        "ProductId": 0
+      },
+      "Paging": {
+        "CurrentIndex": 0,
+        "HowManyPerPage": 5,
+        "PropertyToOrderBy": "AssetNumber",
+        "Total": 0,
+        "Ordered": true,
+        "IsDescending": true
+      }
+    },
+    {
+      "id": "72b8",
+      "DWMachiningFilterDto": {
+        "StartDate": "2025-03-04T23:00:00.000Z",
+        "EndDate": "2025-03-18T23:00:00.000Z",
+        "MachineId": 0,
+        "ProductId": 0
+      },
+      "Paging": {
+        "CurrentIndex": 0,
+        "HowManyPerPage": 5,
+        "PropertyToOrderBy": "AssetNumber",
+        "Total": 0,
+        "Ordered": true,
+        "IsDescending": true
+      }
+    },
+    {
+      "id": "060f",
+      "DWMachiningFilterDto": {
+        "StartDate": "2025-03-04T23:00:00.000Z",
+        "EndDate": "2025-03-18T23:00:00.000Z",
+        "MachineId": 0,
+        "ProductId": 0
+      },
+      "Paging": {
+        "CurrentIndex": 0,
+        "HowManyPerPage": 5,
+        "PropertyToOrderBy": "AssetNumber",
+        "Total": 0,
+        "Ordered": true,
+        "IsDescending": true
+      }
+    },
+    {
+      "id": "b40d",
+      "DWMachiningFilterDto": {
+        "StartDate": "2025-03-04T23:00:00.000Z",
+        "EndDate": "2025-03-18T23:00:00.000Z",
+        "MachineId": 0,
+        "ProductId": 0
+      },
+      "Paging": {
+        "CurrentIndex": 0,
+        "HowManyPerPage": 5,
+        "PropertyToOrderBy": "AssetNumber",
+        "Total": 0,
+        "Ordered": true,
+        "IsDescending": true
+      }
+    }
+  ]
+}

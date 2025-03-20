@@ -19,7 +19,7 @@ export interface IAppConfig {
 export const AppConfig: IAppConfig = {
   env: "development",
   port: 4200,
-  apiUrl: "https://localhost:3000",
+  apiUrl: "http://localhost:3000",
   refreshTokenKey: "mims_refresh",
   accessTokenKey: "mims_access",
   loginEndPoint: "/auth/login",
