@@ -125,7 +125,15 @@ export class BaseComboChartComponent
   }
 
   public override update(): void {
+    if (typeof this.results === "object" && this.results !== null) {
+      this.results = [
+        ...(Array.isArray(this.results.Bar) ? this.results.Bar : []),
+        ...(Array.isArray(this.results.Line) ? this.results.Line : []),
+      ];
+    }
+
     super.update();
+
     this.dims = calculateViewDimensions({
       width: this.width,
       height: this.height,
@@ -140,17 +148,11 @@ export class BaseComboChartComponent
       legendType: this.schemeType,
     });
 
-    if (!this.yAxis) {
-      this.legendSpacing = 0;
-    } else if (this.showYAxisLabel && this.yAxis) {
-      this.legendSpacing = 100;
-    } else {
-      this.legendSpacing = 40;
-    }
+    this.legendSpacing = !this.yAxis ? 0 : this.showYAxisLabel ? 100 : 40;
+
     this.xScale = this.getXScale();
     this.yScale = this.getYScale();
 
-    // line chart
     this.xDomainLine = this.getXDomainLine();
     if (this.filteredDomain) {
       this.xDomainLine = this.filteredDomain;
@@ -165,7 +167,7 @@ export class BaseComboChartComponent
     this.setColors();
     this.legendOptions = this.getLegendOptions();
 
-    this.transform = `translate(${this.dims.xOffset} , ${this.margin[0]})`;
+    this.transform = `translate(${this.dims.xOffset}, ${this.margin[0]})`;
   }
 
   public deactivateAll() {
