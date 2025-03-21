@@ -172,6 +172,24 @@ server.get("/Product/getSingleProductDto", (req, res) => {
   });
 });
 
+server.put("/Buffer/updateBufferCount", (req, res) => {
+  res.json({
+    Success: true,
+    Result: true,
+    GeneratedAt: new Date().toISOString(),
+    Message: "WIP buffer count updated successfully.",
+  });
+});
+
+server.put("/Buffer/updateBufferKanBan", (req, res) => {
+  res.json({
+    Success: true,
+    Result: true,
+    GeneratedAt: new Date().toISOString(),
+    Message: "Kanban buffer updated successfully.",
+  });
+});
+
 router.render = (req, res) => {
   const body = res.locals.data;
 
