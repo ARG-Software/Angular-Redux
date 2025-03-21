@@ -121,9 +121,11 @@ export class OverviewComponent implements OnInit {
     };
 
     this.store.dispatch(new Actions.GetDownTimeChart(requestChartModel));
-    this.store.dispatch(
+
+    //TODO uncomment
+    /*  this.store.dispatch(
       new Actions.GetMachineOperationTable(requestTableModel)
-    );
+    ); */
 
     this.chartData$ = this.store.pipe(
       select(fromModule.getDownTimeRecordChart),

@@ -58,6 +58,23 @@ server.post("/DataWarehouse_graphics_DowntimePareto", (req, res) => {
   res.json(response);
 });
 
+server.get("/Downtime/Product/Graphic/:productId/:date", (req, res) => {
+  const { productId, date } = req.params;
+
+  const mockShiftGraphic = [
+    { Uptime: 180, Downtime: 60, Name: "Shift A" },
+    { Uptime: 240, Downtime: 30, Name: "Shift B" },
+    { Uptime: 120, Downtime: 120, Name: "Shift C" },
+  ];
+
+  res.json({
+    Success: true,
+    Result: mockShiftGraphic,
+    GeneratedAt: new Date().toISOString(),
+    Message: "Mock shift graphic data.",
+  });
+});
+
 router.render = (req, res) => {
   const body = res.locals.data;
 
