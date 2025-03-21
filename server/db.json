@@ -109,5 +109,42 @@
         "Total": 5
       }
     }
+  ],
+  "Subcontractor": [
+    {
+      "Id": 1,
+      "Name": "Subcontractor A",
+      "Location": "Zone 1",
+      "Address": "123 Industrial Park",
+      "Address2": "Unit B",
+      "City": "Factory City",
+      "PostCode": "12345",
+      "State": "CA"
+    },
+    {
+      "Id": 2,
+      "Name": "Subcontractor B",
+      "Location": "Zone 2",
+      "Address": "456 Manufacturing Way",
+      "Address2": "",
+      "City": "Industrial Town",
+      "PostCode": "67890",
+      "State": "TX"
+    }
+  ],
+  "Edge": [
+    {
+      "Id": 1,
+      "Model": "Edge-X100"
+    },
+    {
+      "Id": 2,
+      "Model": "Edge-Pro 500"
+    }
+  ],
+  "ContactMessage": [
+    { "Id": 1, "Name": "Start Operation" },
+    { "Id": 2, "Name": "Stop Operation" },
+    { "Id": 3, "Name": "Maintenance Required" }
   ]
 }
