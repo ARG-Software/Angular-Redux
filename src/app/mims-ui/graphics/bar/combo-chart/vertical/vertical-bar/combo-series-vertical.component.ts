@@ -18,17 +18,6 @@ import {
   selector: "g[ngx-combo-charts-series-vertical]",
   templateUrl: "combo-series-vertical.component.html",
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [
-    trigger("animationState", [
-      transition("* => void", [
-        style({
-          opacity: 1,
-          transform: "*",
-        }),
-        animate(500, style({ opacity: 0, transform: "scale(0)" })),
-      ]),
-    ]),
-  ],
 })
 export class ComboSeriesVerticalComponent implements OnChanges {
   @Input() public dims: any;

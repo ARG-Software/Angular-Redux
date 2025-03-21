@@ -1,7 +1,7 @@
 ﻿import { NgModule } from "@angular/core";
 
 import { BrowserModule } from "@angular/platform-browser";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 
 // COMPONENTS
 import { AppComponent } from "./app.component";
@@ -40,7 +40,8 @@ const metaReducers: Array<MetaReducer<any, any>> = [localStorageSyncReducer];
   imports: [
     RouterModule.forRoot(routes),
     BrowserModule,
-    BrowserAnimationsModule,
+    //BrowserAnimationsModule, //TODO uncomment if needed
+    NoopAnimationsModule,
     EffectsModule.forRoot([]),
     ApiModule.forRoot(),
     StoreModule.forRoot({}, { metaReducers }),
