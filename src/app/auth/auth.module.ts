@@ -33,8 +33,4 @@ const routes: Routes = [
   declarations: [AuthComponent, LoginComponent, LogoutComponent],
   providers: [AuthGuard],
 })
-export class AuthModule {
-  constructor() {
-    console.log("AuthModule Loaded!");
-  }
-}
+export class AuthModule {}
