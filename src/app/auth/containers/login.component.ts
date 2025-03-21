@@ -37,12 +37,10 @@ export class LoginComponent implements OnInit {
 
   public logIn(): void {
     if (this.loginForm.invalid) {
-      console.warn("❌ Login form is invalid!");
       return;
     }
 
     const { username, password } = this.loginForm.value;
-    console.log("🚀 Dispatching login action:", username);
 
     this.store.dispatch(login({ username, password }));
   }

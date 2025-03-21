@@ -33,26 +33,19 @@ export class AuthEffects {
   }
 
   public loginUser$ = createEffect(() => {
-    console.log("🚀 loginUser$ Effect INITIATED!");
-
     return this.actions$.pipe(
       ofType(login),
       switchMap(({ username, password }) => {
-        console.log("🔑 Received login action BEFORE API CALL:", username);
         const loginDto: MimsModels.ILoginDto = {
           UserName: username,
           Password: password,
         };
 
         return this.auth.login(loginDto).pipe(
-          tap(() => console.log("🛜 API CALL STARTED for login...")),
           map((user: MimsModels.ILoginSession | null) => {
             if (!user) {
-              console.warn("❌ Login failed, user not found.");
               return loginFailure();
             }
-
-            console.log("🔑 Received user from API:", user);
 
             localStorage.setItem(this.accessTokenKey, user.AccessToken ?? "");
             localStorage.setItem(this.refreshTokenKey, user.RefreshToken ?? "");
@@ -64,11 +57,9 @@ export class AuthEffects {
               Login: user.User?.Login ?? "Unknown",
             };
 
-            console.log("✅ Dispatching loginSuccess:", newActionPayload);
             return loginSuccess({ user: newActionPayload });
           }),
           catchError((error) => {
-            console.error("🔥 Login API Error:", error);
             return of(loginFailure());
           })
         );
@@ -78,12 +69,9 @@ export class AuthEffects {
 
   public loginSuccess$ = createEffect(
     () => {
-      console.log("✅ loginSuccess$ Effect INITIATED!");
-
       return this.actions$.pipe(
         ofType(loginSuccess),
         tap(() => {
-          console.log("🔀 Redirecting to /main after login success...");
           this.router.navigate(["main"]);
         })
       );
@@ -93,29 +81,18 @@ export class AuthEffects {
 
   public loginFailure$ = createEffect(
     () => {
-      console.log("❌ loginFailure$ Effect INITIATED!");
-
-      return this.actions$.pipe(
-        ofType(loginFailure),
-        tap(() => {
-          console.log("⚠️ Showing login failure message...");
-        })
-      );
+      return this.actions$.pipe(ofType(loginFailure));
     },
     { dispatch: false }
   );
 
   public logout$ = createEffect(
     () => {
-      console.log("🔓 logout$ Effect INITIATED!");
-
       return this.actions$.pipe(
         ofType(logout),
         tap(() => {
-          console.log("🔓 Logging out...");
           localStorage.removeItem(this.accessTokenKey);
           localStorage.removeItem(this.refreshTokenKey);
-          console.log("🔀 Redirecting to login page...");
           this.router.navigate([this.appConfigurations.loginAppPath]);
         })
       );
