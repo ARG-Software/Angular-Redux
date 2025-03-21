@@ -151,6 +151,27 @@ server.get("/Buffer/product/:productId", (req, res) => {
   });
 });
 
+server.get("/Product/getSingleProductDto", (req, res) => {
+  const { productId } = req.query;
+
+  const mockProduct = {
+    Id: parseInt(productId, 10),
+    Name: "Product Alpha",
+    TargetHoursPerWeek: 40,
+    TargetEfficiency: 85,
+    OEE: 88.5,
+    Increase: true,
+    SDEs: 3,
+  };
+
+  res.json({
+    Success: true,
+    Result: mockProduct,
+    GeneratedAt: new Date().toISOString(),
+    Message: `Mock product data for productId ${productId}`,
+  });
+});
+
 router.render = (req, res) => {
   const body = res.locals.data;
 
