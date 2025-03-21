@@ -109,6 +109,48 @@ server.get("/MachineOperation/productId/:productId", (req, res) => {
   });
 });
 
+server.get("/Buffer/product/:productId", (req, res) => {
+  const { productId } = req.params;
+
+  const mockBufferData = [
+    {
+      Id: 1,
+      PreviousOperationId: 101,
+      NextOperationId: 102,
+      ProductId: parseInt(productId, 10),
+      Name: "Buffer A",
+      Count: 50,
+      LowAlertLowerBound: 0,
+      LowAlertLowWarning: 10,
+      LowWarningTarget: 20,
+      TargetHighWarning: 70,
+      HighWarningHighAlert: 90,
+      HighAlertUpperBound: 100,
+    },
+    {
+      Id: 2,
+      PreviousOperationId: 102,
+      NextOperationId: 103,
+      ProductId: parseInt(productId, 10),
+      Name: "Buffer B",
+      Count: 85,
+      LowAlertLowerBound: 5,
+      LowAlertLowWarning: 15,
+      LowWarningTarget: 30,
+      TargetHighWarning: 60,
+      HighWarningHighAlert: 80,
+      HighAlertUpperBound: 95,
+    },
+  ];
+
+  res.json({
+    Success: true,
+    Result: mockBufferData,
+    GeneratedAt: new Date().toISOString(),
+    Message: `Mock buffer data for product ${productId}`,
+  });
+});
+
 router.render = (req, res) => {
   const body = res.locals.data;
 
