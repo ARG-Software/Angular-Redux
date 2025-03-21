@@ -400,6 +400,34 @@ server.post("/DataWarehouse/graphics/DowntimePareto", (req, res) => {
   });
 });
 
+server.post("/auth/login", (req, res) => {
+  const mockLoginSession = {
+    RefreshToken: "mock-refresh-token-123",
+    AccessToken: "mock-access-token-abc",
+    User: {
+      Id: 1,
+      Name: "John Doe",
+      Position: "Engineer",
+      Email: "john.doe@example.com",
+      Login: "johndoe",
+      Password: undefined,
+      AccessLevel: {
+        Id: 1,
+        Name: 5,
+      },
+      AccountStatus: 1,
+      ProfileName: "Admin",
+    },
+  };
+
+  res.json({
+    Success: true,
+    Result: mockLoginSession,
+    GeneratedAt: new Date().toISOString(),
+    Message: "User authenticated successfully",
+  });
+});
+
 router.render = (req, res) => {
   const body = res.locals.data;
 

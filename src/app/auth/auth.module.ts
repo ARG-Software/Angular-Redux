@@ -15,9 +15,8 @@ const routes: Routes = [
   { path: "login", component: LoginComponent },
   { path: "logout", component: LogoutComponent },
   {
-    path: "",
-    //TODO activate this
-    //canActivate: [AuthGuard],
+    path: "main",
+    canActivate: [AuthGuard],
     loadChildren: () => import("../main/main.module").then((m) => m.MainModule),
   },
 ];
