@@ -75,6 +75,40 @@ server.get("/Downtime/Product/Graphic/:productId/:date", (req, res) => {
   });
 });
 
+server.get("/MachineOperation/productId/:productId", (req, res) => {
+  const { productId } = req.params;
+
+  const mockMachineOperations = [
+    {
+      Id: 1,
+      MachineId: 101,
+      MachineName: "CNC Machine 1",
+      OperationId: 501,
+      OperationName: "Drilling",
+      AssetNumber: 1001,
+      OEE: 85.6,
+      MDE: 92.3,
+    },
+    {
+      Id: 2,
+      MachineId: 102,
+      MachineName: "Laser Cutter",
+      OperationId: 502,
+      OperationName: "Cutting",
+      AssetNumber: 1002,
+      OEE: 78.9,
+      MDE: 88.5,
+    },
+  ];
+
+  res.json({
+    Success: true,
+    Result: mockMachineOperations,
+    GeneratedAt: new Date().toISOString(),
+    Message: `Mock machine operation data for product ${productId}`,
+  });
+});
+
 router.render = (req, res) => {
   const body = res.locals.data;
 
