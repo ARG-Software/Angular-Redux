@@ -22,6 +22,7 @@ import {
 import { scaleBand, scaleLinear, scalePoint, scaleTime } from "d3-scale";
 import { calculateViewDimensions, ColorHelper } from "@swimlane/ngx-charts";
 import { curveNatural } from "d3-shape";
+import { cloneDeep } from "lodash";
 
 // For any doubts, i download the zip file of user 'anishgomez':
 // https://github.com/swimlane/ngx-charts/issues/573
@@ -105,18 +106,16 @@ export class BaseComboChartComponent
   public barData: any = [];
 
   public override ngOnChanges(changes: SimpleChanges): void {
-    this.lineData = this.results.Line;
-    this.barData = this.results.Bar;
+    this.lineData = cloneDeep(this.results?.Line || []);
+    this.barData = cloneDeep(this.results?.Bar || []);
 
-    // By default set width and heigth
     if (!this.view) {
       this.width = 1000;
       this.height = 500;
     }
 
-    if (this.lineData.length > 0 && this.barData.length > 0) {
-      this.hasContent = true;
-    }
+    this.hasContent = this.lineData.length > 0 && this.barData.length > 0;
+
     this.update();
   }
 
