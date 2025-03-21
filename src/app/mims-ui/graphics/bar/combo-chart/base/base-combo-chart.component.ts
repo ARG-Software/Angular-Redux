@@ -373,20 +373,6 @@ export class BaseComboChartComponent
       domain = this.yDomain;
     }
 
-    if (
-      !this.scheme ||
-      typeof this.scheme !== "object" ||
-      !Array.isArray((this.scheme as any).domain)
-    ) {
-      console.warn("Invalid scheme. Applying default custom color scheme.");
-      this.scheme = {
-        name: "custom",
-        selectable: true,
-        group: ScaleType.Ordinal,
-        domain: ["#01579b", "#996633", "#a8385d", "#00bfa5", "#ff0000"],
-      } as Color;
-    }
-
     const scheme = this.scheme as Color;
 
     this.colors = new ColorHelper(

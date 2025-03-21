@@ -4,7 +4,7 @@
     *ngIf="chartData.Bar.length > 0 || chartData.Line.length > 0"
   >
     <combo-chart-vertical
-      [scheme]="chartColors"
+      [scheme]="chartColors?.Line"
       [results]="chartData"
       [view]="chartSize"
     >
