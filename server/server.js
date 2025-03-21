@@ -331,6 +331,75 @@ server.get("/ElectricalContact/productId/:productId", (req, res) => {
   });
 });
 
+server.post("/DataWarehouse/graphics/DowntimePareto", (req, res) => {
+  const data = {
+    ChartData: [
+      {
+        AssetNumber: "Machine-1",
+        DowntimeInMinutes: 234,
+        InstancesOfDowntime: 3,
+      },
+      {
+        AssetNumber: "Machine-2",
+        DowntimeInMinutes: 220,
+        InstancesOfDowntime: 8,
+      },
+      {
+        AssetNumber: "Machine-3",
+        DowntimeInMinutes: 367,
+        InstancesOfDowntime: 6,
+      },
+      {
+        AssetNumber: "Machine-4",
+        DowntimeInMinutes: 60,
+        InstancesOfDowntime: 9,
+      },
+      {
+        AssetNumber: "Machine-5",
+        DowntimeInMinutes: 333,
+        InstancesOfDowntime: 6,
+      },
+    ],
+    TableData: {
+      Result: [
+        {
+          AssetNumber: "Machine-1",
+          DowntimeInMinutes: 189,
+          InstancesOfDowntime: 8,
+        },
+        {
+          AssetNumber: "Machine-2",
+          DowntimeInMinutes: 145,
+          InstancesOfDowntime: 8,
+        },
+        {
+          AssetNumber: "Machine-3",
+          DowntimeInMinutes: 472,
+          InstancesOfDowntime: 8,
+        },
+        {
+          AssetNumber: "Machine-4",
+          DowntimeInMinutes: 199,
+          InstancesOfDowntime: 1,
+        },
+        {
+          AssetNumber: "Machine-5",
+          DowntimeInMinutes: 183,
+          InstancesOfDowntime: 4,
+        },
+      ],
+      Total: 5,
+    },
+  };
+
+  res.json({
+    Success: true,
+    Result: data,
+    GeneratedAt: new Date().toISOString(),
+    Message: "Mock data for DowntimePareto chart and table",
+  });
+});
+
 router.render = (req, res) => {
   const body = res.locals.data;
 

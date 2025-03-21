@@ -11,8 +11,7 @@ export class DowntimeMachiningService
   extends BaseMimsApi
   implements IDownTimeMachiningService
 {
-  //TODO change _ to /
-  private controllerRoute = "DataWarehouse_graphics";
+  private controllerRoute = "DataWarehouse/graphics";
 
   constructor(
     protected http: HttpClient,
@@ -24,7 +23,7 @@ export class DowntimeMachiningService
   public GetDownTimeData(obj: any): Observable<IMachineDowntimeScreenDto> {
     return this.getObjectUsingQueryingObjectPOST(
       obj,
-      `${this.controllerRoute}_DowntimePareto` //TODO change _ to /
+      `${this.controllerRoute}/DowntimePareto`
     );
   }
 }
