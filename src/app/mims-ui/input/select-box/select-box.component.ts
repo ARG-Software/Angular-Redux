@@ -44,6 +44,9 @@ export class SelectBoxComponent
   protected model!: NgModel;
   protected selected: string | number | undefined;
 
+  public selectId: string =
+    "select-" + Math.random().toString(36).substring(2, 10);
+
   constructor(
     @Optional() @Inject(NG_VALIDATORS) validators: any[],
     @Optional() @Inject(NG_ASYNC_VALIDATORS) asyncValidators: any[],
