@@ -22,12 +22,12 @@ export interface MessagingRequestModelUI {
 
 export const MessagingLoadDataModelUIFactory =
   Factory.makeFactory<MessagingLoadDataModelUI>({
-    Id: faker.number.int(),
-    DowntimeName: faker.word.sample(),
-    Duration: faker.number.int(),
-    StartTime: faker.date.recent().toISOString(),
-    EndTime: faker.date.recent().toISOString(),
-    Options: [
+    Id: Factory.each(() => faker.number.int()),
+    DowntimeName: Factory.each(() => faker.word.sample()),
+    Duration: Factory.each(() => faker.number.int()),
+    StartTime: Factory.each(() => faker.date.recent().toISOString()),
+    EndTime: Factory.each(() => faker.date.recent().toISOString()),
+    Options: Factory.each(() => [
       {
         value: faker.number.int(),
         name: faker.word.sample(),
@@ -38,7 +38,7 @@ export const MessagingLoadDataModelUIFactory =
         name: faker.word.sample(),
         selected: true,
       },
-    ],
+    ]),
   }).buildList(8);
 
 export const MessagingSaveDataModelUIFactory =

@@ -20,11 +20,13 @@ export interface MachineStateDataRequestModelUI {
 
 export const MachineStateLoadDataModelUIFactory =
   Factory.makeFactory<MachineStateLoadDataModelUI>({
-    Id: faker.number.int(),
-    Name: faker.word.sample(),
-    Image:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyB9LjUJGYiB1swxel_dg03NiL-XujzRxowH0CWleWRzEOPEBw",
-    Options: [
+    Id: Factory.each(() => faker.number.int()),
+    Name: Factory.each(() => faker.word.sample()),
+    Image: Factory.each(
+      () =>
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyB9LjUJGYiB1swxel_dg03NiL-XujzRxowH0CWleWRzEOPEBw"
+    ),
+    Options: Factory.each(() => [
       {
         value: faker.number.int(),
         name: faker.word.sample(),
@@ -35,7 +37,7 @@ export const MachineStateLoadDataModelUIFactory =
         name: faker.word.sample(),
         selected: false,
       },
-    ],
+    ]),
   }).buildList(8);
 
 export const MachineStateSaveDataModelUIFactory =
