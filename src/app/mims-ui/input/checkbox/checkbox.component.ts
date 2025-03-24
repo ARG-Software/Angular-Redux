@@ -37,8 +37,6 @@ export class CheckboxComponent extends BaseControlComponent<any> {
   @Input() public override label: string = "";
   @Input() public checkboxLabel: string = "";
 
-  checkboxId = "checkbox-" + Math.random().toString(36).substring(2, 10);
-
   @Output() public OnChangeSaveInformation: EventEmitter<any> =
     new EventEmitter();
 
