@@ -12,6 +12,7 @@ import { reducers, reducerName } from "./auth.reducers.index";
 import { LogoutComponent } from "./containers/logout.component";
 
 const routes: Routes = [
+  { path: "", redirectTo: "main", pathMatch: "full" },
   { path: "login", component: LoginComponent },
   { path: "logout", component: LogoutComponent },
   {
