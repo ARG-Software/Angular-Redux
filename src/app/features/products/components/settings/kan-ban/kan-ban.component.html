@@ -23,33 +23,43 @@
         <div class="col-lg-2">
           <mims-label
             class="space-between-s"
+            [forId]="'kanban-low-' + i"
             text="{{ kanBanData[i].Name }}"
-          ></mims-label>
+          >
+          </mims-label>
         </div>
+
         <div class="col-lg-1" style="margin-right: 20px">
           <mims-input
             class="space-right-s"
+            [id]="'kanban-low-' + i"
             [size]="3"
             formControlName="LowAlertLowWarning"
           ></mims-input>
         </div>
+
         <div class="col-lg-1" style="margin-right: 20px">
           <mims-input
             class="space-right-s"
+            [id]="'kanban-warning-' + i"
             [size]="3"
             formControlName="LowWarningTarget"
           ></mims-input>
         </div>
+
         <div class="col-lg-1" style="margin-right: 20px">
           <mims-input
             class="space-right-s"
+            [id]="'kanban-target-' + i"
             [size]="3"
             formControlName="TargetHighWarning"
           ></mims-input>
         </div>
+
         <div class="col-lg-1">
           <mims-input
             class="space-right-s"
+            [id]="'kanban-high-' + i"
             [size]="3"
             formControlName="HighWarningHighAlert"
           ></mims-input>

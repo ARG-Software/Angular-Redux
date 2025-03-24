@@ -8,4 +8,5 @@ import { Component, Input, ChangeDetectionStrategy } from "@angular/core";
 })
 export class LabelComponent {
   @Input() public text: string = "";
+  @Input() public forId: string = "";
 }

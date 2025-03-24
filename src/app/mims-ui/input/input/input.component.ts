@@ -34,6 +34,7 @@ import { BaseControlComponent } from "../../base/base.component";
 export class InputComponent extends BaseControlComponent<string> {
   @Input() public rows: string = "";
   @Input() public cols: string = "";
+  @Input() id: string = "";
   protected model!: NgModel;
   constructor(
     @Optional() @Inject(NG_VALIDATORS) validators: any[],

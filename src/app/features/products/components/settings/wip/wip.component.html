@@ -20,10 +20,15 @@
         [formGroupName]="i"
       >
         <div class="col-lg-4">
-          <mims-label text="{{ wipData[i].Name }}"></mims-label>
+          <mims-label text="{{ wipData[i].Name }}" [forId]="'wip-count-' + i">
+          </mims-label>
         </div>
         <div class="col">
-          <mims-input [size]="3" formControlName="Count"></mims-input>
+          <mims-input
+            [id]="'wip-count-' + i"
+            [size]="3"
+            formControlName="Count"
+          ></mims-input>
         </div>
       </div>
     </div>
