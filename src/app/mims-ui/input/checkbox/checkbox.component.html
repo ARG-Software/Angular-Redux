@@ -1,9 +1,14 @@
-<mims-label [text]="label"></mims-label>
-<clr-checkbox
-  [(ngModel)]="value"
-  [clrChecked]="checked"
-  (change)="changeCheckOption()"
-  ngDefaultControl
->
-  {{ checkboxLabel }}
-</clr-checkbox>
+<clr-checkbox-container>
+  <clr-checkbox-wrapper>
+    <input
+      type="checkbox"
+      clrCheckbox
+      [(ngModel)]="value"
+      [id]="checkboxId"
+      (change)="changeCheckOption()"
+    />
+    <label [for]="checkboxId" class="visually-hidden">
+      {{ checkboxLabel || label }}
+    </label>
+  </clr-checkbox-wrapper>
+</clr-checkbox-container>
