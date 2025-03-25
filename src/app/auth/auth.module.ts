@@ -10,6 +10,7 @@ import { AuthEffects } from "./effects/auth.effect";
 import { StoreModule } from "@ngrx/store";
 import { reducers, reducerName } from "./auth.reducers.index";
 import { LogoutComponent } from "./containers/logout.component";
+import { AuthService } from "./services/auth.service";
 
 const routes: Routes = [
   { path: "", redirectTo: "main", pathMatch: "full" },
@@ -32,6 +33,6 @@ const routes: Routes = [
     EffectsModule.forFeature([AuthEffects]),
   ],
   declarations: [AuthComponent, LoginComponent, LogoutComponent],
-  providers: [AuthGuard],
+  providers: [AuthGuard, AuthService],
 })
 export class AuthModule {}

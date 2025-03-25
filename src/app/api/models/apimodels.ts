@@ -225,9 +225,9 @@ export interface IUsersDto {
 }
 
 export interface ILoginSession {
-  RefreshToken?: string;
-  AccessToken?: string;
-  User: IUsersDto | undefined;
+  RefreshToken: string;
+  AccessToken: string;
+  User: IUsersDto;
 }
 
 export interface IDowntimeMachineParetoDto {
@@ -264,34 +264,34 @@ export interface IOEEScreenDto {
 }
 
 export interface DWMachiningFilterDto {
-    MachineId: number;
-    ProductId: number;
-    StartDate: Date;
-    EndDate: Date;
+  MachineId: number;
+  ProductId: number;
+  StartDate: Date;
+  EndDate: Date;
 }
 
 export interface DWMachiningDowntimeScreenRequestDto {
-    DWMachiningFilterDto: DWMachiningFilterDto;
-    Paging: IPaging;
+  DWMachiningFilterDto: DWMachiningFilterDto;
+  Paging: IPaging;
 }
 
 export interface IElectricalContactDto {
-        Id: number;
-        MachineMCode: string;
-        MachineOutput: string;
-        NumberOnMote: number;
-        MoteId: number;
-        MachineId: number;
-        OperationId: number;
-        MessageId: number;
+  Id: number;
+  MachineMCode: string;
+  MachineOutput: string;
+  NumberOnMote: number;
+  MoteId: number;
+  MachineId: number;
+  OperationId: number;
+  MessageId: number;
 }
 
 export interface IEdgeDto {
-    Id: number;
-    Model: string;
+  Id: number;
+  Model: string;
 }
 
 export interface IContactMessageDto {
-    Id: number;
-    Name: string;
+  Id: number;
+  Name: string;
 }
