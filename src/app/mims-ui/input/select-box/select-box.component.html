@@ -3,8 +3,8 @@
   [ngStyle]="{ display: display != 'undefined' ? display : 'block' }"
 >
   <select
-    [id]="selectId"
-    [name]="selectId"
+    [id]="id"
+    [name]="id"
     [(ngModel)]="selected"
     (change)="onSelectValue($event)"
     [attr.disabled]="disable ? 'disabled' : null"
