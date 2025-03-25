@@ -8,22 +8,25 @@
 <section class="form-block">
   <form [formGroup]="productsForm">
     <div class="form-group">
-      <label>Name</label>
+      <label for="product-details-name">Name</label>
       <mims-input
+        [id]="'product-details-name'"
         value="{{ productDetailsData.Name }}"
         [formControlName]="'Name'"
       ></mims-input>
     </div>
     <div class="form-group">
-      <label>Target Hours Per Week</label>
+      <label for="target-hours-per-week">Target Hours Per Week</label>
       <mims-input
+        [id]="'target-hours-per-week'"
         value="{{ productDetailsData.TargetHoursPerWeek }}"
         [formControlName]="'TargetHoursPerWeek'"
       ></mims-input>
     </div>
     <div class="form-group">
-      <label>Target Efficiency</label>
+      <label for="target-efficiency">Target Efficiency</label>
       <mims-input
+        [id]="'target-efficiency'"
         value="{{ productDetailsData.TargetEfficiency }}"
         [formControlName]="'TargetEfficiency'"
       ></mims-input>
