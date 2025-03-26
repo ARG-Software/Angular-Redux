@@ -4,16 +4,16 @@ import {
   getDowntimeChartData,
   getDowntimeTableData,
   getDowntimeTablePagingData,
-  getDowntimeMachineData,
-  getDowntimeProductData,
+  getDowntimeMachineSelectData,
+  getDowntimeProductSelectData,
 } from "./reducers/downtime.reducer";
 import {
   getOeeChartData,
   getOeeTableData,
   oeeReducer,
   OeeState,
-  getOeeMachineData,
-  getOeeProductData,
+  getOeeMachineSelectData,
+  getOeeProductSelectData,
   getOeeTablePagingData,
 } from "./reducers/oee.reducer";
 import * as fromProcessDetailReducerDefinition from "./reducers/process-detail.reducer";
@@ -46,29 +46,29 @@ const getDowntimeState = createSelector(
   (state) => state.downtime
 );
 
-export const getDownTimeChart = createSelector(
+export const getDowntimeChart = createSelector(
   getDowntimeState,
   getDowntimeChartData
 );
 
-export const getDownTimeTable = createSelector(
+export const getDowntimeTable = createSelector(
   getDowntimeState,
   getDowntimeTableData
 );
 
-export const getDownTimeTablePaging = createSelector(
+export const getDowntimeTablePaging = createSelector(
   getDowntimeState,
   getDowntimeTablePagingData
 );
 
-export const getDowntimeMachineSelectData = createSelector(
+export const getDowntimeMachineSelect = createSelector(
   getDowntimeState,
-  getDowntimeMachineData
+  getDowntimeMachineSelectData
 );
 
-export const getDowntimeProductSelectData = createSelector(
+export const getDowntimeProductSelect = createSelector(
   getDowntimeState,
-  getDowntimeProductData
+  getDowntimeProductSelectData
 );
 
 // Oee
@@ -83,14 +83,14 @@ export const getOeeTablePaging = createSelector(
   getOeeTablePagingData
 );
 
-export const getOeeMachineSelectData = createSelector(
+export const getOeeMachineSelect = createSelector(
   getOeeState,
-  getOeeMachineData
+  getOeeMachineSelectData
 );
 
-export const getOeeProductSelectData = createSelector(
+export const getOeeProductSelect = createSelector(
   getOeeState,
-  getOeeProductData
+  getOeeProductSelectData
 );
 
 // Process Detail

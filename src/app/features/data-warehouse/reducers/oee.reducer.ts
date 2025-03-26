@@ -80,5 +80,7 @@ export const getOeeTableData = (state: OeeState) =>
   state.oeeTableData.Information;
 export const getOeeTablePagingData = (state: OeeState) =>
   state.oeeTableData.CurrentPaging;
-export const getOeeMachineData = (state: OeeState) => state.machineSelectBox;
-export const getOeeProductData = (state: OeeState) => state.productSelectBox;
+export const getOeeMachineSelectData = (state: OeeState) =>
+  state.machineSelectBox;
+export const getOeeProductSelectData = (state: OeeState) =>
+  state.productSelectBox;

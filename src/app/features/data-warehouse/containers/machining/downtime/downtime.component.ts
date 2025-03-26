@@ -67,14 +67,14 @@ export class DowntimeComponent implements OnInit {
   public chartSize = [1100, 400];
 
   constructor(private store: Store<fromReducer.DataWarehouseState>) {
-    this.chartData$ = this.store.select(fromReducer.getDownTimeChart);
-    this.tableData$ = this.store.select(fromReducer.getDownTimeTable);
-    this.tablePaging$ = this.store.select(fromReducer.getDownTimeTablePaging);
+    this.chartData$ = this.store.select(fromReducer.getDowntimeChart);
+    this.tableData$ = this.store.select(fromReducer.getDowntimeTable);
+    this.tablePaging$ = this.store.select(fromReducer.getDowntimeTablePaging);
     this.machineSelectBoxData$ = this.store.select(
-      fromReducer.getDowntimeMachineSelectData
+      fromReducer.getDowntimeMachineSelect
     );
     this.productSelectBoxData$ = this.store.select(
-      fromReducer.getDowntimeProductSelectData
+      fromReducer.getDowntimeProductSelect
     );
   }
 

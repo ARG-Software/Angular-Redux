@@ -94,8 +94,8 @@ export const getDowntimeTableData = (state: DowntimeState) =>
 export const getDowntimeTablePagingData = (state: DowntimeState) =>
   state.downtimeTableData.CurrentPaging;
 
-export const getDowntimeMachineData = (state: DowntimeState) =>
+export const getDowntimeMachineSelectData = (state: DowntimeState) =>
   state.machineSelectBox;
 
-export const getDowntimeProductData = (state: DowntimeState) =>
+export const getDowntimeProductSelectData = (state: DowntimeState) =>
   state.productSelectBox;

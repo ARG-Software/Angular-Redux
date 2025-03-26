@@ -59,10 +59,10 @@ export class OeeComponent implements OnInit {
     this.tableData$ = this.store.select(fromReducer.getOeeTable);
     this.tablePaging$ = this.store.select(fromReducer.getOeeTablePaging);
     this.machineSelectBoxData$ = this.store.select(
-      fromReducer.getOeeMachineSelectData
+      fromReducer.getOeeMachineSelect
     );
     this.productSelectBoxData$ = this.store.select(
-      fromReducer.getOeeProductSelectData
+      fromReducer.getOeeProductSelect
     );
   }
 
