@@ -5,14 +5,12 @@ import { of } from "rxjs";
 import { catchError, finalize, map, switchMap, tap } from "rxjs/operators";
 import * as loadingActions from "../../../main/actions/loading.actions";
 import * as fromMain from "../../../main/main.reducers.index";
-
 import {
-  GetProcessDetailData,
-  GetProcessDetailDataSuccess,
-  ProcessDetailActionTypes,
-  ProcessDetailFailure,
-  GetProcessDetailDataSelectBoxes,
-  GetProcessDetailDataSelectBoxesSuccess,
+  getProcessDetailData,
+  getProcessDetailDataSuccess,
+  processDetailFailure,
+  getProcessDetailDataSelectBoxes,
+  getProcessDetailDataSelectBoxesSuccess,
 } from "../actions/process-detail.actions";
 
 import {
@@ -37,9 +35,7 @@ export class ProcessDetailEffects {
 
   public getProcessDetailData$ = createEffect(() =>
     this.actions$.pipe(
-      ofType<GetProcessDetailData>(
-        ProcessDetailActionTypes.GetProcessDetailData
-      ),
+      ofType(getProcessDetailData),
       tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
       map((action) => action.payload),
       switchMap((payload) =>
@@ -110,14 +106,14 @@ export class ProcessDetailEffects {
                 Table: convertApiDataToProcessDetailTableModelUI(response),
               };
 
-              return new GetProcessDetailDataSuccess(processDetailData);
+              return getProcessDetailDataSuccess({
+                payload: processDetailData,
+              });
             }),
             finalize(() =>
               this.mainStore$.dispatch(new loadingActions.HideLoading())
             ),
-            catchError((error) => {
-              return of(new ProcessDetailFailure(error));
-            })
+            catchError((error) => of(processDetailFailure({ payload: error })))
           )
       )
     )
@@ -125,54 +121,38 @@ export class ProcessDetailEffects {
 
   public getProcessDetailDataSelectBox$ = createEffect(() =>
     this.actions$.pipe(
-      ofType<GetProcessDetailDataSelectBoxes>(
-        ProcessDetailActionTypes.GetProcessDetailDataSelectBoxes
-      ),
+      ofType(getProcessDetailDataSelectBoxes),
       tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
       switchMap(() =>
         this.machineService.GetMachines().pipe(
-          map((response: any[]) => {
-            return new GetProcessDetailDataSelectBoxesSuccess(
-              convertApiDataToSelectBox(response)
-            );
-          }),
+          map((response: any[]) =>
+            getProcessDetailDataSelectBoxesSuccess({
+              payload: convertApiDataToSelectBox(response),
+            })
+          ),
           finalize(() =>
             this.mainStore$.dispatch(new loadingActions.HideLoading())
           ),
-          catchError((error) => {
-            return of(new ProcessDetailFailure(error));
-          })
+          catchError((error) => of(processDetailFailure({ payload: error })))
         )
       )
     )
   );
 
   public getProcessDetailDataSuccess$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType<GetProcessDetailDataSuccess>(
-          ProcessDetailActionTypes.GetProcessDetailDataSuccess
-        )
-      ),
+    () => this.actions$.pipe(ofType(getProcessDetailDataSuccess)),
     { dispatch: false }
   );
 
   public getProcessDetailDataSelectBoxSuccess$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType<GetProcessDetailDataSelectBoxesSuccess>(
-          ProcessDetailActionTypes.GetProcessDetailDataSelectBoxesSuccess
-        )
-      ),
+    () => this.actions$.pipe(ofType(getProcessDetailDataSelectBoxesSuccess)),
     { dispatch: false }
   );
 
   public processDetailFailure$ = createEffect(
     () =>
       this.actions$.pipe(
-        ofType<ProcessDetailFailure>(
-          ProcessDetailActionTypes.ProcessDetailFailure
-        ),
+        ofType(processDetailFailure),
         tap((error) => {
           console.error("Error:", error);
         })

@@ -16,25 +16,32 @@ import {
   getOeeProductSelectData,
   getOeeTablePagingData,
 } from "./reducers/oee.reducer";
-import * as fromProcessDetailReducerDefinition from "./reducers/process-detail.reducer";
 import {
   createSelector,
   createFeatureSelector,
   ActionReducerMap,
 } from "@ngrx/store";
+import {
+  getProcessDetailChartData,
+  getProcessDetailMachineSelectData,
+  getProcessDetailTableData,
+  getProcessDetailTablePagingData,
+  processDetailReducer,
+  ProcessDetailState,
+} from "./reducers/process-detail.reducer";
 
 export const reducerName = "data-warehouse";
 
 export interface DataWarehouseState {
   downtime: DowntimeState;
   oee: OeeState;
-  processDetail: fromProcessDetailReducerDefinition.ProcessDetailState;
+  processDetail: ProcessDetailState;
 }
 
 export const reducers: ActionReducerMap<DataWarehouseState, any> = {
   downtime: downtimeReducer,
   oee: oeeReducer,
-  processDetail: fromProcessDetailReducerDefinition.reducer as any,
+  processDetail: processDetailReducer,
 };
 
 const getDataWarehouseState =
@@ -101,20 +108,20 @@ const getProcessDetailState = createSelector(
 
 export const getProcessDetailChart = createSelector(
   getProcessDetailState,
-  fromProcessDetailReducerDefinition.getProcessDetailChartData
+  getProcessDetailChartData
 );
 
 export const getProcessDetailTable = createSelector(
   getProcessDetailState,
-  fromProcessDetailReducerDefinition.getProcessDetailTableData
+  getProcessDetailTableData
 );
 
 export const getProcessDetailTablePaging = createSelector(
   getProcessDetailState,
-  fromProcessDetailReducerDefinition.getProcessDetailTablePaging
+  getProcessDetailTablePagingData
 );
 
-export const getProcessDetailMachineSelectData = createSelector(
+export const getProcessDetailMachineSelect = createSelector(
   getProcessDetailState,
-  fromProcessDetailReducerDefinition.getMachineSelectData
+  getProcessDetailMachineSelectData
 );

@@ -4,13 +4,14 @@ import * as fromReducer from "../../../data-warehouse.reducers.index";
 import { Observable } from "rxjs";
 
 import {
-  GetProcessDetailData,
-  GetProcessDetailDataSelectBoxes,
-} from "../../../actions/process-detail.actions";
-import {
   ProcessDetailChartModelUI,
   ProcessDetailTableModelUI,
 } from "../../../models/process-detail.models";
+import {
+  getProcessDetailData,
+  getProcessDetailDataSelectBoxes,
+} from "../../../actions/process-detail.actions";
+
 import { MachiningRequestModelUI } from "../../../models/downtime.models";
 import { getTodayDateMinusInputDays } from "../../../../../utils/funtion.utils";
 import { PagingModelUI } from "src/app/app.models";
@@ -71,13 +72,13 @@ export class ProcessDetailComponent implements OnInit {
       fromReducer.getProcessDetailTablePaging
     );
     this.machineSelectBoxData$ = this.store.select(
-      fromReducer.getProcessDetailMachineSelectData
+      fromReducer.getProcessDetailMachineSelect
     );
   }
 
   public ngOnInit() {
-    this.store.dispatch(new GetProcessDetailDataSelectBoxes());
-    this.store.dispatch(new GetProcessDetailData(this.request));
+    this.store.dispatch(getProcessDetailDataSelectBoxes({}));
+    this.store.dispatch(getProcessDetailData({ payload: this.request }));
   }
 
   /**
@@ -92,7 +93,7 @@ export class ProcessDetailComponent implements OnInit {
         CurrentIndex: pageNumber - 1,
       },
     };
-    this.store.dispatch(new GetProcessDetailData(this.request));
+    this.store.dispatch(getProcessDetailData({ payload: this.request }));
   }
 
   /**
@@ -104,6 +105,6 @@ export class ProcessDetailComponent implements OnInit {
       ...this.request,
       Filters: { ...filters },
     };
-    this.store.dispatch(new GetProcessDetailData(this.request));
+    this.store.dispatch(getProcessDetailData({ payload: this.request }));
   }
 }

@@ -1,16 +1,19 @@
+import { createReducer, on } from "@ngrx/store";
 import {
-  ProcessDetailActionTypes,
-  ProcessDetailActions,
+  getProcessDetailData,
+  getProcessDetailDataSuccess,
+  getProcessDetailDataSelectBoxesSuccess,
+  processDetailFailure,
 } from "../actions/process-detail.actions";
+
 import {
   ProcessDetailChartModelUI,
   ProcessDetailTableModelUI,
 } from "../models/process-detail.models";
+import { PagingModelUI } from "src/app/app.models";
 import { DEFAULT_PAGING } from "../../../app.constants";
-import { PagingModelUI } from "../../../app.models";
 import { MimsSelectBoxModel } from "src/app/mims-ui/input/select-box/models/select-box.model";
 
-// TODO: correct initial state when doing effects and we receive data from services
 export interface ProcessDetailState {
   processDetailChartData: ProcessDetailChartModelUI[];
   processDetailTableData: {
@@ -31,78 +34,55 @@ export const initialState: ProcessDetailState = {
   machineSelectBox: [],
 };
 
-export function reducer(
-  state: ProcessDetailState = initialState,
-  action: ProcessDetailActions
-): ProcessDetailState {
-  switch (action.type) {
-    case ProcessDetailActionTypes.GetProcessDetailDataSelectBoxesSuccess: {
-      return {
-        ...state,
-        machineSelectBox: Object.assign(
-          [],
-          state.machineSelectBox,
-          action.payload
-        ),
-      };
-    }
+export const processDetailReducer = createReducer(
+  initialState,
 
-    case ProcessDetailActionTypes.GetProcessDetailData: {
-      return {
-        ...state,
-        processDetailTableData: {
-          ...state.processDetailTableData,
-          RequestedPaging: Object.assign(
-            {},
-            state.processDetailTableData.RequestedPaging,
-            action.payload.Paging
-          ),
-        },
-      };
-    }
+  on(getProcessDetailDataSelectBoxesSuccess, (state, { payload }) => ({
+    ...state,
+    machineSelectBox: [...payload],
+  })),
 
-    case ProcessDetailActionTypes.GetProcessDetailDataSuccess: {
-      return {
-        ...state,
-        processDetailTableData: {
-          Information: Object.assign([], action.payload.Table.Information),
-          CurrentPaging: Object.assign(
-            {},
-            state.processDetailTableData.RequestedPaging
-          ),
-          RequestedPaging: null,
-        },
-        processDetailChartData: Object.assign([], action.payload.Chart),
-      };
-    }
+  on(getProcessDetailData, (state, { payload }) => ({
+    ...state,
+    processDetailTableData: {
+      ...state.processDetailTableData,
+      RequestedPaging: {
+        ...(state.processDetailTableData.RequestedPaging ?? DEFAULT_PAGING),
+        ...payload.Paging,
+      },
+    },
+  })),
 
-    case ProcessDetailActionTypes.ProcessDetailFailure: {
-      return {
-        ...state,
-        processDetailTableData: {
-          ...state.processDetailTableData,
-          RequestedPaging: null,
-        },
-      };
-    }
+  on(getProcessDetailDataSuccess, (state, { payload }) => ({
+    ...state,
+    processDetailTableData: {
+      Information: [...payload.Table.Information],
+      CurrentPaging: {
+        ...(state.processDetailTableData.RequestedPaging ?? DEFAULT_PAGING),
+      },
+      RequestedPaging: null,
+    },
+    processDetailChartData: [...payload.Chart],
+  })),
 
-    default:
-      return state;
-  }
-}
+  on(processDetailFailure, (state) => ({
+    ...state,
+    processDetailTableData: {
+      ...state.processDetailTableData,
+      RequestedPaging: null,
+    },
+  }))
+);
 
-/*
-    Below are the selectors for this reducer. Make sure to make compact selectors as per
-    requirements of your application.
-*/
+// Selectors
 export const getProcessDetailChartData = (state: ProcessDetailState) =>
   state.processDetailChartData;
 
 export const getProcessDetailTableData = (state: ProcessDetailState) =>
   state.processDetailTableData.Information;
 
-export const getProcessDetailTablePaging = (state: ProcessDetailState) =>
+export const getProcessDetailTablePagingData = (state: ProcessDetailState) =>
   state.processDetailTableData.CurrentPaging;
 
-export const getMachineSelectData = (state: ProcessDetailState) =>
+export const getProcessDetailMachineSelectData = (state: ProcessDetailState) =>
   state.machineSelectBox;
