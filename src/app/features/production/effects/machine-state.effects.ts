@@ -9,12 +9,11 @@ import * as loadingActions from "../../../main/actions/loading.actions";
 import * as fromMain from "../../../main/main.reducers.index";
 
 import {
-  MachineFailure,
-  MachineStateActionTypes,
-  GetMachineData,
-  GetMachineDataSuccess,
-  UpdateMachineData,
-  UpdateMachineDataSuccess,
+  getMachineData,
+  getMachineDataSuccess,
+  updateMachineData,
+  updateMachineDataSuccess,
+  machineFailure,
 } from "../actions/machine-state.actions";
 
 import {
@@ -33,18 +32,19 @@ export class MachineStateEffects {
 
   getMachineStateData$ = createEffect(() =>
     this.actions$.pipe(
-      ofType<GetMachineData>(MachineStateActionTypes.GetMachineData),
+      ofType(getMachineData),
       tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
       switchMap(({ payload }) =>
         apiRequest().pipe(
-          map(
-            (response: any[]) =>
-              new GetMachineDataSuccess(MachineStateLoadDataModelUIFactory)
+          map(() =>
+            getMachineDataSuccess({
+              payload: MachineStateLoadDataModelUIFactory,
+            })
           ),
           finalize(() =>
             this.mainStore$.dispatch(new loadingActions.HideLoading())
           ),
-          catchError((error) => of(new MachineFailure(error)))
+          catchError((error) => of(machineFailure({ payload: error })))
         )
       )
     )
@@ -52,15 +52,15 @@ export class MachineStateEffects {
 
   updateMachineState$ = createEffect(() =>
     this.actions$.pipe(
-      ofType<UpdateMachineData>(MachineStateActionTypes.UpdateMachineData),
+      ofType(updateMachineData),
       tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
       switchMap(({ payload }) =>
         apiRequest().pipe(
-          map(() => new UpdateMachineDataSuccess(true)),
+          map(() => updateMachineDataSuccess({ payload: true })),
           finalize(() =>
             this.mainStore$.dispatch(new loadingActions.HideLoading())
           ),
-          catchError((error) => of(new MachineFailure(error)))
+          catchError((error) => of(machineFailure({ payload: error })))
         )
       )
     )
@@ -69,7 +69,7 @@ export class MachineStateEffects {
   machineStateFailure$ = createEffect(
     () =>
       this.actions$.pipe(
-        ofType<MachineFailure>(MachineStateActionTypes.MachineFailure),
+        ofType(machineFailure),
         tap((error) => console.error("MachineState Error:", error))
       ),
     { dispatch: false }

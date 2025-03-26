@@ -3,18 +3,21 @@ import {
   createSelector,
   createFeatureSelector,
 } from "@ngrx/store";
-import * as fromMachineReducer from "./reducers/machine-state.reducer";
 import * as fromMessagingReducer from "./reducers/messasing.reducer";
+import {
+  MachineState,
+  machineStateReducer,
+} from "./reducers/machine-state.reducer";
 
 export const reducerName = "production";
 
 export interface ProductionState {
-  machine: fromMachineReducer.MachineState;
+  machine: MachineState;
   messaging: fromMessagingReducer.MessagingState;
 }
 
 export const reducers: ActionReducerMap<ProductionState> = {
-  machine: fromMachineReducer.reducer as any,
+  machine: machineStateReducer,
   messaging: fromMessagingReducer.reducer as any,
 };
 

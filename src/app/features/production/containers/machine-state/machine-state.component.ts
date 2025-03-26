@@ -7,7 +7,10 @@ import {
 } from "../../models/machine-state.model";
 import { Store } from "@ngrx/store";
 import * as fromReducer from "../../production.reducers.index";
-import * as fromActions from "../../actions/machine-state.actions";
+import {
+  getMachineData,
+  updateMachineData,
+} from "../../actions/machine-state.actions";
 
 @Component({
   standalone: false,
@@ -20,18 +23,19 @@ export class MachineStateComponent implements OnInit {
     HeaderSubTitle: "Machines",
     Color: "#5965e7",
   };
+
   public machineData$: Observable<MachineStateLoadDataModelUI[]>;
 
   private request: MachineStateDataRequestModelUI = {
     machineId: 1,
   };
 
-  public constructor(private store: Store<fromReducer.ProductionState>) {
+  constructor(private store: Store<fromReducer.ProductionState>) {
     this.machineData$ = this.store.select(fromReducer.getMachineData);
   }
 
   public ngOnInit() {
-    this.store.dispatch(new fromActions.GetMachineData(this.request));
+    this.store.dispatch(getMachineData({ payload: this.request }));
   }
 
   /**
@@ -46,6 +50,6 @@ export class MachineStateComponent implements OnInit {
       },
     };
 
-    this.store.dispatch(new fromActions.UpdateMachineData(updatedData));
+    this.store.dispatch(updateMachineData({ payload: updatedData }));
   }
 }
