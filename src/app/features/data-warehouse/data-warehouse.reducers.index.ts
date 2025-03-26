@@ -1,4 +1,12 @@
-import * as fromDowntimeReducerDefinition from "./reducers/downtime.reducer";
+import {
+  downtimeReducer,
+  DowntimeState,
+  getDowntimeChartData,
+  getDowntimeTableData,
+  getDowntimeTablePaging,
+  getMachineSelectData,
+  getProductSelectData,
+} from "./reducers/downtime.reducer";
 import * as fromOeeReducerDefinition from "./reducers/oee.reducer";
 import * as fromProcessDetailReducerDefinition from "./reducers/process-detail.reducer";
 import {
@@ -10,13 +18,13 @@ import {
 export const reducerName = "data-warehouse";
 
 export interface DataWarehouseState {
-  downtime: fromDowntimeReducerDefinition.DowntimeState;
+  downtime: DowntimeState;
   oee: fromOeeReducerDefinition.OeeState;
   processDetail: fromProcessDetailReducerDefinition.ProcessDetailState;
 }
 
 export const reducers: ActionReducerMap<DataWarehouseState, any> = {
-  downtime: fromDowntimeReducerDefinition.reducer as any,
+  downtime: downtimeReducer,
   oee: fromOeeReducerDefinition.reducer as any,
   processDetail: fromProcessDetailReducerDefinition.reducer as any,
 };
@@ -32,27 +40,27 @@ const getDowntimeState = createSelector(
 
 export const getDownTimeChart = createSelector(
   getDowntimeState,
-  fromDowntimeReducerDefinition.getDowntimeChartData
+  getDowntimeChartData
 );
 
 export const getDownTimeTable = createSelector(
   getDowntimeState,
-  fromDowntimeReducerDefinition.getDowntimeTableData
+  getDowntimeTableData
 );
 
 export const getDownTimeTablePaging = createSelector(
   getDowntimeState,
-  fromDowntimeReducerDefinition.getDowntimeTablePaging
+  getDowntimeTablePaging
 );
 
 export const getDowntimeMachineSelectData = createSelector(
   getDowntimeState,
-  fromDowntimeReducerDefinition.getMachineSelectData
+  getMachineSelectData
 );
 
 export const getDowntimeProductSelectData = createSelector(
   getDowntimeState,
-  fromDowntimeReducerDefinition.getProductSelectData
+  getProductSelectData
 );
 
 // Oee

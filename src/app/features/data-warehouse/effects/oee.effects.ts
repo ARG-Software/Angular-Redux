@@ -24,12 +24,11 @@ import {
 
 import * as fromMain from "../../../main/main.reducers.index";
 import * as loadingActions from "../../../main/actions/loading.actions";
-
-import { convertApiDataToSelectBoxes } from "./downtime.effects";
 import { forkJoin, of } from "rxjs";
 import { IOeeMachiningService } from "src/app/api/services/interfaces/core/data-warehouse/ioee.service";
 import { IMachineService } from "src/app/api/services/interfaces/core/imachine.service";
 import { IProductService } from "src/app/api/services/interfaces/core/iproduct.service";
+import { convertApiDataToSelectBoxes } from "src/app/utils/funtion.utils";
 
 @Injectable()
 export class OeeEffects {

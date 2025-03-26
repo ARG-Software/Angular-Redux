@@ -4,13 +4,13 @@ import { Store } from "@ngrx/store";
 import * as fromReducer from "../../../data-warehouse.reducers.index";
 import { Observable } from "rxjs";
 import {
-  GetDowntimeData,
-  GetDowntimeDataSelectBoxes,
-} from "../../../actions/downtime.actions";
-import {
   ComboChartDataModelUI,
   DowntimeTableDataModelUI,
 } from "../../../models/downtime.models";
+import {
+  getDowntimeData,
+  getDowntimeDataSelectBoxes,
+} from "../../../actions/downtime.actions";
 import { getTodayDateMinusInputDays } from "../../../../../utils/funtion.utils";
 import { MachiningRequestModelUI } from "../../../models/downtime.models";
 import { PagingModelUI } from "src/app/app.models";
@@ -79,8 +79,8 @@ export class DowntimeComponent implements OnInit {
   }
 
   public ngOnInit() {
-    this.store.dispatch(new GetDowntimeDataSelectBoxes());
-    this.store.dispatch(new GetDowntimeData(this.request));
+    this.store.dispatch(getDowntimeDataSelectBoxes({}));
+    this.store.dispatch(getDowntimeData({ payload: this.request }));
   }
 
   /**
@@ -89,7 +89,7 @@ export class DowntimeComponent implements OnInit {
    */
   public requestNewPage(pageNumber: number) {
     this.request.Paging.CurrentIndex = pageNumber - 1;
-    this.store.dispatch(new GetDowntimeData(this.request));
+    this.store.dispatch(getDowntimeData({ payload: this.request }));
   }
   /**
    * Request data with new filters
@@ -100,6 +100,6 @@ export class DowntimeComponent implements OnInit {
       ...this.request,
       Filters: { ...filters },
     };
-    this.store.dispatch(new GetDowntimeData(this.request));
+    this.store.dispatch(getDowntimeData({ payload: this.request }));
   }
 }

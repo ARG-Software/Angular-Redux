@@ -1,4 +1,5 @@
 import { Observable, of } from "rxjs";
+import { MimsSelectBoxModel } from "../mims-ui/input/select-box/models/select-box.model";
 
 /**
  * Get today date and subtract the input number days
@@ -51,4 +52,16 @@ export function getDiferenceBetweenObjectArraysByProperty(
  */
 export function apiRequest(): Observable<any> {
   return of({});
+}
+
+export function convertApiDataToSelectBoxes(
+  data: any[]
+): [MimsSelectBoxModel[], MimsSelectBoxModel[]] {
+  return data.map((arrayForSelectBox) =>
+    arrayForSelectBox.map((elem: any) => ({
+      name: elem.Name,
+      value: elem.Id,
+      selected: false,
+    }))
+  ) as [MimsSelectBoxModel[], MimsSelectBoxModel[]];
 }

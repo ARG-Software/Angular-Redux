@@ -1,7 +1,11 @@
+import { createReducer, on } from "@ngrx/store";
 import {
-  DowntimeActions,
-  DowntimeActionTypes,
+  getDowntimeData,
+  getDowntimeDataSuccess,
+  getDowntimeDataSelectBoxesSuccess,
+  downtimeFailure,
 } from "../actions/downtime.actions";
+
 import {
   ComboChartDataModelUI,
   DowntimeTableDataModelUI,
@@ -36,70 +40,46 @@ export const initialState: DowntimeState = {
   productSelectBox: [],
 };
 
-export function reducer(
-  state: DowntimeState = initialState,
-  action: DowntimeActions
-): DowntimeState {
-  switch (action.type) {
-    case DowntimeActionTypes.GetDowntimeDataSelectBoxesSuccess: {
-      return {
-        ...state,
-        machineSelectBox: Object.assign(
-          [],
-          state.machineSelectBox,
-          action.payload[0]
-        ),
-        productSelectBox: Object.assign(
-          [],
-          state.productSelectBox,
-          action.payload[1]
-        ),
-      };
-    }
+export const downtimeReducer = createReducer(
+  initialState,
 
-    case DowntimeActionTypes.GetDowntimeData: {
-      return {
-        ...state,
-        downtimeTableData: {
-          ...state.downtimeTableData,
-          RequestedPaging: Object.assign(
-            {},
-            state.downtimeTableData.RequestedPaging,
-            action.payload.Paging
-          ),
-        },
-      };
-    }
+  on(getDowntimeDataSelectBoxesSuccess, (state, { payload }) => ({
+    ...state,
+    machineSelectBox: [...payload[0]],
+    productSelectBox: [...payload[1]],
+  })),
 
-    case DowntimeActionTypes.GetDowntimeDataSuccess: {
-      return {
-        ...state,
-        downtimeTableData: {
-          Information: Object.assign([], action.payload.Table.Information),
-          CurrentPaging: Object.assign(
-            {},
-            state.downtimeTableData.RequestedPaging
-          ),
-          RequestedPaging: null,
-        },
-        downtimeChartData: Object.assign({}, action.payload.Chart),
-      };
-    }
+  on(getDowntimeData, (state, { payload }) => ({
+    ...state,
+    downtimeTableData: {
+      ...state.downtimeTableData,
+      RequestedPaging: {
+        ...state.downtimeTableData.RequestedPaging,
+        ...payload.Paging,
+      },
+    },
+  })),
 
-    case DowntimeActionTypes.DowntimeFailure: {
-      return {
-        ...state,
-        downtimeTableData: {
-          ...state.downtimeTableData,
-          RequestedPaging: null,
-        },
-      };
-    }
+  on(getDowntimeDataSuccess, (state, { payload }) => ({
+    ...state,
+    downtimeTableData: {
+      Information: [...payload.Table.Information],
+      CurrentPaging: {
+        ...(state.downtimeTableData.RequestedPaging ?? DEFAULT_PAGING),
+      },
+      RequestedPaging: null,
+    },
+    downtimeChartData: { ...payload.Chart },
+  })),
 
-    default:
-      return state;
-  }
-}
+  on(downtimeFailure, (state) => ({
+    ...state,
+    downtimeTableData: {
+      ...state.downtimeTableData,
+      RequestedPaging: null,
+    },
+  }))
+);
 
 /*
     Below are the selectors for this reducer. Make sure to make compact selectors as per

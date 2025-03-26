@@ -1,51 +1,31 @@
-import { Action } from '@ngrx/store';
-import { MachiningRequestModelUI, DowntimeDataModelUI } from '../models/downtime.models';
-import { MimsSelectBoxModel } from '../../../mims-ui/input/select-box/models/select-box.model';
+import { createAction, props } from "@ngrx/store";
+import {
+  MachiningRequestModelUI,
+  DowntimeDataModelUI,
+} from "../models/downtime.models";
+import { MimsSelectBoxModel } from "../../../mims-ui/input/select-box/models/select-box.model";
 
-export enum DowntimeActionTypes {
+export const getDowntimeData = createAction(
+  "[Downtime] Get Downtime data",
+  props<{ payload: MachiningRequestModelUI }>()
+);
 
-    GetDowntimeDataSelectBoxes = '[Downtime] Get Downtime data for select boxes',
-    GetDowntimeDataSelectBoxesSuccess = '[Downtime] Get Downtime data for select boxes Success',
+export const getDowntimeDataSuccess = createAction(
+  "[Downtime] Get Downtime data Success",
+  props<{ payload: DowntimeDataModelUI }>()
+);
 
-    GetDowntimeData = '[Downtime] Get Downtime data',
-    GetDowntimeDataSuccess = '[Downtime] Get Downtime data Success',
+export const getDowntimeDataSelectBoxes = createAction(
+  "[Downtime] Get Downtime data for select boxes",
+  props<{ payload?: any }>()
+);
 
-    DowntimeFailure = '[Downtime] Downtime Failed'
-}
+export const getDowntimeDataSelectBoxesSuccess = createAction(
+  "[Downtime] Get Downtime data for select boxes Success",
+  props<{ payload: [MimsSelectBoxModel[], MimsSelectBoxModel[]] }>()
+);
 
-export class GetDowntimeData implements Action {
-    public type = DowntimeActionTypes.GetDowntimeData;
-
-    constructor(public payload: MachiningRequestModelUI) {}
-}
-
-export class GetDowntimeDataSelectBoxes implements Action {
-    public type = DowntimeActionTypes.GetDowntimeDataSelectBoxes;
-
-    constructor(public payload?: any) {}
-}
-
-export class GetDowntimeDataSelectBoxesSuccess implements Action {
-    public type = DowntimeActionTypes.GetDowntimeDataSelectBoxesSuccess;
-
-    constructor(public payload: MimsSelectBoxModel[]) {}
-}
-
-export class GetDowntimeDataSuccess implements Action {
-    public type = DowntimeActionTypes.GetDowntimeDataSuccess;
-
-    constructor(public payload: DowntimeDataModelUI) {}
-}
-
-export class DowntimeFailure implements Action {
-    public type = DowntimeActionTypes.DowntimeFailure;
-
-    constructor(public payload: any) {}
-}
-
-export type DowntimeActions =
-    | GetDowntimeData
-    | GetDowntimeDataSuccess
-    | GetDowntimeDataSelectBoxes
-    | GetDowntimeDataSelectBoxesSuccess
-    | DowntimeFailure;
+export const downtimeFailure = createAction(
+  "[Downtime] Downtime Failed",
+  props<{ payload: any }>()
+);

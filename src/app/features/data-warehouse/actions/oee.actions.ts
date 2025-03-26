@@ -22,7 +22,7 @@ export class GetOeeDataSelectBoxes implements Action {
 export class GetOeeDataSelectBoxesSuccess implements Action {
   public type = OeeActionTypes.GetOeeDataSelectBoxesSuccess;
 
-  constructor(public payload: MimsSelectBoxModel[]) {}
+  constructor(public payload: [MimsSelectBoxModel[], MimsSelectBoxModel[]]) {}
 }
 
 export class GetOeeData implements Action {

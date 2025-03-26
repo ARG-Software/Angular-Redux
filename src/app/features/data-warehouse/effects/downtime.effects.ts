@@ -9,21 +9,20 @@ import * as MimsModels from "src/app/api/models/apimodels";
 import * as fromMain from "../../../main/main.reducers.index";
 import * as loadingActions from "../../../main/actions/loading.actions";
 
-import {
-  GetDowntimeData,
-  GetDowntimeDataSuccess,
-  DowntimeFailure,
-  DowntimeActionTypes,
-  GetDowntimeDataSelectBoxes,
-  GetDowntimeDataSelectBoxesSuccess,
-} from "../actions/downtime.actions";
-
 import * as DowntimeModelsUI from "../models/downtime.models";
 
 import { forkJoin, of } from "rxjs";
 import { IDownTimeMachiningService } from "src/app/api/services/interfaces/core/data-warehouse/idowntime.service";
 import { IMachineService } from "src/app/api/services/interfaces/core/imachine.service";
 import { IProductService } from "src/app/api/services/interfaces/core/iproduct.service";
+import {
+  downtimeFailure,
+  getDowntimeData,
+  getDowntimeDataSelectBoxes,
+  getDowntimeDataSelectBoxesSuccess,
+  getDowntimeDataSuccess,
+} from "../actions/downtime.actions";
+import { convertApiDataToSelectBoxes } from "src/app/utils/funtion.utils";
 
 @Injectable()
 export class DowntimeEffects {
@@ -38,7 +37,7 @@ export class DowntimeEffects {
 
   public getDowntimeData$ = createEffect(() =>
     this.actions$.pipe(
-      ofType<GetDowntimeData>(DowntimeActionTypes.GetDowntimeData),
+      ofType(getDowntimeData),
       tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
       map((action) => {
         const request: MimsModels.DWMachiningDowntimeScreenRequestDto = {
@@ -60,14 +59,13 @@ export class DowntimeEffects {
               Chart: converApiDataToChartData(response.ChartData),
               Table: convertApiDataToTableData(response.TableData),
             };
-
-            return new GetDowntimeDataSuccess(downtimeData);
+            return getDowntimeDataSuccess({ payload: downtimeData });
           }),
           finalize(() =>
             this.mainStore$.dispatch(new loadingActions.HideLoading())
           ),
           catchError((error) => {
-            return of(new DowntimeFailure(error));
+            return of(downtimeFailure({ payload: error }));
           })
         )
       )
@@ -76,26 +74,22 @@ export class DowntimeEffects {
 
   public getDowntimeDataSelectBox$ = createEffect(() =>
     this.actions$.pipe(
-      ofType<GetDowntimeDataSelectBoxes>(
-        DowntimeActionTypes.GetDowntimeDataSelectBoxes
-      ),
+      ofType(getDowntimeDataSelectBoxes),
       tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
       switchMap(() =>
         forkJoin({
           machines: this.machineService.GetMachines(),
           products: this.productService.GetProductsList(),
         }).pipe(
-          map(({ machines, products }) => {
-            return new GetDowntimeDataSelectBoxesSuccess(
-              convertApiDataToSelectBoxes([machines, products])
-            );
-          }),
+          map(({ machines, products }) =>
+            getDowntimeDataSelectBoxesSuccess({
+              payload: convertApiDataToSelectBoxes([machines, products]),
+            })
+          ),
           finalize(() =>
             this.mainStore$.dispatch(new loadingActions.HideLoading())
           ),
-          catchError((error) => {
-            return of(new DowntimeFailure(error));
-          })
+          catchError((error) => of(downtimeFailure({ payload: error })))
         )
       )
     )
@@ -104,31 +98,21 @@ export class DowntimeEffects {
   public downtimeFailure$ = createEffect(
     () =>
       this.actions$.pipe(
-        ofType<DowntimeFailure>(DowntimeActionTypes.DowntimeFailure),
-        tap((error) => {
-          console.log("Error:", error);
+        ofType(downtimeFailure),
+        tap(({ payload }) => {
+          console.log("Error:", payload);
         })
       ),
     { dispatch: false }
   );
 
   public getDowntimeDataSuccess$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType<GetDowntimeDataSuccess>(
-          DowntimeActionTypes.GetDowntimeDataSuccess
-        )
-      ),
+    () => this.actions$.pipe(ofType(getDowntimeDataSuccess)),
     { dispatch: false }
   );
 
   public getDowntimeDataSelectBoxSuccess$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType<GetDowntimeDataSelectBoxesSuccess>(
-          DowntimeActionTypes.GetDowntimeDataSelectBoxesSuccess
-        )
-      ),
+    () => this.actions$.pipe(ofType(getDowntimeDataSelectBoxesSuccess)),
     { dispatch: false }
   );
 }
@@ -193,14 +177,4 @@ export function convertApiDataToTableData(
     Information: tableData,
     Total: data.Total,
   };
-}
-
-export function convertApiDataToSelectBoxes(data: any[]): any[] {
-  return data.map((arrayForSelectBox) =>
-    arrayForSelectBox.map((elem: any) => ({
-      name: elem.Name,
-      value: elem.Id,
-      selected: false,
-    }))
-  );
 }
