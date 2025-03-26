@@ -1,4 +1,11 @@
-import { OeeActionTypes, OeeActions } from "../actions/oee.actions";
+import { createReducer, on } from "@ngrx/store";
+import {
+  getOeeData,
+  getOeeDataSuccess,
+  getOeeDataSelectBoxesSuccess,
+  oeeFailure,
+} from "../actions/oee.actions";
+
 import { OeeChartDataModelUI, OeeTableDataModelUI } from "../models/oee.models";
 import { DEFAULT_PAGING } from "../../../app.constants";
 import { PagingModelUI } from "../../../app.models";
@@ -26,81 +33,52 @@ export const initialState: OeeState = {
   productSelectBox: [],
 };
 
-export function reducer(
-  state: OeeState = initialState,
-  action: OeeActions
-): OeeState {
-  switch (action.type) {
-    case OeeActionTypes.GetOeeDataSelectBoxesSuccess: {
-      return {
-        ...state,
-        machineSelectBox: Object.assign(
-          [],
-          state.machineSelectBox,
-          action.payload[0]
-        ),
-        productSelectBox: Object.assign(
-          [],
-          state.productSelectBox,
-          action.payload[1]
-        ),
-      };
-    }
+export const oeeReducer = createReducer(
+  initialState,
 
-    case OeeActionTypes.GetOeeData: {
-      return {
-        ...state,
-        oeeTableData: {
-          ...state.oeeTableData,
-          RequestedPaging: Object.assign(
-            {},
-            state.oeeTableData.RequestedPaging,
-            action.payload.Paging
-          ),
-        },
-      };
-    }
+  on(getOeeDataSelectBoxesSuccess, (state, { payload }) => ({
+    ...state,
+    machineSelectBox: [...payload[0]],
+    productSelectBox: [...payload[1]],
+  })),
 
-    case OeeActionTypes.GetOeeDataSuccess: {
-      return {
-        ...state,
-        oeeTableData: {
-          Information: Object.assign([], action.payload.Table.Information),
-          CurrentPaging: Object.assign({}, state.oeeTableData.RequestedPaging),
-          RequestedPaging: null,
-        },
-        oeeChartData: Object.assign([], action.payload.Chart),
-      };
-    }
+  on(getOeeData, (state, { payload }) => ({
+    ...state,
+    oeeTableData: {
+      ...state.oeeTableData,
+      RequestedPaging: {
+        ...(state.oeeTableData.RequestedPaging ?? DEFAULT_PAGING),
+        ...payload.Paging,
+      },
+    },
+  })),
 
-    case OeeActionTypes.OeeFailure: {
-      return {
-        ...state,
-        oeeTableData: {
-          ...state.oeeTableData,
-          RequestedPaging: null,
-        },
-      };
-    }
+  on(getOeeDataSuccess, (state, { payload }) => ({
+    ...state,
+    oeeTableData: {
+      Information: [...payload.Table.Information],
+      CurrentPaging: {
+        ...(state.oeeTableData.RequestedPaging ?? DEFAULT_PAGING),
+      },
+      RequestedPaging: null,
+    },
+    oeeChartData: [...payload.Chart],
+  })),
 
-    default:
-      return state;
-  }
-}
+  on(oeeFailure, (state) => ({
+    ...state,
+    oeeTableData: {
+      ...state.oeeTableData,
+      RequestedPaging: null,
+    },
+  }))
+);
 
-/*
-    Below are the selectors for this reducer. Make sure to make compact selectors as per
-    requirements of your application.
-*/
-
+// Selectors
 export const getOeeChartData = (state: OeeState) => state.oeeChartData;
-
 export const getOeeTableData = (state: OeeState) =>
   state.oeeTableData.Information;
-
-export const getOeeTablePaging = (state: OeeState) =>
+export const getOeeTablePagingData = (state: OeeState) =>
   state.oeeTableData.CurrentPaging;
-
-export const getMachineSelectData = (state: OeeState) => state.machineSelectBox;
-
-export const getProductSelectData = (state: OeeState) => state.productSelectBox;
+export const getOeeMachineData = (state: OeeState) => state.machineSelectBox;
+export const getOeeProductData = (state: OeeState) => state.productSelectBox;

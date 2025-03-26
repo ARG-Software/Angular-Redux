@@ -3,11 +3,19 @@ import {
   DowntimeState,
   getDowntimeChartData,
   getDowntimeTableData,
-  getDowntimeTablePaging,
-  getMachineSelectData,
-  getProductSelectData,
+  getDowntimeTablePagingData,
+  getDowntimeMachineData,
+  getDowntimeProductData,
 } from "./reducers/downtime.reducer";
-import * as fromOeeReducerDefinition from "./reducers/oee.reducer";
+import {
+  getOeeChartData,
+  getOeeTableData,
+  oeeReducer,
+  OeeState,
+  getOeeMachineData,
+  getOeeProductData,
+  getOeeTablePagingData,
+} from "./reducers/oee.reducer";
 import * as fromProcessDetailReducerDefinition from "./reducers/process-detail.reducer";
 import {
   createSelector,
@@ -19,13 +27,13 @@ export const reducerName = "data-warehouse";
 
 export interface DataWarehouseState {
   downtime: DowntimeState;
-  oee: fromOeeReducerDefinition.OeeState;
+  oee: OeeState;
   processDetail: fromProcessDetailReducerDefinition.ProcessDetailState;
 }
 
 export const reducers: ActionReducerMap<DataWarehouseState, any> = {
   downtime: downtimeReducer,
-  oee: fromOeeReducerDefinition.reducer as any,
+  oee: oeeReducer,
   processDetail: fromProcessDetailReducerDefinition.reducer as any,
 };
 
@@ -50,45 +58,39 @@ export const getDownTimeTable = createSelector(
 
 export const getDownTimeTablePaging = createSelector(
   getDowntimeState,
-  getDowntimeTablePaging
+  getDowntimeTablePagingData
 );
 
 export const getDowntimeMachineSelectData = createSelector(
   getDowntimeState,
-  getMachineSelectData
+  getDowntimeMachineData
 );
 
 export const getDowntimeProductSelectData = createSelector(
   getDowntimeState,
-  getProductSelectData
+  getDowntimeProductData
 );
 
 // Oee
 const getOeeState = createSelector(getDataWarehouseState, (state) => state.oee);
 
-export const getOeeChart = createSelector(
-  getOeeState,
-  fromOeeReducerDefinition.getOeeChartData
-);
+export const getOeeChart = createSelector(getOeeState, getOeeChartData);
 
-export const getOeeTable = createSelector(
-  getOeeState,
-  fromOeeReducerDefinition.getOeeTableData
-);
+export const getOeeTable = createSelector(getOeeState, getOeeTableData);
 
 export const getOeeTablePaging = createSelector(
   getOeeState,
-  fromOeeReducerDefinition.getOeeTablePaging
+  getOeeTablePagingData
 );
 
 export const getOeeMachineSelectData = createSelector(
   getOeeState,
-  fromOeeReducerDefinition.getMachineSelectData
+  getOeeMachineData
 );
 
 export const getOeeProductSelectData = createSelector(
   getOeeState,
-  fromOeeReducerDefinition.getProductSelectData
+  getOeeProductData
 );
 
 // Process Detail

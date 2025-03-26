@@ -2,8 +2,8 @@ import { Component, ChangeDetectionStrategy, OnInit } from "@angular/core";
 import { Store } from "@ngrx/store";
 import * as fromReducer from "../../../data-warehouse.reducers.index";
 import {
-  GetOeeData,
-  GetOeeDataSelectBoxes,
+  getOeeData,
+  getOeeDataSelectBoxes,
 } from "../../../actions/oee.actions";
 import {
   OeeChartDataModelUI,
@@ -67,17 +67,16 @@ export class OeeComponent implements OnInit {
   }
 
   public ngOnInit() {
-    this.store.dispatch(new GetOeeDataSelectBoxes());
-    this.store.dispatch(new GetOeeData(this.request));
+    this.store.dispatch(getOeeDataSelectBoxes({}));
+    this.store.dispatch(getOeeData({ payload: this.request }));
   }
-
   /**
    * Request new page to backend
    * @param pageNumber the numer of the page that we want
    */
   public requestNewPage(pageNumber: number) {
     this.request.Paging.CurrentIndex = pageNumber - 1;
-    this.store.dispatch(new GetOeeData(this.request));
+    this.store.dispatch(getOeeData({ payload: this.request }));
   }
 
   /**
@@ -89,6 +88,6 @@ export class OeeComponent implements OnInit {
       ...this.request,
       Filters: { ...filters },
     };
-    this.store.dispatch(new GetOeeData(this.request));
+    this.store.dispatch(getOeeData({ payload: this.request }));
   }
 }

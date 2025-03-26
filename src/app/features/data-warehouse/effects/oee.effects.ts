@@ -7,12 +7,11 @@ import { catchError, switchMap, map, tap, finalize } from "rxjs/operators";
 import * as MimsModels from "src/app/api/models/apimodels";
 
 import {
-  GetOeeData,
-  GetOeeDataSuccess,
-  OeeFailure,
-  GetOeeDataSelectBoxes,
-  GetOeeDataSelectBoxesSuccess,
-  OeeActionTypes,
+  getOeeData,
+  getOeeDataSuccess,
+  getOeeDataSelectBoxes,
+  getOeeDataSelectBoxesSuccess,
+  oeeFailure,
 } from "../actions/oee.actions";
 
 import {
@@ -43,7 +42,7 @@ export class OeeEffects {
 
   public getOeeData$ = createEffect(() =>
     this.actions$.pipe(
-      ofType<GetOeeData>(OeeActionTypes.GetOeeData),
+      ofType(getOeeData),
       tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
       map((action) => {
         const request: MimsModels.DWMachiningDowntimeScreenRequestDto = {
@@ -94,14 +93,12 @@ export class OeeEffects {
               Table: convertApiDataToTableData(response.TableData),
             };
 
-            return new GetOeeDataSuccess(oeeData);
+            return getOeeDataSuccess({ payload: oeeData });
           }),
           finalize(() =>
             this.mainStore$.dispatch(new loadingActions.HideLoading())
           ),
-          catchError((error) => {
-            return of(new OeeFailure(error));
-          })
+          catchError((error) => of(oeeFailure({ payload: error })))
         )
       )
     )
@@ -109,7 +106,7 @@ export class OeeEffects {
 
   public getOeeDataSelectBox$ = createEffect(() =>
     this.actions$.pipe(
-      ofType<GetOeeDataSelectBoxes>(OeeActionTypes.GetOeeDataSelectBoxes),
+      ofType(getOeeDataSelectBoxes),
       tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
       switchMap(() =>
         forkJoin({
@@ -117,43 +114,33 @@ export class OeeEffects {
           products: this.productService.GetProductsList(),
         }).pipe(
           map(({ machines, products }) => {
-            return new GetOeeDataSelectBoxesSuccess(
-              convertApiDataToSelectBoxes([machines, products])
-            );
+            return getOeeDataSelectBoxesSuccess({
+              payload: convertApiDataToSelectBoxes([machines, products]),
+            });
           }),
           finalize(() =>
             this.mainStore$.dispatch(new loadingActions.HideLoading())
           ),
-          catchError((error) => {
-            return of(new OeeFailure(error));
-          })
+          catchError((error) => of(oeeFailure({ payload: error })))
         )
       )
     )
   );
 
   public getOeeDataSuccess$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType<GetOeeDataSuccess>(OeeActionTypes.GetOeeDataSuccess)
-      ),
+    () => this.actions$.pipe(ofType(getOeeDataSuccess)),
     { dispatch: false }
   );
 
   public getOeeDataSelectBoxSuccess$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType<GetOeeDataSelectBoxesSuccess>(
-          OeeActionTypes.GetOeeDataSelectBoxesSuccess
-        )
-      ),
+    () => this.actions$.pipe(ofType(getOeeDataSelectBoxesSuccess)),
     { dispatch: false }
   );
 
   public oeeFailure$ = createEffect(
     () =>
       this.actions$.pipe(
-        ofType<OeeFailure>(OeeActionTypes.OeeFailure),
+        ofType(oeeFailure),
         tap((error) => {
           console.log("Error:", error);
         })
