@@ -5,15 +5,14 @@ import * as fromModule from "../../products.reducers.index";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store, select } from "@ngrx/store";
 import {
-  GetOperations,
-  AddOperation,
-  RemoveOperation,
-  GetOperationsSuccess,
-  AddOpertionSuccess,
-  RemoveOperationSuccess,
-  ErrorConfiguration,
-  GetOperationsSelectBoxSuccess,
-  ConfigurationActionTypes,
+  addOperation,
+  addOperationSuccess,
+  getOperations,
+  getOperationsSelectBoxSuccess,
+  getOperationsSuccess,
+  operationConfigurationError,
+  removeOperation,
+  removeOperationSuccess,
 } from "../../actions/configure.actions";
 import {
   tap,
@@ -38,31 +37,31 @@ export class ConfigureOperationsEffects {
   private mainStore$ = inject<Store<fromMain.MainState>>(Store);
   private operationService = inject<IOperationService>(IOperationService);
 
-  public getOperations$ = createEffect(() =>
+  getOperations$ = createEffect(() =>
     this.actions$.pipe(
-      ofType<GetOperations>(ConfigurationActionTypes.GetOperations),
+      ofType(getOperations),
       withLatestFrom(
         this.moduleStore$.pipe(select(fromModule.getOperationsUpdateState))
       ),
       filter(([_, updateNeeded]) => updateNeeded),
       tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
-      switchMap(([action]) =>
-        this.operationService.GetOperationsByProductId(action.payload).pipe(
-          map((operationList: IOperationDto[]) => {
-            const operationListCasted =
-              mapObjectTypeToRequested<OperationModelUI[]>(operationList);
-            const operationsSelectBox = operationListCasted.map((element) => ({
-              name: element.Description,
+      switchMap(([{ productId }]) =>
+        this.operationService.GetOperationsByProductId(productId).pipe(
+          map((list) => {
+            const operations =
+              mapObjectTypeToRequested<OperationModelUI[]>(list);
+            const selectBox = operations.map((o) => ({
+              name: o.Description,
+              value: o.Id,
               selected: false,
-              value: element.Id,
             }));
             return [
-              new GetOperationsSuccess(operationListCasted),
-              new GetOperationsSelectBoxSuccess(operationsSelectBox),
+              getOperationsSuccess({ operations }),
+              getOperationsSelectBoxSuccess({ selectBox }),
             ];
           }),
           concatMap((actions) => actions),
-          catchError((error) => of(new ErrorConfiguration(error))),
+          catchError((error) => of(operationConfigurationError({ error }))),
           finalize(() =>
             this.mainStore$.dispatch(new loadingActions.HideLoading())
           )
@@ -71,39 +70,40 @@ export class ConfigureOperationsEffects {
     )
   );
 
-  public addOperation$ = createEffect(() =>
+  addOperation$ = createEffect(() =>
     this.actions$.pipe(
-      ofType<AddOperation>(ConfigurationActionTypes.AddOperation),
+      ofType(addOperation),
       tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
-      map((action) => mapObjectTypeToRequested<IOperationDto>(action.payload)),
-      switchMap((payload) =>
-        this.operationService.AddOperation(payload).pipe(
-          map((addedOperation: IOperationDto) => {
-            const operationCasted =
-              mapObjectTypeToRequested<OperationModelUI>(addedOperation);
-            return new AddOpertionSuccess(operationCasted);
-          }),
-          catchError((error) => of(new ErrorConfiguration(error))),
-          finalize(() =>
-            this.mainStore$.dispatch(new loadingActions.HideLoading())
+      switchMap(({ operation }) =>
+        this.operationService
+          .AddOperation(mapObjectTypeToRequested(operation))
+          .pipe(
+            map((response) =>
+              addOperationSuccess({
+                operation: mapObjectTypeToRequested(response),
+              })
+            ),
+            catchError((error) => of(operationConfigurationError({ error }))),
+            finalize(() =>
+              this.mainStore$.dispatch(new loadingActions.HideLoading())
+            )
           )
-        )
       )
     )
   );
 
-  public removeOperation$ = createEffect(() =>
+  removeOperation$ = createEffect(() =>
     this.actions$.pipe(
-      ofType<RemoveOperation>(ConfigurationActionTypes.RemoveOperation),
+      ofType(removeOperation),
       tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
-      switchMap((action) =>
-        this.operationService.DeleteOperation(action.payload).pipe(
-          map((hasBeenDeleted: boolean) =>
-            hasBeenDeleted
-              ? new RemoveOperationSuccess(action.payload)
-              : new ErrorConfiguration({})
+      switchMap(({ operationId }) =>
+        this.operationService.DeleteOperation(operationId).pipe(
+          map((success) =>
+            success
+              ? removeOperationSuccess({ operationId })
+              : operationConfigurationError({ error: "Delete failed" })
           ),
-          catchError((error) => of(new ErrorConfiguration(error))),
+          catchError((error) => of(operationConfigurationError({ error }))),
           finalize(() =>
             this.mainStore$.dispatch(new loadingActions.HideLoading())
           )

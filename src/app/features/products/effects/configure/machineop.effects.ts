@@ -1,67 +1,65 @@
 import { inject, Injectable } from "@angular/core";
-import { Actions, ofType, createEffect } from "@ngrx/effects";
+import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store, select } from "@ngrx/store";
+import { of } from "rxjs";
+import {
+  catchError,
+  filter,
+  finalize,
+  map,
+  switchMap,
+  tap,
+  withLatestFrom,
+} from "rxjs/operators";
+
 import * as loadingActions from "../../../../main/actions/loading.actions";
 import * as fromMain from "../../../../main/main.reducers.index";
 import * as fromModule from "../../products.reducers.index";
-import {
-  ConfigurationActionTypes,
-  GetMachineOperationSuccess,
-  AddMachineOperationSuccess,
-  RemoveMachineOperationSuccess,
-  ErrorConfiguration,
-  GetMachineOperations,
-  AddMachineOperation,
-  RemoveMachineOperation,
-} from "../../actions/configure.actions";
-import {
-  tap,
-  withLatestFrom,
-  filter,
-  switchMap,
-  map,
-  catchError,
-  finalize,
-} from "rxjs/operators";
+
 import { mapObjectTypeToRequested } from "../../../../utils/funtion.utils";
-import { of } from "rxjs";
-import { MachineOperationModelUI } from "../../models/configure.model";
 import { IMachineOperationService } from "src/app/api/services/interfaces/core/imachineoperation.service";
+import { MachineOperationModelUI } from "../../models/configure.model";
 import { IMachineOperationsDto } from "src/app/api/models/apimodels";
+import {
+  addMachineOperation,
+  addMachineOperationSuccess,
+  getMachineOperations,
+  getMachineOperationsSuccess,
+  machineOperationFailure,
+  removeMachineOperation,
+  removeMachineOperationSuccess,
+} from "../../actions/configure.actions";
 
 @Injectable()
 export class ConfigureMachinesOperationEffects {
   private actions$ = inject(Actions);
-  private moduleStore$ = inject<Store<fromModule.ProductState>>(Store);
   private mainStore$ = inject<Store<fromMain.MainState>>(Store);
+  private moduleStore$ = inject<Store<fromModule.ProductState>>(Store);
   private machineOperationService = inject<IMachineOperationService>(
     IMachineOperationService
   );
 
   getMachineOperations$ = createEffect(() =>
     this.actions$.pipe(
-      ofType<GetMachineOperations>(
-        ConfigurationActionTypes.GetMachineOperations
-      ),
+      ofType(getMachineOperations),
       withLatestFrom(
         this.moduleStore$.pipe(
           select(fromModule.getMachineOperationsUpdateState)
         )
       ),
-      filter(([_, updateNeeded]) => updateNeeded),
+      filter(([_, needsUpdate]) => needsUpdate),
       tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
-      switchMap(([action, _]) =>
+      switchMap(([{ productId }]) =>
         this.machineOperationService
-          .GetMachineOperationsofProduct(action.payload)
+          .GetMachineOperationsofProduct(productId)
           .pipe(
-            map((machineOperationList: IMachineOperationsDto[]) => {
-              const machineOperationListCasted =
-                mapObjectTypeToRequested<MachineOperationModelUI[]>(
-                  machineOperationList
-                );
-              return new GetMachineOperationSuccess(machineOperationListCasted);
-            }),
-            catchError((error) => of(new ErrorConfiguration(error))),
+            map((data) =>
+              getMachineOperationsSuccess({
+                machines:
+                  mapObjectTypeToRequested<MachineOperationModelUI[]>(data),
+              })
+            ),
+            catchError((error) => of(machineOperationFailure({ error }))),
             finalize(() =>
               this.mainStore$.dispatch(new loadingActions.HideLoading())
             )
@@ -72,48 +70,52 @@ export class ConfigureMachinesOperationEffects {
 
   addMachineOperation$ = createEffect(() =>
     this.actions$.pipe(
-      ofType<AddMachineOperation>(ConfigurationActionTypes.AddMachineOperation),
+      ofType(addMachineOperation),
       tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
-      switchMap((action) =>
-        this.machineOperationService
-          .AddMachineOperation(action.payload as any)
-          .pipe(
-            map((addedMachineOperation: IMachineOperationsDto) => {
-              const machineOperationCasted =
-                mapObjectTypeToRequested<MachineOperationModelUI>(
-                  addedMachineOperation
-                );
-              return new AddMachineOperationSuccess(machineOperationCasted);
-            }),
-            catchError((error) => of(new ErrorConfiguration(error))),
-            finalize(() =>
-              this.mainStore$.dispatch(new loadingActions.HideLoading())
-            )
+      switchMap(({ machine }) => {
+        const dto: IMachineOperationsDto = {
+          Id: machine.Id,
+          MachineId: machine.MachineId,
+          MachineName: machine.MachineName ?? "",
+          OperationId: machine.OperationId,
+          OperationName: machine.OperationName ?? "",
+          AssetNumber: 0,
+          OEE: machine.OEE,
+          MDE: machine.MDE,
+        };
+
+        return this.machineOperationService.AddMachineOperation(dto).pipe(
+          map((response) =>
+            addMachineOperationSuccess({
+              machine:
+                mapObjectTypeToRequested<MachineOperationModelUI>(response),
+            })
+          ),
+          catchError((error) => of(machineOperationFailure({ error }))),
+          finalize(() =>
+            this.mainStore$.dispatch(new loadingActions.HideLoading())
           )
-      )
+        );
+      })
     )
   );
 
   removeMachineOperation$ = createEffect(() =>
     this.actions$.pipe(
-      ofType<RemoveMachineOperation>(
-        ConfigurationActionTypes.RemoveMachineOperation
-      ),
+      ofType(removeMachineOperation),
       tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
-      switchMap((action) =>
-        this.machineOperationService
-          .DeleteMachineOperation(action.payload)
-          .pipe(
-            map((hasBeenDeleted: boolean) => {
-              return hasBeenDeleted
-                ? new RemoveMachineOperationSuccess(action.payload)
-                : new ErrorConfiguration({});
-            }),
-            catchError((error) => of(new ErrorConfiguration(error))),
-            finalize(() =>
-              this.mainStore$.dispatch(new loadingActions.HideLoading())
-            )
+      switchMap(({ id }) =>
+        this.machineOperationService.DeleteMachineOperation(id).pipe(
+          map((success) =>
+            success
+              ? removeMachineOperationSuccess({ id })
+              : machineOperationFailure({ error: "Delete failed" })
+          ),
+          catchError((error) => of(machineOperationFailure({ error }))),
+          finalize(() =>
+            this.mainStore$.dispatch(new loadingActions.HideLoading())
           )
+        )
       )
     )
   );

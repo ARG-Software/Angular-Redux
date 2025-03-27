@@ -5,14 +5,13 @@ import * as fromModule from "../../products.reducers.index";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store, select } from "@ngrx/store";
 import {
-  GetSensors,
-  AddSensor,
-  RemoveSensor,
-  GetSensorsSuccess,
-  AddSensorSuccess,
-  RemoveSensorSuccess,
-  ErrorConfiguration,
-  ConfigurationActionTypes,
+  addSensor,
+  addSensorSuccess,
+  getSensors,
+  getSensorsSuccess,
+  removeSensor,
+  removeSensorSuccess,
+  sensorConfigurationError,
 } from "../../actions/configure.actions";
 import {
   tap,
@@ -38,22 +37,21 @@ export class ConfigureSensorsEffects {
     IElectricalConcactService
   );
 
-  public getSensors$ = createEffect(() =>
+  getSensors$ = createEffect(() =>
     this.actions$.pipe(
-      ofType<GetSensors>(ConfigurationActionTypes.GetSensors),
+      ofType(getSensors),
       withLatestFrom(
         this.moduleStore$.pipe(select(fromModule.getSensorUpdateState))
       ),
-      filter(([_, updateNeeded]) => updateNeeded),
+      filter(([_, needsUpdate]) => needsUpdate),
       tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
-      switchMap(([action]) =>
-        this.sensorService.GetECofProduct(action.payload).pipe(
-          map((sensorList: IElectricalContactDto[]) => {
-            const sensorListCasted =
-              mapObjectTypeToRequested<SensorModelUI[]>(sensorList);
-            return new GetSensorsSuccess(sensorListCasted);
+      switchMap(([{ productId }]) =>
+        this.sensorService.GetECofProduct(productId).pipe(
+          map((list) => {
+            const sensors = mapObjectTypeToRequested<SensorModelUI[]>(list);
+            return getSensorsSuccess({ sensors });
           }),
-          catchError((error) => of(new ErrorConfiguration(error))),
+          catchError((error) => of(sensorConfigurationError({ error }))),
           finalize(() =>
             this.mainStore$.dispatch(new loadingActions.HideLoading())
           )
@@ -62,18 +60,18 @@ export class ConfigureSensorsEffects {
     )
   );
 
-  public addSensor$ = createEffect(() =>
+  addSensor$ = createEffect(() =>
     this.actions$.pipe(
-      ofType<AddSensor>(ConfigurationActionTypes.AddSensor),
+      ofType(addSensor),
       tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
-      switchMap((action) =>
-        this.sensorService.AddEC(action.payload as any).pipe(
-          map((addedSensor: IElectricalContactDto) => {
+      switchMap(({ sensor }) =>
+        this.sensorService.AddEC(sensor as any).pipe(
+          map((response) => {
             const sensorCasted =
-              mapObjectTypeToRequested<SensorModelUI>(addedSensor);
-            return new AddSensorSuccess(sensorCasted);
+              mapObjectTypeToRequested<SensorModelUI>(response);
+            return addSensorSuccess({ sensor: sensorCasted });
           }),
-          catchError((error) => of(new ErrorConfiguration(error))),
+          catchError((error) => of(sensorConfigurationError({ error }))),
           finalize(() =>
             this.mainStore$.dispatch(new loadingActions.HideLoading())
           )
@@ -82,18 +80,18 @@ export class ConfigureSensorsEffects {
     )
   );
 
-  public removeSensor$ = createEffect(() =>
+  removeSensor$ = createEffect(() =>
     this.actions$.pipe(
-      ofType<RemoveSensor>(ConfigurationActionTypes.RemoveSensor),
+      ofType(removeSensor),
       tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
-      switchMap((action) =>
-        this.sensorService.DeleteEC(action.payload).pipe(
-          map((hasBeenDeleted: boolean) =>
-            hasBeenDeleted
-              ? new RemoveSensorSuccess(action.payload)
-              : new ErrorConfiguration({})
+      switchMap(({ sensorId }) =>
+        this.sensorService.DeleteEC(sensorId).pipe(
+          map((deleted) =>
+            deleted
+              ? removeSensorSuccess({ sensorId })
+              : sensorConfigurationError({ error: "Delete failed" })
           ),
-          catchError((error) => of(new ErrorConfiguration(error))),
+          catchError((error) => of(sensorConfigurationError({ error }))),
           finalize(() =>
             this.mainStore$.dispatch(new loadingActions.HideLoading())
           )

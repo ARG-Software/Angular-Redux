@@ -4,13 +4,14 @@ import * as fromMain from "../../../../main/main.reducers.index";
 import * as fromModule from "../../products.reducers.index";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import {
-  ConfigureActions,
-  ConfigurationActionTypes,
-  GetMotesSuccess,
-  AddMoteSuccess,
-  RemoveMoteSuccess,
-  ErrorConfiguration,
-  GetMotesSelectBoxSuccess,
+  addMote,
+  addMoteSuccess,
+  motesConfigurationError,
+  getMotes,
+  getMotesSelectBoxSuccess,
+  getMotesSuccess,
+  removeMote,
+  removeMoteSuccess,
 } from "../../actions/configure.actions";
 import {
   tap,
@@ -39,35 +40,30 @@ export class ConfigureMotesEffects {
   private moduleStore$ = inject<Store<fromModule.ProductState>>(Store);
   private mainStore$ = inject<Store<fromMain.MainState>>(Store);
 
-  public getMotes$ = createEffect(() =>
+  getMotes$ = createEffect(() =>
     this.actions$.pipe(
-      ofType<ConfigureActions>(ConfigurationActionTypes.GetMotes),
+      ofType(getMotes),
       withLatestFrom(
         this.moduleStore$.pipe(select(fromModule.getMotesUpdateState))
       ),
       filter(([_, updateNeeded]) => updateNeeded),
       tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
-      switchMap(([action, _]) =>
-        this.moteService.GetMotesofProduct(action.payload).pipe(
-          map((moteList: IMoteDto[]) => {
-            const moteListCasted =
-              mapObjectTypeToRequested<MoteModelUI[]>(moteList);
-            const motesSelectBox = moteListCasted.map(
-              (element) =>
-                ({
-                  name: element.Name,
-                  selected: false,
-                  value: element.Id,
-                } as ConfigureSelectBoxModelUI)
-            );
-
+      switchMap(([{ productId }]) =>
+        this.moteService.GetMotesofProduct(productId).pipe(
+          map((list) => {
+            const motes = mapObjectTypeToRequested<MoteModelUI[]>(list);
+            const selectBox = motes.map((m) => ({
+              name: m.Name,
+              value: m.Id,
+              selected: false,
+            }));
             return [
-              new GetMotesSuccess(moteListCasted),
-              new GetMotesSelectBoxSuccess(motesSelectBox),
+              getMotesSuccess({ motes }),
+              getMotesSelectBoxSuccess({ selectBox }),
             ];
           }),
           mergeMap((actions) => actions),
-          catchError((error) => of(new ErrorConfiguration(error))),
+          catchError((error) => of(motesConfigurationError({ error }))),
           finalize(() =>
             this.mainStore$.dispatch(new loadingActions.HideLoading())
           )
@@ -76,38 +72,36 @@ export class ConfigureMotesEffects {
     )
   );
 
-  public addMote$ = createEffect(() =>
+  addMote$ = createEffect(() =>
     this.actions$.pipe(
-      ofType<ConfigureActions>(ConfigurationActionTypes.AddMote),
+      ofType(addMote),
       tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
-      map((action) => mapObjectTypeToRequested<IMoteDto>(action.payload)),
-      switchMap((payload) =>
-        this.moteService.AddMote(payload).pipe(
-          map((addedMote: IMoteDto) => {
-            const moteCasted = mapObjectTypeToRequested<MoteModelUI>(addedMote);
-            return new AddMoteSuccess(moteCasted);
-          }),
-          catchError((error) => of(new ErrorConfiguration(error))),
-          finalize(() =>
-            this.mainStore$.dispatch(new loadingActions.HideLoading())
-          )
-        )
-      )
-    )
-  );
-
-  public removeMote$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType<ConfigureActions>(ConfigurationActionTypes.RemoveMote),
-      tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
-      switchMap((action) =>
-        this.moteService.DeleteMote(action.payload).pipe(
-          map((hasBeenDeleted: boolean) =>
-            hasBeenDeleted
-              ? new RemoveMoteSuccess(action.payload)
-              : new ErrorConfiguration({})
+      switchMap(({ mote }) =>
+        this.moteService.AddMote(mapObjectTypeToRequested(mote)).pipe(
+          map((response) =>
+            addMoteSuccess({ mote: mapObjectTypeToRequested(response) })
           ),
-          catchError((error) => of(new ErrorConfiguration(error))),
+          catchError((error) => of(motesConfigurationError({ error }))),
+          finalize(() =>
+            this.mainStore$.dispatch(new loadingActions.HideLoading())
+          )
+        )
+      )
+    )
+  );
+
+  removeMote$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(removeMote),
+      tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
+      switchMap(({ moteId }) =>
+        this.moteService.DeleteMote(moteId).pipe(
+          map((success) =>
+            success
+              ? removeMoteSuccess({ moteId })
+              : motesConfigurationError({ error: "Delete failed" })
+          ),
+          catchError((error) => of(motesConfigurationError({ error }))),
           finalize(() =>
             this.mainStore$.dispatch(new loadingActions.HideLoading())
           )

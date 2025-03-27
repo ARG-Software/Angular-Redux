@@ -1,40 +1,44 @@
-import { Component, ViewChild, OnInit, TemplateRef } from "@angular/core";
-import { map, Observable } from "rxjs";
+import { Component, ViewChild, OnInit } from "@angular/core";
 import { Store, select } from "@ngrx/store";
-import * as fromModule from "./../../products.reducers.index";
+import { map } from "rxjs/operators";
+import { Observable } from "rxjs";
+
+import * as fromModule from "../../products.reducers.index";
 import {
-  GetProductDetails,
-  SaveProductDetails,
-  GetOperations,
-  AddOperation,
-  RemoveOperation,
-  AddMachineOperation,
-  RemoveMachineOperation,
-  GetMotes,
-  AddMote,
-  RemoveMote,
-  GetSubcontractorsSelectBox,
-  GetEdgesSelectBox,
-  GetSensors,
-  GetMessagesSelectBox,
-  AddSensor,
-  RemoveSensor,
-  GetResumePage,
-  FinishWizard,
-  GetMachineOperations,
-  GetMachineSelectBox,
+  getProductDetails,
+  saveProductDetails,
+  getOperations,
+  addOperation,
+  removeOperation,
+  getMachineOperations,
+  addMachineOperation,
+  removeMachineOperation,
+  getMotes,
+  addMote,
+  removeMote,
+  getSensors,
+  addSensor,
+  removeSensor,
+  getResumePage,
+  finishWizard,
+  getEdgesSelectBox,
+  getMessagesSelectBox,
+  getSubcontractorsSelectBox,
+  getMachineSelectBox,
 } from "../../actions/configure.actions";
+
 import {
   ProductModelUI,
   OperationModelUI,
   MachineOperationModelUI,
   MoteModelUI,
-  ConfigureSelectBoxModelUI,
   SensorModelUI,
+  ConfigureSelectBoxModelUI,
   ResumeConfigurationModelUI,
 } from "../../models/configure.model";
-import { WizardPageModel } from "src/app/mims-ui/forms/wizard/models/wizard.models";
+
 import { WizardComponent } from "src/app/mims-ui/forms/wizard/wizard.component";
+import { WizardPageModel } from "src/app/mims-ui/forms/wizard/models/wizard.models";
 
 @Component({
   standalone: false,
@@ -43,233 +47,134 @@ import { WizardComponent } from "src/app/mims-ui/forms/wizard/wizard.component";
 export class ConfigureComponent implements OnInit {
   public productWizardPageMetaData: WizardPageModel[] = [];
 
-  public productDetailsData$: Observable<ProductModelUI>;
-  public operationsData$: Observable<OperationModelUI[]>;
-  public machinesData$: Observable<MachineOperationModelUI[]>;
-  public motesData$: Observable<MoteModelUI[]>;
-  public sensorsData$: Observable<SensorModelUI[]>;
-  public resumeData$: Observable<ResumeConfigurationModelUI>;
+  public productDetailsData$!: Observable<ProductModelUI>;
+  public operationsData$!: Observable<OperationModelUI[]>;
+  public machinesData$!: Observable<MachineOperationModelUI[]>;
+  public motesData$!: Observable<MoteModelUI[]>;
+  public sensorsData$!: Observable<SensorModelUI[]>;
+  public resumeData$!: Observable<ResumeConfigurationModelUI>;
 
-  public machineSelectBoxData$: Observable<ConfigureSelectBoxModelUI[]>;
-  public moteSelectBoxData$: Observable<ConfigureSelectBoxModelUI[]>;
-  public operationsSelectBoxData$: Observable<ConfigureSelectBoxModelUI[]>;
-  public edgeSelectBoxData$: Observable<ConfigureSelectBoxModelUI[]>;
-  public subcontractorSelectBoxData$: Observable<ConfigureSelectBoxModelUI[]>;
-  public messageSelectBoxData$: Observable<ConfigureSelectBoxModelUI[]>;
+  public machineSelectBoxData$!: Observable<ConfigureSelectBoxModelUI[]>;
+  public moteSelectBoxData$!: Observable<ConfigureSelectBoxModelUI[]>;
+  public operationsSelectBoxData$!: Observable<ConfigureSelectBoxModelUI[]>;
+  public edgeSelectBoxData$!: Observable<ConfigureSelectBoxModelUI[]>;
+  public subcontractorSelectBoxData$!: Observable<ConfigureSelectBoxModelUI[]>;
+  public messageSelectBoxData$!: Observable<ConfigureSelectBoxModelUI[]>;
 
   @ViewChild("configurationWizard")
   private configurationWizard!: WizardComponent;
+
   private productId = 1;
 
-  constructor(private store: Store<fromModule.ProductState>) {
-    this.productDetailsData$ = this.store.pipe(
-      select(fromModule.getProductDetail),
-      map((data) => data ?? ({} as ProductModelUI))
-    );
+  constructor(private store: Store<fromModule.ProductState>) {}
 
-    this.operationsData$ = this.store.pipe(
-      select(fromModule.getOperationsDetails),
-      map((data) => data ?? [])
-    );
-
-    this.machinesData$ = this.store.pipe(
-      select(fromModule.getMachineOperationsDetails),
-      map((data) => data ?? [])
-    );
-
-    this.motesData$ = this.store.pipe(
-      select(fromModule.getMotesDetails),
-      map((data) => data ?? [])
-    );
-
-    this.sensorsData$ = this.store.pipe(
-      select(fromModule.getSensorsDetails),
-      map((data) => data ?? [])
-    );
-
-    this.resumeData$ = this.store.pipe(
-      select(fromModule.getResumePage),
-      map((data) => data ?? ({} as ResumeConfigurationModelUI))
-    );
-
-    this.machineSelectBoxData$ = this.store.pipe(
-      select(fromModule.getMachineSelectBox),
-      map((data) => data ?? [])
-    );
-
-    this.moteSelectBoxData$ = this.store.pipe(
-      select(fromModule.getMotesSelectBox),
-      map((data) => data ?? [])
-    );
-
-    this.operationsSelectBoxData$ = this.store.pipe(
-      select(fromModule.getOperationsSelectBox),
-      map((data) => data ?? [])
-    );
-
-    this.edgeSelectBoxData$ = this.store.pipe(
-      select(fromModule.getEdgeSelectBox),
-      map((data) => data ?? [])
-    );
-
-    this.subcontractorSelectBoxData$ = this.store.pipe(
-      select(fromModule.getSubContractorsSelectBox),
-      map((data) => data ?? [])
-    );
-
-    this.messageSelectBoxData$ = this.store.pipe(
-      select(fromModule.getMessagesSelectBox),
-      map((data) => data ?? [])
-    );
-  }
-
-  public ngOnInit(): void {
+  ngOnInit(): void {
     this.setWizardsPageTitlesAndPageIds();
-    this.selectorsForWizardLists();
-    this.selectorsForWizardSelectBoxes();
-    this.dispatchActionsForFirstPage();
+    this.initListSelectors();
+    this.initSelectBoxSelectors();
+    this.dispatchInitialLoad();
   }
 
-  /* This function is responsible to get data for the next page
-      Ex: If you are on operations page and navigate to machines,
-      in the case of 'operations' you need to define what data do you
-      want to retrieve for the machines page
-   */
   protected onWizardNextPage(pageId: string): void {
-    console.log(pageId);
     switch (pageId) {
-      case "product": {
-        this.store.dispatch(new GetOperations(this.productId));
-        this.store.dispatch(new GetSubcontractorsSelectBox({}));
+      case "product":
+        this.store.dispatch(getOperations({ productId: this.productId }));
+        this.store.dispatch(getSubcontractorsSelectBox());
         break;
-      }
-      case "operations": {
-        this.store.dispatch(new GetMachineOperations(this.productId));
-        this.store.dispatch(new GetMachineSelectBox({}));
-        this.store.dispatch(new GetOperations(this.productId));
+      case "operations":
+        this.store.dispatch(
+          getMachineOperations({ productId: this.productId })
+        );
+        this.store.dispatch(getMachineSelectBox());
+        this.store.dispatch(getOperations({ productId: this.productId }));
         break;
-      }
-      case "machines": {
-        this.store.dispatch(new GetMotes(this.productId));
-        this.store.dispatch(new GetEdgesSelectBox({}));
+      case "machines":
+        this.store.dispatch(getMotes({ productId: this.productId }));
+        this.store.dispatch(getEdgesSelectBox());
         break;
-      }
-      case "motes": {
-        this.store.dispatch(new GetSensors(this.productId));
-        this.store.dispatch(new GetMessagesSelectBox({}));
+      case "motes":
+        this.store.dispatch(getSensors({ productId: this.productId }));
+        this.store.dispatch(getMessagesSelectBox());
         break;
-      }
-      case "sensors": {
-        this.store.dispatch(new GetResumePage({}));
+      case "sensors":
+        this.store.dispatch(getResumePage({ payload: {} }));
         break;
-      }
-      default: {
-        return;
-      }
     }
+
     this.navigateToNextPage();
+  }
+
+  protected onWizardFinish(): void {
+    this.store.dispatch(finishWizard());
+    this.configurationWizard.resetForm();
+    this.configurationWizard.navigateToFirstPage();
+    this.dispatchInitialLoad();
   }
 
   protected navigateToNextPage(): void {
     this.configurationWizard.navigateToNextPage();
   }
 
-  protected onWizardFinish(): void {
-    this.store.dispatch(new FinishWizard({}));
-    this.configurationWizard.resetForm();
-    this.configurationWizard.navigateToFirstPage();
-    this.dispatchActionsForFirstPage();
+  protected saveProductDetail(product: ProductModelUI): void {
+    product.Id = this.productId;
+    this.store.dispatch(saveProductDetails({ product }));
   }
 
-  // Product Detail Wizard Page
-
-  protected saveProductDetail(productDetails: ProductModelUI): void {
-    productDetails.Id = this.productId;
-    this.store.dispatch(new SaveProductDetails(productDetails));
+  protected addOperation(operation: OperationModelUI): void {
+    operation.ProductId = this.productId;
+    this.store.dispatch(addOperation({ operation }));
   }
 
-  // Operations Wizard Page
-
-  protected addOperation(operationToAdd: OperationModelUI): void {
-    operationToAdd.ProductId = this.productId;
-    this.store.dispatch(new AddOperation(operationToAdd));
+  protected removeOperation(operation: OperationModelUI): void {
+    this.store.dispatch(removeOperation({ operationId: operation.Id }));
   }
 
-  protected removeOperation(operationToRemove: OperationModelUI): void {
-    this.store.dispatch(new RemoveOperation(operationToRemove.Id));
+  protected addMachine(machine: MachineOperationModelUI): void {
+    machine.ProductId = this.productId;
+    this.store.dispatch(addMachineOperation({ machine }));
   }
 
-  // Machines Wizard Page
-
-  protected addMachine(machineToAdd: MachineOperationModelUI): void {
-    machineToAdd.ProductId = this.productId;
-    this.store.dispatch(new AddMachineOperation(machineToAdd));
+  protected removeMachine(machine: MachineOperationModelUI): void {
+    this.store.dispatch(removeMachineOperation({ id: machine.Id }));
   }
 
-  protected removeMachine(machineToRemove: MachineOperationModelUI): void {
-    this.store.dispatch(new RemoveMachineOperation(machineToRemove.Id));
+  protected addMote(mote: MoteModelUI): void {
+    mote.ProductId = this.productId;
+    this.store.dispatch(addMote({ mote }));
   }
 
-  // Motes Wizard Page
-
-  protected addMote(moteToAdd: MoteModelUI): void {
-    moteToAdd.ProductId = this.productId;
-    this.store.dispatch(new AddMote(moteToAdd));
+  protected removeMote(mote: MoteModelUI): void {
+    this.store.dispatch(removeMote({ moteId: mote.Id }));
   }
 
-  protected removeMote(moteToRemove: MoteModelUI): void {
-    this.store.dispatch(new RemoveMote(moteToRemove.Id));
+  protected addSensor(sensor: SensorModelUI): void {
+    sensor.ProductId = this.productId;
+    this.store.dispatch(addSensor({ sensor }));
   }
 
-  // Sensors Wizard Page
-
-  protected addSensor(sensorToAdd: SensorModelUI): void {
-    sensorToAdd.ProductId = this.productId;
-    this.store.dispatch(new AddSensor(sensorToAdd));
+  protected removeSensor(sensor: SensorModelUI): void {
+    this.store.dispatch(removeSensor({ sensorId: sensor.Id }));
   }
-
-  protected removeSensor(sensorToRemove: SensorModelUI): void {
-    this.store.dispatch(new RemoveSensor(sensorToRemove.Id));
-  }
-
-  // Wizard Configuration Data
 
   private setWizardsPageTitlesAndPageIds(): void {
     this.productWizardPageMetaData = [
-      {
-        Id: "product",
-        Title: "Product Details",
-      },
-      {
-        Id: "operations",
-        Title: "Operations",
-      },
-      {
-        Id: "machines",
-        Title: "Machine Details",
-      },
-      {
-        Id: "motes",
-        Title: "Motes Details",
-      },
-      {
-        Id: "sensors",
-        Title: "Sensor Details",
-      },
-      {
-        Id: "resume",
-        Title: "Resume",
-      },
+      { Id: "product", Title: "Product Details" },
+      { Id: "operations", Title: "Operations" },
+      { Id: "machines", Title: "Machine Details" },
+      { Id: "motes", Title: "Motes Details" },
+      { Id: "sensors", Title: "Sensor Details" },
+      { Id: "resume", Title: "Resume" },
     ];
   }
 
-  private dispatchActionsForFirstPage(): void {
-    this.store.dispatch(new GetProductDetails(this.productId));
+  private dispatchInitialLoad(): void {
+    this.store.dispatch(getProductDetails({ productId: this.productId }));
   }
 
-  private selectorsForWizardLists(): void {
+  private initListSelectors(): void {
     this.productDetailsData$ = this.store.pipe(
-      select(fromModule.getProductDetail)
+      select(fromModule.getProductDetail),
+      map((data) => data ?? ({} as ProductModelUI))
     );
     this.operationsData$ = this.store.pipe(
       select(fromModule.getOperationsDetails)
@@ -282,7 +187,7 @@ export class ConfigureComponent implements OnInit {
     this.resumeData$ = this.store.pipe(select(fromModule.getResumePage));
   }
 
-  private selectorsForWizardSelectBoxes(): void {
+  private initSelectBoxSelectors(): void {
     this.machineSelectBoxData$ = this.store.pipe(
       select(fromModule.getMachineSelectBox)
     );

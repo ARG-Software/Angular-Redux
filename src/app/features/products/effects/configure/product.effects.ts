@@ -4,12 +4,11 @@ import * as fromMain from "../../../../main/main.reducers.index";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import {
-  ConfigurationActionTypes,
-  GetProductDetailsSuccess,
-  ErrorConfiguration,
-  SaveProductDetailsSuccess,
-  GetProductDetails,
-  SaveProductDetails,
+  getProductDetails,
+  getProductDetailsSuccess,
+  productConfigurationError,
+  saveProductDetails,
+  saveProductDetailsSuccess,
 } from "../../actions/configure.actions";
 import { tap, map, switchMap, finalize, catchError } from "rxjs/operators";
 import { ProductModelUI } from "../../models/configure.model";
@@ -21,23 +20,21 @@ import { IProductService } from "src/app/api/services/interfaces/core/iproduct.s
 @Injectable()
 export class ConfigureProductEffects {
   private actions$ = inject(Actions);
-  constructor(
-    private mainStore$: Store<fromMain.MainState>,
-    private productService: IProductService
-  ) {}
+  private mainStore$ = inject<Store<fromMain.MainState>>(Store);
+  private productService = inject<IProductService>(IProductService);
 
-  public getProductDetails$ = createEffect(() =>
+  getProductDetails$ = createEffect(() =>
     this.actions$.pipe(
-      ofType<GetProductDetails>(ConfigurationActionTypes.GetProductDetails),
+      ofType(getProductDetails),
       tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
-      switchMap((action) =>
-        this.productService.GetProduct(action.payload).pipe(
-          map((productDetails: IProductsDto) => {
-            const productDetailCasted =
-              mapObjectTypeToRequested<ProductModelUI>(productDetails);
-            return new GetProductDetailsSuccess(productDetailCasted);
-          }),
-          catchError((error) => of(new ErrorConfiguration(error))),
+      switchMap(({ productId }) =>
+        this.productService.GetProduct(productId).pipe(
+          map((res) =>
+            getProductDetailsSuccess({
+              product: mapObjectTypeToRequested(res),
+            })
+          ),
+          catchError((error) => of(productConfigurationError({ error }))),
           finalize(() =>
             this.mainStore$.dispatch(new loadingActions.HideLoading())
           )
@@ -46,17 +43,15 @@ export class ConfigureProductEffects {
     )
   );
 
-  public saveProductDetails$ = createEffect(() =>
+  saveProductDetails$ = createEffect(() =>
     this.actions$.pipe(
-      ofType<SaveProductDetails>(ConfigurationActionTypes.SaveProductDetails),
+      ofType(saveProductDetails),
       tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
-      switchMap((action) => {
-        const payloadConvertedToDto = mapObjectTypeToRequested<IProductsDto>(
-          action.payload
-        );
-        return this.productService.UpdateProduct(payloadConvertedToDto).pipe(
-          map(() => new SaveProductDetailsSuccess(action.payload)),
-          catchError((error) => of(new ErrorConfiguration(error))),
+      switchMap(({ product }) => {
+        const dto = mapObjectTypeToRequested<IProductsDto>(product);
+        return this.productService.UpdateProduct(dto).pipe(
+          map(() => saveProductDetailsSuccess({ product })),
+          catchError((error) => of(productConfigurationError({ error }))),
           finalize(() =>
             this.mainStore$.dispatch(new loadingActions.HideLoading())
           )
