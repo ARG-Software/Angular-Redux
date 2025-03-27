@@ -26,7 +26,7 @@ export class ConfigureProductEffects {
   getProductDetails$ = createEffect(() =>
     this.actions$.pipe(
       ofType(getProductDetails),
-      tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
+      tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
       switchMap(({ productId }) =>
         this.productService.GetProduct(productId).pipe(
           map((res) =>
@@ -35,9 +35,7 @@ export class ConfigureProductEffects {
             })
           ),
           catchError((error) => of(productConfigurationError({ error }))),
-          finalize(() =>
-            this.mainStore$.dispatch(new loadingActions.HideLoading())
-          )
+          finalize(() => this.mainStore$.dispatch(loadingActions.hideLoading()))
         )
       )
     )
@@ -46,15 +44,13 @@ export class ConfigureProductEffects {
   saveProductDetails$ = createEffect(() =>
     this.actions$.pipe(
       ofType(saveProductDetails),
-      tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
+      tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
       switchMap(({ product }) => {
         const dto = mapObjectTypeToRequested<IProductsDto>(product);
         return this.productService.UpdateProduct(dto).pipe(
           map(() => saveProductDetailsSuccess({ product })),
           catchError((error) => of(productConfigurationError({ error }))),
-          finalize(() =>
-            this.mainStore$.dispatch(new loadingActions.HideLoading())
-          )
+          finalize(() => this.mainStore$.dispatch(loadingActions.hideLoading()))
         );
       })
     )

@@ -47,7 +47,7 @@ export class ConfigureMotesEffects {
         this.moduleStore$.pipe(select(fromModule.getMotesUpdateState))
       ),
       filter(([_, updateNeeded]) => updateNeeded),
-      tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
+      tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
       switchMap(([{ productId }]) =>
         this.moteService.GetMotesofProduct(productId).pipe(
           map((list) => {
@@ -64,9 +64,7 @@ export class ConfigureMotesEffects {
           }),
           mergeMap((actions) => actions),
           catchError((error) => of(motesConfigurationError({ error }))),
-          finalize(() =>
-            this.mainStore$.dispatch(new loadingActions.HideLoading())
-          )
+          finalize(() => this.mainStore$.dispatch(loadingActions.hideLoading()))
         )
       )
     )
@@ -75,16 +73,14 @@ export class ConfigureMotesEffects {
   addMote$ = createEffect(() =>
     this.actions$.pipe(
       ofType(addMote),
-      tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
+      tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
       switchMap(({ mote }) =>
         this.moteService.AddMote(mapObjectTypeToRequested(mote)).pipe(
           map((response) =>
             addMoteSuccess({ mote: mapObjectTypeToRequested(response) })
           ),
           catchError((error) => of(motesConfigurationError({ error }))),
-          finalize(() =>
-            this.mainStore$.dispatch(new loadingActions.HideLoading())
-          )
+          finalize(() => this.mainStore$.dispatch(loadingActions.hideLoading()))
         )
       )
     )
@@ -93,7 +89,7 @@ export class ConfigureMotesEffects {
   removeMote$ = createEffect(() =>
     this.actions$.pipe(
       ofType(removeMote),
-      tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
+      tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
       switchMap(({ moteId }) =>
         this.moteService.DeleteMote(moteId).pipe(
           map((success) =>
@@ -102,9 +98,7 @@ export class ConfigureMotesEffects {
               : motesConfigurationError({ error: "Delete failed" })
           ),
           catchError((error) => of(motesConfigurationError({ error }))),
-          finalize(() =>
-            this.mainStore$.dispatch(new loadingActions.HideLoading())
-          )
+          finalize(() => this.mainStore$.dispatch(loadingActions.hideLoading()))
         )
       )
     )

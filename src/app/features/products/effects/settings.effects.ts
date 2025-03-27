@@ -21,7 +21,7 @@ export class SettingsEffects {
   loadSettingsData$ = createEffect(() =>
     this.actions$.pipe(
       ofType(SettingsActions.loadSettingsData),
-      tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
+      tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
       switchMap(({ productId }) =>
         this.settingsService.GetBuffersForProduct(productId).pipe(
           map((response: MimsModels.IBufferDto[]) => {
@@ -32,9 +32,7 @@ export class SettingsEffects {
             });
           }),
           catchError((error) => of(SettingsActions.settingsFailure({ error }))),
-          finalize(() =>
-            this.mainStore$.dispatch(new loadingActions.HideLoading())
-          )
+          finalize(() => this.mainStore$.dispatch(loadingActions.hideLoading()))
         )
       )
     )
@@ -43,14 +41,12 @@ export class SettingsEffects {
   updateWipData$ = createEffect(() =>
     this.actions$.pipe(
       ofType(SettingsActions.updateWip),
-      tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
+      tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
       switchMap(({ wip }) =>
         this.settingsService.UpdateWip(wip).pipe(
           map((success) => SettingsActions.updateWipSuccess({ success })),
           catchError((error) => of(SettingsActions.settingsFailure({ error }))),
-          finalize(() =>
-            this.mainStore$.dispatch(new loadingActions.HideLoading())
-          )
+          finalize(() => this.mainStore$.dispatch(loadingActions.hideLoading()))
         )
       )
     )
@@ -59,14 +55,12 @@ export class SettingsEffects {
   updateKanbanData$ = createEffect(() =>
     this.actions$.pipe(
       ofType(SettingsActions.updateKanBan),
-      tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
+      tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
       switchMap(({ kanban }) =>
         this.settingsService.UpdateKanBan(kanban).pipe(
           map((success) => SettingsActions.updateKanBanSuccess({ success })),
           catchError((error) => of(SettingsActions.settingsFailure({ error }))),
-          finalize(() =>
-            this.mainStore$.dispatch(new loadingActions.HideLoading())
-          )
+          finalize(() => this.mainStore$.dispatch(loadingActions.hideLoading()))
         )
       )
     )

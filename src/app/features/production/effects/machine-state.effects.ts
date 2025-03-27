@@ -33,7 +33,7 @@ export class MachineStateEffects {
   getMachineStateData$ = createEffect(() =>
     this.actions$.pipe(
       ofType(getMachineData),
-      tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
+      tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
       switchMap(({ payload }) =>
         apiRequest().pipe(
           map(() =>
@@ -42,7 +42,7 @@ export class MachineStateEffects {
             })
           ),
           finalize(() =>
-            this.mainStore$.dispatch(new loadingActions.HideLoading())
+            this.mainStore$.dispatch(loadingActions.hideLoading())
           ),
           catchError((error) => of(machineFailure({ payload: error })))
         )
@@ -53,12 +53,12 @@ export class MachineStateEffects {
   updateMachineState$ = createEffect(() =>
     this.actions$.pipe(
       ofType(updateMachineData),
-      tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
+      tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
       switchMap(({ payload }) =>
         apiRequest().pipe(
           map(() => updateMachineDataSuccess({ payload: true })),
           finalize(() =>
-            this.mainStore$.dispatch(new loadingActions.HideLoading())
+            this.mainStore$.dispatch(loadingActions.hideLoading())
           ),
           catchError((error) => of(machineFailure({ payload: error })))
         )

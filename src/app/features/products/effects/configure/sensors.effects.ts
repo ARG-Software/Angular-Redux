@@ -44,7 +44,7 @@ export class ConfigureSensorsEffects {
         this.moduleStore$.pipe(select(fromModule.getSensorUpdateState))
       ),
       filter(([_, needsUpdate]) => needsUpdate),
-      tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
+      tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
       switchMap(([{ productId }]) =>
         this.sensorService.GetECofProduct(productId).pipe(
           map((list) => {
@@ -52,9 +52,7 @@ export class ConfigureSensorsEffects {
             return getSensorsSuccess({ sensors });
           }),
           catchError((error) => of(sensorConfigurationError({ error }))),
-          finalize(() =>
-            this.mainStore$.dispatch(new loadingActions.HideLoading())
-          )
+          finalize(() => this.mainStore$.dispatch(loadingActions.hideLoading()))
         )
       )
     )
@@ -63,7 +61,7 @@ export class ConfigureSensorsEffects {
   addSensor$ = createEffect(() =>
     this.actions$.pipe(
       ofType(addSensor),
-      tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
+      tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
       switchMap(({ sensor }) =>
         this.sensorService.AddEC(sensor as any).pipe(
           map((response) => {
@@ -72,9 +70,7 @@ export class ConfigureSensorsEffects {
             return addSensorSuccess({ sensor: sensorCasted });
           }),
           catchError((error) => of(sensorConfigurationError({ error }))),
-          finalize(() =>
-            this.mainStore$.dispatch(new loadingActions.HideLoading())
-          )
+          finalize(() => this.mainStore$.dispatch(loadingActions.hideLoading()))
         )
       )
     )
@@ -83,7 +79,7 @@ export class ConfigureSensorsEffects {
   removeSensor$ = createEffect(() =>
     this.actions$.pipe(
       ofType(removeSensor),
-      tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
+      tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
       switchMap(({ sensorId }) =>
         this.sensorService.DeleteEC(sensorId).pipe(
           map((deleted) =>
@@ -92,9 +88,7 @@ export class ConfigureSensorsEffects {
               : sensorConfigurationError({ error: "Delete failed" })
           ),
           catchError((error) => of(sensorConfigurationError({ error }))),
-          finalize(() =>
-            this.mainStore$.dispatch(new loadingActions.HideLoading())
-          )
+          finalize(() => this.mainStore$.dispatch(loadingActions.hideLoading()))
         )
       )
     )

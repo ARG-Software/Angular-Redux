@@ -48,7 +48,7 @@ export class ConfigureMachinesOperationEffects {
         )
       ),
       filter(([_, needsUpdate]) => needsUpdate),
-      tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
+      tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
       switchMap(([{ productId }]) =>
         this.machineOperationService
           .GetMachineOperationsofProduct(productId)
@@ -61,7 +61,7 @@ export class ConfigureMachinesOperationEffects {
             ),
             catchError((error) => of(machineOperationFailure({ error }))),
             finalize(() =>
-              this.mainStore$.dispatch(new loadingActions.HideLoading())
+              this.mainStore$.dispatch(loadingActions.hideLoading())
             )
           )
       )
@@ -71,7 +71,7 @@ export class ConfigureMachinesOperationEffects {
   addMachineOperation$ = createEffect(() =>
     this.actions$.pipe(
       ofType(addMachineOperation),
-      tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
+      tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
       switchMap(({ machine }) => {
         const dto: IMachineOperationsDto = {
           Id: machine.Id,
@@ -92,9 +92,7 @@ export class ConfigureMachinesOperationEffects {
             })
           ),
           catchError((error) => of(machineOperationFailure({ error }))),
-          finalize(() =>
-            this.mainStore$.dispatch(new loadingActions.HideLoading())
-          )
+          finalize(() => this.mainStore$.dispatch(loadingActions.hideLoading()))
         );
       })
     )
@@ -103,7 +101,7 @@ export class ConfigureMachinesOperationEffects {
   removeMachineOperation$ = createEffect(() =>
     this.actions$.pipe(
       ofType(removeMachineOperation),
-      tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
+      tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
       switchMap(({ id }) =>
         this.machineOperationService.DeleteMachineOperation(id).pipe(
           map((success) =>
@@ -112,9 +110,7 @@ export class ConfigureMachinesOperationEffects {
               : machineOperationFailure({ error: "Delete failed" })
           ),
           catchError((error) => of(machineOperationFailure({ error }))),
-          finalize(() =>
-            this.mainStore$.dispatch(new loadingActions.HideLoading())
-          )
+          finalize(() => this.mainStore$.dispatch(loadingActions.hideLoading()))
         )
       )
     )

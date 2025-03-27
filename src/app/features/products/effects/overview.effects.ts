@@ -33,7 +33,7 @@ export class OverviewEffects {
   getDownTimeStatisticChart$ = createEffect(() =>
     this.actions$.pipe(
       ofType(getDownTimeChart),
-      tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
+      tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
       switchMap(({ payload }) =>
         this.downTimeRecordService
           .getDowntimeOfProductShiftGraphic(
@@ -46,7 +46,7 @@ export class OverviewEffects {
             ),
             catchError((error) => of(overviewFailure({ payload: error }))),
             finalize(() =>
-              this.mainStore$.dispatch(new loadingActions.HideLoading())
+              this.mainStore$.dispatch(loadingActions.hideLoading())
             )
           )
       )
@@ -56,7 +56,7 @@ export class OverviewEffects {
   getMachineOperationTable$ = createEffect(() =>
     this.actions$.pipe(
       ofType(getMachineOperationTable),
-      tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
+      tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
       switchMap(({ payload }) =>
         this.machineOperationService
           .GetMachineOperationsofProduct(payload.productId)
@@ -66,7 +66,7 @@ export class OverviewEffects {
             ),
             catchError((error) => of(overviewFailure({ payload: error }))),
             finalize(() =>
-              this.mainStore$.dispatch(new loadingActions.HideLoading())
+              this.mainStore$.dispatch(loadingActions.hideLoading())
             )
           )
       )

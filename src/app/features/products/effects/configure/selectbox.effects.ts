@@ -65,7 +65,7 @@ export class ConfigureSelectBoxEffects {
         this.moduleStore$.pipe(select(fromModule.getEdgeSelectBox))
       ),
       filter(([_, edges]) => edges.length === 0),
-      tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
+      tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
       switchMap(() =>
         this.edgeService.GetEdges().pipe(
           map((edges) => {
@@ -79,9 +79,7 @@ export class ConfigureSelectBoxEffects {
             return getEdgesSelectBoxSuccess({ selectBox });
           }),
           catchError((error) => of(selectBoxConfigurationError({ error }))),
-          finalize(() =>
-            this.mainStore$.dispatch(new loadingActions.HideLoading())
-          )
+          finalize(() => this.mainStore$.dispatch(loadingActions.hideLoading()))
         )
       )
     )
@@ -94,7 +92,7 @@ export class ConfigureSelectBoxEffects {
         this.moduleStore$.pipe(select(fromModule.getMessagesSelectBox))
       ),
       filter(([_, messages]) => messages.length === 0),
-      tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
+      tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
       switchMap(() =>
         this.messagesService.GetContactMessages().pipe(
           map((messages) => {
@@ -108,9 +106,7 @@ export class ConfigureSelectBoxEffects {
             return getMessagesSelectBoxSuccess({ selectBox });
           }),
           catchError((error) => of(selectBoxConfigurationError({ error }))),
-          finalize(() =>
-            this.mainStore$.dispatch(new loadingActions.HideLoading())
-          )
+          finalize(() => this.mainStore$.dispatch(loadingActions.hideLoading()))
         )
       )
     )
@@ -123,7 +119,7 @@ export class ConfigureSelectBoxEffects {
         this.moduleStore$.pipe(select(fromModule.getSubContractorsSelectBox))
       ),
       filter(([_, subcontractors]) => subcontractors.length === 0),
-      tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
+      tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
       switchMap(() =>
         this.subcontractorService.GetSubcontractors().pipe(
           map((list) => {
@@ -137,9 +133,7 @@ export class ConfigureSelectBoxEffects {
             return getSubcontractorsSelectBoxSuccess({ selectBox });
           }),
           catchError((error) => of(selectBoxConfigurationError({ error }))),
-          finalize(() =>
-            this.mainStore$.dispatch(new loadingActions.HideLoading())
-          )
+          finalize(() => this.mainStore$.dispatch(loadingActions.hideLoading()))
         )
       )
     )
@@ -152,7 +146,7 @@ export class ConfigureSelectBoxEffects {
         this.moduleStore$.pipe(select(fromModule.getMachineSelectBox))
       ),
       filter(([_, machines]) => machines.length === 0),
-      tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
+      tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
       switchMap(() =>
         this.machineService.GetMachines().pipe(
           map((list) => {
@@ -166,9 +160,7 @@ export class ConfigureSelectBoxEffects {
             return getMachineSelectBoxSuccess({ selectBox });
           }),
           catchError((error) => of(selectBoxConfigurationError({ error }))),
-          finalize(() =>
-            this.mainStore$.dispatch(new loadingActions.HideLoading())
-          )
+          finalize(() => this.mainStore$.dispatch(loadingActions.hideLoading()))
         )
       )
     )

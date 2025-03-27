@@ -1,30 +1,26 @@
-import { ActionReducerMap } from "@ngrx/store";
-import { createSelector, createFeatureSelector } from "@ngrx/store";
-import * as fromLayout from "./reducers/layout.reducer";
+import {
+  ActionReducerMap,
+  createSelector,
+  createFeatureSelector,
+} from "@ngrx/store";
+import {
+  LayoutState,
+  getLoadingData,
+  layoutReducer,
+} from "./reducers/layout.reducer";
 
 export const reducerName = "mains";
 
-// tslint:disable-next-line:no-empty-interface
 export interface MainState {
-  layout: fromLayout.LayoutState;
+  layout: LayoutState;
 }
 
-export const reducersDefinition: ActionReducerMap<MainState> = {
-  layout: fromLayout.LayoutReducer,
+export const mainReducers: ActionReducerMap<MainState> = {
+  layout: layoutReducer,
 };
-
-export const mainReducers = reducersDefinition;
 
 const getModuleState = createFeatureSelector<MainState>(reducerName);
 
-// Loading
+const getLoadingState = createSelector(getModuleState, (state) => state.layout);
 
-const getLoadingState = createSelector(
-  getModuleState,
-  (state: MainState) => state.layout
-);
-
-export const getLoading = createSelector(
-  getLoadingState,
-  fromLayout.getLoading
-);
+export const getLoading = createSelector(getLoadingState, getLoadingData);

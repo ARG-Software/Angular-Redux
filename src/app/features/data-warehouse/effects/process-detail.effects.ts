@@ -36,7 +36,7 @@ export class ProcessDetailEffects {
   public getProcessDetailData$ = createEffect(() =>
     this.actions$.pipe(
       ofType(getProcessDetailData),
-      tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
+      tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
       map((action) => action.payload),
       switchMap((payload) =>
         of([
@@ -111,7 +111,7 @@ export class ProcessDetailEffects {
               });
             }),
             finalize(() =>
-              this.mainStore$.dispatch(new loadingActions.HideLoading())
+              this.mainStore$.dispatch(loadingActions.hideLoading())
             ),
             catchError((error) => of(processDetailFailure({ payload: error })))
           )
@@ -122,7 +122,7 @@ export class ProcessDetailEffects {
   public getProcessDetailDataSelectBox$ = createEffect(() =>
     this.actions$.pipe(
       ofType(getProcessDetailDataSelectBoxes),
-      tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
+      tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
       switchMap(() =>
         this.machineService.GetMachines().pipe(
           map((response: any[]) =>
@@ -131,7 +131,7 @@ export class ProcessDetailEffects {
             })
           ),
           finalize(() =>
-            this.mainStore$.dispatch(new loadingActions.HideLoading())
+            this.mainStore$.dispatch(loadingActions.hideLoading())
           ),
           catchError((error) => of(processDetailFailure({ payload: error })))
         )

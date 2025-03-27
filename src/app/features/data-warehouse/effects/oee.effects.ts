@@ -43,7 +43,7 @@ export class OeeEffects {
   public getOeeData$ = createEffect(() =>
     this.actions$.pipe(
       ofType(getOeeData),
-      tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
+      tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
       map((action) => {
         const request: MimsModels.DWMachiningDowntimeScreenRequestDto = {
           DWMachiningFilterDto: {
@@ -96,7 +96,7 @@ export class OeeEffects {
             return getOeeDataSuccess({ payload: oeeData });
           }),
           finalize(() =>
-            this.mainStore$.dispatch(new loadingActions.HideLoading())
+            this.mainStore$.dispatch(loadingActions.hideLoading())
           ),
           catchError((error) => of(oeeFailure({ payload: error })))
         )
@@ -107,7 +107,7 @@ export class OeeEffects {
   public getOeeDataSelectBox$ = createEffect(() =>
     this.actions$.pipe(
       ofType(getOeeDataSelectBoxes),
-      tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
+      tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
       switchMap(() =>
         forkJoin({
           machines: this.machineService.GetMachines(),
@@ -119,7 +119,7 @@ export class OeeEffects {
             });
           }),
           finalize(() =>
-            this.mainStore$.dispatch(new loadingActions.HideLoading())
+            this.mainStore$.dispatch(loadingActions.hideLoading())
           ),
           catchError((error) => of(oeeFailure({ payload: error })))
         )

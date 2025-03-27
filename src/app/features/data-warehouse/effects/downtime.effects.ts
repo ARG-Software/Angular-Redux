@@ -38,7 +38,7 @@ export class DowntimeEffects {
   public getDowntimeData$ = createEffect(() =>
     this.actions$.pipe(
       ofType(getDowntimeData),
-      tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
+      tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
       map((action) => {
         const request: MimsModels.DWMachiningDowntimeScreenRequestDto = {
           DWMachiningFilterDto: {
@@ -62,7 +62,7 @@ export class DowntimeEffects {
             return getDowntimeDataSuccess({ payload: downtimeData });
           }),
           finalize(() =>
-            this.mainStore$.dispatch(new loadingActions.HideLoading())
+            this.mainStore$.dispatch(loadingActions.hideLoading())
           ),
           catchError((error) => {
             return of(downtimeFailure({ payload: error }));
@@ -75,7 +75,7 @@ export class DowntimeEffects {
   public getDowntimeDataSelectBox$ = createEffect(() =>
     this.actions$.pipe(
       ofType(getDowntimeDataSelectBoxes),
-      tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
+      tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
       switchMap(() =>
         forkJoin({
           machines: this.machineService.GetMachines(),
@@ -87,7 +87,7 @@ export class DowntimeEffects {
             })
           ),
           finalize(() =>
-            this.mainStore$.dispatch(new loadingActions.HideLoading())
+            this.mainStore$.dispatch(loadingActions.hideLoading())
           ),
           catchError((error) => of(downtimeFailure({ payload: error })))
         )

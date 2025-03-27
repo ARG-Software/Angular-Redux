@@ -29,7 +29,7 @@ export class MessagingEffects {
   getMessagingData$ = createEffect(() =>
     this.actions$.pipe(
       ofType(getMessagingData),
-      tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
+      tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
       switchMap(({ payload }) =>
         apiRequest().pipe(
           map(() =>
@@ -38,7 +38,7 @@ export class MessagingEffects {
             })
           ),
           finalize(() =>
-            this.mainStore$.dispatch(new loadingActions.HideLoading())
+            this.mainStore$.dispatch(loadingActions.hideLoading())
           ),
           catchError((error) => of(messagingFailure({ payload: error })))
         )
@@ -49,12 +49,12 @@ export class MessagingEffects {
   updateMessaging$ = createEffect(() =>
     this.actions$.pipe(
       ofType(updateMessagingData),
-      tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
+      tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
       switchMap(({ payload }) =>
         apiRequest().pipe(
           map(() => updateMessagingDataSuccess({ payload: true })),
           finalize(() =>
-            this.mainStore$.dispatch(new loadingActions.HideLoading())
+            this.mainStore$.dispatch(loadingActions.hideLoading())
           ),
           catchError((error) => of(messagingFailure({ payload: error })))
         )

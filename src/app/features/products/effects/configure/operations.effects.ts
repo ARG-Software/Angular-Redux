@@ -44,7 +44,7 @@ export class ConfigureOperationsEffects {
         this.moduleStore$.pipe(select(fromModule.getOperationsUpdateState))
       ),
       filter(([_, updateNeeded]) => updateNeeded),
-      tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
+      tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
       switchMap(([{ productId }]) =>
         this.operationService.GetOperationsByProductId(productId).pipe(
           map((list) => {
@@ -62,9 +62,7 @@ export class ConfigureOperationsEffects {
           }),
           concatMap((actions) => actions),
           catchError((error) => of(operationConfigurationError({ error }))),
-          finalize(() =>
-            this.mainStore$.dispatch(new loadingActions.HideLoading())
-          )
+          finalize(() => this.mainStore$.dispatch(loadingActions.hideLoading()))
         )
       )
     )
@@ -73,7 +71,7 @@ export class ConfigureOperationsEffects {
   addOperation$ = createEffect(() =>
     this.actions$.pipe(
       ofType(addOperation),
-      tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
+      tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
       switchMap(({ operation }) =>
         this.operationService
           .AddOperation(mapObjectTypeToRequested(operation))
@@ -85,7 +83,7 @@ export class ConfigureOperationsEffects {
             ),
             catchError((error) => of(operationConfigurationError({ error }))),
             finalize(() =>
-              this.mainStore$.dispatch(new loadingActions.HideLoading())
+              this.mainStore$.dispatch(loadingActions.hideLoading())
             )
           )
       )
@@ -95,7 +93,7 @@ export class ConfigureOperationsEffects {
   removeOperation$ = createEffect(() =>
     this.actions$.pipe(
       ofType(removeOperation),
-      tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
+      tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
       switchMap(({ operationId }) =>
         this.operationService.DeleteOperation(operationId).pipe(
           map((success) =>
@@ -104,9 +102,7 @@ export class ConfigureOperationsEffects {
               : operationConfigurationError({ error: "Delete failed" })
           ),
           catchError((error) => of(operationConfigurationError({ error }))),
-          finalize(() =>
-            this.mainStore$.dispatch(new loadingActions.HideLoading())
-          )
+          finalize(() => this.mainStore$.dispatch(loadingActions.hideLoading()))
         )
       )
     )
