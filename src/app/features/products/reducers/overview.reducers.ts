@@ -1,12 +1,13 @@
-import { IShiftGraphicDto } from "src/app/api/models/apimodels";
+import { createReducer, on } from "@ngrx/store";
 import {
-  OverviewActionTypes,
-  OverviewActions,
+  getDownTimeChartSuccess,
+  getMachineOperationTableSuccess,
 } from "../actions/overview.actions";
 import {
   DownTimeRecordChartModel,
   ChartSeriesModel,
 } from "../models/overview.models";
+import { IShiftGraphicDto } from "src/app/api/models/apimodels";
 
 export interface OverviewState {
   downTimeRecordChartData?: DownTimeRecordChartModel[];
@@ -22,50 +23,39 @@ export const initialState: OverviewState = {
   machineOperationsTableHeaderName: ["Asset", "OEE", "MDE"],
 };
 
-export function reducer(
-  state: OverviewState = initialState,
-  action: OverviewActions
-): OverviewState {
-  switch (action.type) {
-    case OverviewActionTypes.GetDownTimeChartSuccess: {
-      const chartDataPayload = action.payload as IShiftGraphicDto[];
-      const chartData =
-        convertShiftGraphicListTodownTimeRecordChartDataModel(chartDataPayload);
-      return { ...state, downTimeRecordChartData: chartData };
-    }
-    case OverviewActionTypes.GetMachineOperationTableSuccess: {
-      const tableDataPayload = action.payload || [];
-      return { ...state, machineOperationTableData: tableDataPayload };
-    }
-    default:
-      return state;
-  }
-}
+export const overviewReducer = createReducer(
+  initialState,
 
-export function convertShiftGraphicListTodownTimeRecordChartDataModel(
+  on(getDownTimeChartSuccess, (state, { payload }) => ({
+    ...state,
+    downTimeRecordChartData: convertShiftGraphicListToChartData(payload),
+  })),
+
+  on(getMachineOperationTableSuccess, (state, { payload }) => ({
+    ...state,
+    machineOperationTableData: payload ?? [],
+  }))
+);
+
+function convertShiftGraphicListToChartData(
   data: IShiftGraphicDto[]
 ): DownTimeRecordChartModel[] {
-  const downTimeRecordChartDataModel: any[] = [];
-  data.forEach((element) => {
-    const graphicItem = {} as DownTimeRecordChartModel;
-    graphicItem.name = element.Name ?? "";
-    graphicItem.series = [];
-    const uptimeObject = {} as ChartSeriesModel;
-    const downtimeObject = {} as ChartSeriesModel;
-    uptimeObject.name = "Uptime";
-    uptimeObject.value = element.Uptime * 100;
-    downtimeObject.name = "Downtime";
-    downtimeObject.value = element.Downtime * 100;
-    graphicItem.series.push(uptimeObject, downtimeObject);
-    downTimeRecordChartDataModel.push(graphicItem);
-  });
-  return downTimeRecordChartDataModel;
+  return data.map((element) => ({
+    name: element.Name ?? "",
+    series: [
+      {
+        name: "Uptime",
+        value: element.Uptime * 100,
+      },
+      {
+        name: "Downtime",
+        value: element.Downtime * 100,
+      },
+    ],
+  }));
 }
-/*
-    Below are the selectors for this reducer. Make sure to make compact selectors as per
-    requirements of your application.
-*/
 
+// Selectors
 export const getOverviewState = (state: OverviewState) => state;
 
 export const getDownTimeRecordChartData = (state: OverviewState) =>
@@ -74,8 +64,8 @@ export const getDownTimeRecordChartData = (state: OverviewState) =>
 export const getMachineOperationTableData = (state: OverviewState) =>
   state.machineOperationTableData;
 
-export const getMachineOperationTableColumns = (state: OverviewState) =>
+export const getMachineOperationTableColumnsData = (state: OverviewState) =>
   state.machineOperationTableColumns;
 
-export const getMachineOperationsTableHeaderName = (state: OverviewState) =>
-  state.machineOperationTableColumns;
+export const getMachineOperationsTableHeaderNameData = (state: OverviewState) =>
+  state.machineOperationsTableHeaderName;

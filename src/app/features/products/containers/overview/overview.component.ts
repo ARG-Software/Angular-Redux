@@ -2,7 +2,10 @@ import { Observable, startWith, map } from "rxjs";
 import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { Store, select } from "@ngrx/store";
 import * as fromModule from "./../../products.reducers.index";
-import * as Actions from "../../actions/overview.actions";
+import {
+  getDownTimeChart,
+  getMachineOperationTable,
+} from "../../actions/overview.actions";
 import {
   DownTimeStatisticsChartRequestModel,
   MachineOperationsRequestModel,
@@ -120,10 +123,9 @@ export class OverviewComponent implements OnInit {
       productId: 1,
     };
 
-    this.store.dispatch(new Actions.GetDownTimeChart(requestChartModel));
-
+    this.store.dispatch(getDownTimeChart({ payload: requestChartModel }));
     this.store.dispatch(
-      new Actions.GetMachineOperationTable(requestTableModel)
+      getMachineOperationTable({ payload: requestTableModel })
     );
 
     this.chartData$ = this.store.pipe(

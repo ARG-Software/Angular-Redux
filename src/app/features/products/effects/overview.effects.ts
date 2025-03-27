@@ -1,52 +1,50 @@
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { catchError, finalize, map, switchMap, tap } from "rxjs/operators";
 import { of } from "rxjs";
+
 import * as loadingActions from "../../../main/actions/loading.actions";
 import * as fromMain from "../../../main/main.reducers.index";
+
 import {
-  GetDownTimeChart,
-  GetDownTimeChartSuccess,
-  GetMachineOperationTable,
-  GetMachineOperationTableSuccess,
-  OverviewActionTypes,
-  OverviewFailure,
+  getDownTimeChart,
+  getDownTimeChartSuccess,
+  getMachineOperationTable,
+  getMachineOperationTableSuccess,
+  overviewFailure,
 } from "../actions/overview.actions";
+
+import { IDownTimeRecordService } from "src/app/api/services/interfaces/core/idowntimerecord.service";
+import { IMachineOperationService } from "src/app/api/services/interfaces/core/imachineoperation.service";
+
 import {
   IShiftGraphicDto,
   IMachineOperationsDto,
 } from "src/app/api/models/apimodels";
-import { IDownTimeRecordService } from "src/app/api/services/interfaces/core/idowntimerecord.service";
-import { IMachineOperationService } from "src/app/api/services/interfaces/core/imachineoperation.service";
-import { inject } from "@angular/core";
 
 @Injectable()
 export class OverviewEffects {
   private actions$ = inject(Actions);
-  constructor(
-    private machineOperationService: IMachineOperationService,
-    private downTimeRecordService: IDownTimeRecordService,
-    private mainStore$: Store<fromMain.MainState>
-  ) {}
+  private mainStore$ = inject<Store<fromMain.MainState>>(Store);
+  private machineOperationService = inject(IMachineOperationService);
+  private downTimeRecordService = inject(IDownTimeRecordService);
 
-  public getDownTimeStatisticChart$ = createEffect(() =>
+  getDownTimeStatisticChart$ = createEffect(() =>
     this.actions$.pipe(
-      ofType<GetDownTimeChart>(OverviewActionTypes.GetDownTimeChart),
+      ofType(getDownTimeChart),
       tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
-      switchMap((action) =>
+      switchMap(({ payload }) =>
         this.downTimeRecordService
           .getDowntimeOfProductShiftGraphic(
-            action.payload.productId,
-            action.payload.startDate
+            payload.productId,
+            payload.startDate
           )
           .pipe(
             map((graphicData: IShiftGraphicDto[]) =>
-              graphicData
-                ? new GetDownTimeChartSuccess(graphicData)
-                : new OverviewFailure({})
+              getDownTimeChartSuccess({ payload: graphicData })
             ),
-            catchError((error) => of(new OverviewFailure(error))),
+            catchError((error) => of(overviewFailure({ payload: error }))),
             finalize(() =>
               this.mainStore$.dispatch(new loadingActions.HideLoading())
             )
@@ -55,32 +53,18 @@ export class OverviewEffects {
     )
   );
 
-  public getStatisticsChartDataSuccess$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType<GetDownTimeChartSuccess>(
-          OverviewActionTypes.GetDownTimeChartSuccess
-        )
-      ),
-    { dispatch: false }
-  );
-
-  public getMachineOperationTable$ = createEffect(() =>
+  getMachineOperationTable$ = createEffect(() =>
     this.actions$.pipe(
-      ofType<GetMachineOperationTable>(
-        OverviewActionTypes.GetMachineOperationTable
-      ),
+      ofType(getMachineOperationTable),
       tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
-      switchMap((action) =>
+      switchMap(({ payload }) =>
         this.machineOperationService
-          .GetMachineOperationsofProduct(action.payload.productId)
+          .GetMachineOperationsofProduct(payload.productId)
           .pipe(
             map((machinesData: IMachineOperationsDto[]) =>
-              machinesData
-                ? new GetMachineOperationTableSuccess(machinesData)
-                : new OverviewFailure({})
+              getMachineOperationTableSuccess({ payload: machinesData })
             ),
-            catchError((error) => of(new OverviewFailure(error))),
+            catchError((error) => of(overviewFailure({ payload: error }))),
             finalize(() =>
               this.mainStore$.dispatch(new loadingActions.HideLoading())
             )
@@ -89,21 +73,11 @@ export class OverviewEffects {
     )
   );
 
-  public getMachineOperationTableSuccess$ = createEffect(
+  overviewFailure$ = createEffect(
     () =>
       this.actions$.pipe(
-        ofType<GetMachineOperationTableSuccess>(
-          OverviewActionTypes.GetMachineOperationTableSuccess
-        )
-      ),
-    { dispatch: false }
-  );
-
-  public overviewFailure$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType<OverviewFailure>(OverviewActionTypes.OverviewFailure),
-        tap((error) => console.error("Overview Failure:", error))
+        ofType(overviewFailure),
+        tap(({ payload }) => console.error("Overview Failure:", payload))
       ),
     { dispatch: false }
   );
