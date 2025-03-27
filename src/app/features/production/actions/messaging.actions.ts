@@ -1,4 +1,4 @@
-import { Action } from "@ngrx/store";
+import { createAction, props } from "@ngrx/store";
 import {
   MessagingLoadDataModelUI,
   MessagingRequestModelUI,
@@ -6,70 +6,37 @@ import {
 } from "../models/messaging.model";
 import { MimsSelectBoxModel } from "src/app/mims-ui/input/select-box/models/select-box.model";
 
-export enum MessagingActionTypes {
-  GetMessagingData = "[Messaging] Get messaging data",
-  GetMessagingDataSuccess = "[Messaging] Get messaging data success",
+export const getMessagingData = createAction(
+  "[Messaging] Get messaging data",
+  props<{ payload: MessagingRequestModelUI }>()
+);
 
-  UpdateMessagingData = "[Messaging] Update messaging data",
-  UpdateMessagingDataSuccess = "[Messaging] Update messaging data success",
+export const getMessagingDataSuccess = createAction(
+  "[Messaging] Get messaging data success",
+  props<{ payload: MessagingLoadDataModelUI[] }>()
+);
 
-  ChangeCheckbox = "[Messaging] Add/Remove from messagings to save",
+export const updateMessagingData = createAction(
+  "[Messaging] Update messaging data",
+  props<{ payload: MessagingSaveDataModelUI[] }>()
+);
 
-  ChangeSelectbox = "[Messaging] Change the messaging option",
+export const updateMessagingDataSuccess = createAction(
+  "[Messaging] Update messaging data success",
+  props<{ payload: boolean }>()
+);
 
-  MessagingFailure = "[Messaging] Messaging Failed",
-}
+export const changeCheckbox = createAction(
+  "[Messaging] Add/Remove from messagings to save",
+  props<{ payload: number }>()
+);
 
-export class GetMessagingData implements Action {
-  public type = MessagingActionTypes.GetMessagingData;
+export const changeSelectbox = createAction(
+  "[Messaging] Change the messaging option",
+  props<{ payload: { Id: number; Option: MimsSelectBoxModel } }>()
+);
 
-  constructor(public payload: MessagingRequestModelUI) {}
-}
-
-export class GetMessagingDataSuccess implements Action {
-  public type = MessagingActionTypes.GetMessagingDataSuccess;
-
-  constructor(public payload: MessagingLoadDataModelUI[]) {}
-}
-
-export class UpdateMessagingData implements Action {
-  public type = MessagingActionTypes.UpdateMessagingData;
-
-  constructor(public payload: MessagingSaveDataModelUI[]) {}
-}
-
-export class UpdateMessagingDataSuccess implements Action {
-  public type = MessagingActionTypes.UpdateMessagingDataSuccess;
-
-  constructor(public payload: boolean) {}
-}
-
-export class ChangeCheckbox implements Action {
-  public type = MessagingActionTypes.ChangeCheckbox;
-
-  constructor(public payload: number) {}
-}
-export class ChangeSelectbox implements Action {
-  public type = MessagingActionTypes.ChangeSelectbox;
-
-  constructor(public payload: { Id: number; Option: MimsSelectBoxModel }) {}
-}
-
-export class MessagingFailure implements Action {
-  public type = MessagingActionTypes.MessagingFailure;
-
-  constructor(public payload: any) {}
-}
-
-/**
- * Export a type alias of all actions in this action group
- * so that reducers can easily compose action types
- */
-export type MessagingActions =
-  | GetMessagingData
-  | GetMessagingDataSuccess
-  | UpdateMessagingData
-  | UpdateMessagingDataSuccess
-  | ChangeCheckbox
-  | ChangeSelectbox
-  | MessagingFailure;
+export const messagingFailure = createAction(
+  "[Messaging] Messaging Failed",
+  props<{ payload: any }>()
+);

@@ -1,6 +1,9 @@
+import { createReducer, on } from "@ngrx/store";
 import {
-  MessagingActionTypes,
-  MessagingActions,
+  getMessagingDataSuccess,
+  changeCheckbox,
+  changeSelectbox,
+  updateMessagingDataSuccess,
 } from "../actions/messaging.actions";
 import {
   MessagingLoadDataModelUI,
@@ -17,58 +20,42 @@ export const initialState: MessagingState = {
   messagingToSave: [],
 };
 
-export function reducer(
-  state: MessagingState = initialState,
-  action: MessagingActions
-): MessagingState {
-  switch (action.type) {
-    case MessagingActionTypes.GetMessagingDataSuccess: {
-      return {
-        ...state,
-        messagingData: action.payload,
-      };
-    }
+export const messagingReducer = createReducer(
+  initialState,
 
-    case MessagingActionTypes.ChangeCheckbox: {
-      return {
-        ...state,
-        messagingToSave: findAndUpdateMessagingToSave(
-          state.messagingToSave,
-          state.messagingData,
-          action.payload
-        ),
-      };
-    }
+  on(getMessagingDataSuccess, (state, { payload }) => ({
+    ...state,
+    messagingData: payload,
+  })),
 
-    case MessagingActionTypes.ChangeSelectbox: {
-      return {
-        ...state,
-        messagingData: updateOptionLoadData(
-          state.messagingData,
-          action.payload
-        ),
-        messagingToSave: updateOptionSaveData(
-          state.messagingToSave,
-          action.payload
-        ),
-      };
-    }
+  on(changeCheckbox, (state, { payload }) => ({
+    ...state,
+    messagingToSave: findAndUpdateMessagingToSave(
+      state.messagingToSave,
+      state.messagingData,
+      payload
+    ),
+  })),
 
-    case MessagingActionTypes.UpdateMessagingDataSuccess: {
-      return state;
-    }
+  on(changeSelectbox, (state, { payload }) => ({
+    ...state,
+    messagingData: updateOptionLoadData(state.messagingData, payload),
+    messagingToSave: updateOptionSaveData(state.messagingToSave, payload),
+  })),
 
-    default:
-      return state;
-  }
-}
+  on(updateMessagingDataSuccess, (state) => ({
+    ...state,
+    // Optionally reset state here if needed after save
+  }))
+);
 
+// utils reused from original reducer file...
 /**
  * Update array messagings load from api with the new selected option
  * @param messagingData messaging data from api
  * @param obj object with the messaging Id and with the new option
  */
-export function updateOptionLoadData(messagingData: any[], obj: any) {
+function updateOptionLoadData(messagingData: any[], obj: any) {
   return messagingData.map((message) =>
     message.Id === obj.Id
       ? {
@@ -81,15 +68,14 @@ export function updateOptionLoadData(messagingData: any[], obj: any) {
       : message
   );
 }
+
 /**
  * Update array with messagings with the new selected option
  * @param messagingToSave state with messagings to save
  * @param obj object with the messaging Id and with the new option
  */
-export function updateOptionSaveData(messagingToSave: any[], obj: any) {
-  if (messagingToSave.length === 0) {
-    return messagingToSave;
-  }
+function updateOptionSaveData(messagingToSave: any[], obj: any) {
+  if (messagingToSave.length === 0) return messagingToSave;
 
   messagingToSave.forEach((elem) => {
     if (elem.Id === obj.Id) {
@@ -105,17 +91,15 @@ export function updateOptionSaveData(messagingToSave: any[], obj: any) {
  * @param messagingToSave state with array of messaging
  * @param messaging messagin to update
  */
-export function findAndUpdateMessagingToSave(
+function findAndUpdateMessagingToSave(
   messagingToSaveState: MessagingSaveDataModelUI[],
   messagingDataState: MessagingLoadDataModelUI[],
   payload: number
 ): MessagingSaveDataModelUI[] {
-  const messagingSave = Object.assign([], messagingToSaveState);
-  const messagingData = Object.assign([], messagingDataState);
+  const messagingSave = [...messagingToSaveState];
+  const messagingData = [...messagingDataState];
 
-  const index = messagingSave.findIndex((elem: any) => {
-    return elem.Id === payload;
-  });
+  const index = messagingSave.findIndex((elem) => elem.Id === payload);
 
   index > -1
     ? messagingSave.splice(index, 1)
@@ -129,31 +113,19 @@ export function findAndUpdateMessagingToSave(
  * @param messagingData Array with messaging data
  * @param messagingId id of the messagign to convert to be saved in backend
  */
-export function convertDataToSave(
+function convertDataToSave(
   messagingData: MessagingLoadDataModelUI[],
   messagingId: number
 ): MessagingSaveDataModelUI {
-  let convertedMessaging: MessagingSaveDataModelUI;
-  const toConvert = messagingData.find((elem) => {
-    return elem.Id === messagingId;
-  });
+  const toConvert = messagingData.find((elem) => elem.Id === messagingId)!;
 
-  convertedMessaging = {
+  return {
     Id: messagingId,
-    Option: toConvert!.Options.find((elem) => {
-      return elem.selected === true;
-    })!,
+    Option: toConvert.Options.find((elem) => elem.selected === true)!,
   };
-
-  return convertedMessaging;
 }
 
-/*
-    Below are the selectors for this reducer. Make sure to make compact selectors as per
-    requirements of your application.
-*/
-
+// Selectors
 export const getMessagingData = (state: MessagingState) => state.messagingData;
-
 export const getMessagingToSave = (state: MessagingState) =>
   state.messagingToSave;

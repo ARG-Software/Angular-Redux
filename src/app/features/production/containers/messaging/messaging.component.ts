@@ -13,7 +13,12 @@ import {
 } from "../../models/messaging.model";
 
 import * as fromReducer from "../../production.reducers.index";
-import * as fromActions from "../../actions/messaging.actions";
+import {
+  getMessagingData,
+  changeCheckbox,
+  changeSelectbox,
+  updateMessagingData,
+} from "../../actions/messaging.actions";
 
 @Component({
   standalone: false,
@@ -37,7 +42,7 @@ export class MessagingComponent implements OnInit, OnDestroy {
     Id: 1,
   };
 
-  public constructor(private store: Store<fromReducer.ProductionState>) {
+  constructor(private store: Store<fromReducer.ProductionState>) {
     this.messagingData$ = this.store.select(fromReducer.getMessagingData);
     this._messagingToSave$ = this.store
       .select(fromReducer.getMessagingToSave)
@@ -45,7 +50,7 @@ export class MessagingComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit() {
-    this.store.dispatch(new fromActions.GetMessagingData(this.request));
+    this.store.dispatch(getMessagingData({ payload: this.request }));
   }
 
   public ngOnDestroy() {
@@ -57,15 +62,15 @@ export class MessagingComponent implements OnInit, OnDestroy {
    * @param checkboxId Id from the checked object
    */
   public checkboxChange(checkboxId: number) {
-    this.store.dispatch(new fromActions.ChangeCheckbox(checkboxId));
+    this.store.dispatch(changeCheckbox({ payload: checkboxId }));
   }
 
   /**
    * Dispatch action to update select box changes
    * @param data information with Id and the new selected option
    */
-  public selectboxChange(data: any) {
-    this.store.dispatch(new fromActions.ChangeSelectbox(data));
+  public selectboxChange(data: { Id: number; Option: any }) {
+    this.store.dispatch(changeSelectbox({ payload: data }));
   }
 
   /**
@@ -74,7 +79,7 @@ export class MessagingComponent implements OnInit, OnDestroy {
   public saveMessaging() {
     if (this.messagingToSave.length > 0) {
       this.store.dispatch(
-        new fromActions.UpdateMessagingData(this.messagingToSave)
+        updateMessagingData({ payload: this.messagingToSave })
       );
     }
   }

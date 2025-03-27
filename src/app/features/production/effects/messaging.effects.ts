@@ -7,18 +7,14 @@ import { catchError, finalize, map, switchMap, tap } from "rxjs/operators";
 import * as loadingActions from "../../../main/actions/loading.actions";
 import * as fromMain from "../../../main/main.reducers.index";
 import {
-  MessagingFailure,
-  MessagingActionTypes,
-  UpdateMessagingData,
-  UpdateMessagingDataSuccess,
-  GetMessagingData,
-  GetMessagingDataSuccess,
+  getMessagingData,
+  getMessagingDataSuccess,
+  updateMessagingData,
+  updateMessagingDataSuccess,
+  messagingFailure,
 } from "../actions/messaging.actions";
 
-import {
-  MessagingLoadDataModelUI,
-  MessagingLoadDataModelUIFactory,
-} from "../models/messaging.model";
+import { MessagingLoadDataModelUIFactory } from "../models/messaging.model";
 
 import { apiRequest } from "../../../utils/funtion.utils";
 import { IMessagingService } from "src/app/api/services/interfaces/core/production/imessaging.service";
@@ -32,17 +28,19 @@ export class MessagingEffects {
 
   getMessagingData$ = createEffect(() =>
     this.actions$.pipe(
-      ofType<GetMessagingData>(MessagingActionTypes.GetMessagingData),
+      ofType(getMessagingData),
       tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
       switchMap(({ payload }) =>
         apiRequest().pipe(
-          map(
-            () => new GetMessagingDataSuccess(MessagingLoadDataModelUIFactory)
+          map(() =>
+            getMessagingDataSuccess({
+              payload: MessagingLoadDataModelUIFactory,
+            })
           ),
           finalize(() =>
             this.mainStore$.dispatch(new loadingActions.HideLoading())
           ),
-          catchError((error) => of(new MessagingFailure(error)))
+          catchError((error) => of(messagingFailure({ payload: error })))
         )
       )
     )
@@ -50,15 +48,15 @@ export class MessagingEffects {
 
   updateMessaging$ = createEffect(() =>
     this.actions$.pipe(
-      ofType<UpdateMessagingData>(MessagingActionTypes.UpdateMessagingData),
+      ofType(updateMessagingData),
       tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
       switchMap(({ payload }) =>
         apiRequest().pipe(
-          map(() => new UpdateMessagingDataSuccess(true)),
+          map(() => updateMessagingDataSuccess({ payload: true })),
           finalize(() =>
             this.mainStore$.dispatch(new loadingActions.HideLoading())
           ),
-          catchError((error) => of(new MessagingFailure(error)))
+          catchError((error) => of(messagingFailure({ payload: error })))
         )
       )
     )
@@ -67,8 +65,8 @@ export class MessagingEffects {
   messagingFailure$ = createEffect(
     () =>
       this.actions$.pipe(
-        ofType<MessagingFailure>(MessagingActionTypes.MessagingFailure),
-        tap((error) => console.error("Messaging Error:", error))
+        ofType(messagingFailure),
+        tap(({ payload }) => console.error("Messaging Error:", payload))
       ),
     { dispatch: false }
   );
