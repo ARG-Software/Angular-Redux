@@ -1,12 +1,12 @@
 import { Component, ChangeDetectionStrategy, OnInit } from "@angular/core";
+import { Store } from "@ngrx/store";
+import { Observable } from "rxjs";
 import {
   KanbanDataModelUI,
   WipDataModelUI,
 } from "../../models/settings.models";
-import { Store } from "@ngrx/store";
+import * as SettingsActions from "../../actions/settings.actions";
 import * as fromReducer from "../../products.reducers.index";
-import { Observable } from "rxjs";
-import * as fromActions from "../../actions/settings.actions";
 
 @Component({
   standalone: false,
@@ -20,20 +20,22 @@ export class SettingsComponent implements OnInit {
   public wipData$: Observable<WipDataModelUI[]>;
   public kanBanData$: Observable<KanbanDataModelUI[]>;
 
-  public constructor(private store: Store<fromReducer.ProductState>) {
-    this.wipData$ = this.store.select(fromReducer.getWipData);
-    this.kanBanData$ = this.store.select(fromReducer.getKanBanData);
+  constructor(private store: Store<fromReducer.ProductState>) {
+    this.wipData$ = this.store.select(fromReducer.getWip);
+    this.kanBanData$ = this.store.select(fromReducer.getKanBan);
   }
 
-  public ngOnInit() {
-    this.store.dispatch(new fromActions.LoadData(this.productId));
+  ngOnInit(): void {
+    this.store.dispatch(
+      SettingsActions.loadSettingsData({ productId: this.productId })
+    );
   }
 
-  public saveWipData(data: WipDataModelUI[]) {
-    this.store.dispatch(new fromActions.UpdateWip(data));
+  saveWipData(data: WipDataModelUI[]): void {
+    this.store.dispatch(SettingsActions.updateWip({ wip: data }));
   }
 
-  public saveKanBanData(data: KanbanDataModelUI[]) {
-    this.store.dispatch(new fromActions.UpdateKanBan(data));
+  saveKanBanData(data: KanbanDataModelUI[]): void {
+    this.store.dispatch(SettingsActions.updateKanBan({ kanban: data }));
   }
 }

@@ -1,5 +1,10 @@
 import { Observable, of } from "rxjs";
 import { MimsSelectBoxModel } from "../mims-ui/input/select-box/models/select-box.model";
+import { IBufferDto } from "../api/models/apimodels";
+import {
+  KanbanDataModelUI,
+  WipDataModelUI,
+} from "../features/products/models/settings.models";
 
 /**
  * Get today date and subtract the input number days
@@ -64,4 +69,27 @@ export function convertApiDataToSelectBoxes(
       selected: false,
     }))
   ) as [MimsSelectBoxModel[], MimsSelectBoxModel[]];
+}
+
+export function convertDataInWipUIAndKanBanUIModels(data: IBufferDto[]) {
+  return data.reduce(
+    (acc, elem) => {
+      const item = {
+        Name: elem.Name,
+        Count: elem.Count,
+        Id: elem.Id,
+        ProductId: elem.ProductId,
+        LowAlertLowWarning: elem.LowAlertLowWarning,
+        LowWarningTarget: elem.LowWarningTarget,
+        TargetHighWarning: elem.TargetHighWarning,
+        HighWarningHighAlert: elem.HighWarningHighAlert,
+        NextOperationId: elem.NextOperationId,
+        PreviousOperationId: elem.PreviousOperationId,
+      };
+      acc.Wip.push(item);
+      acc.Kanban.push(item);
+      return acc;
+    },
+    { Wip: [] as WipDataModelUI[], Kanban: [] as KanbanDataModelUI[] }
+  );
 }

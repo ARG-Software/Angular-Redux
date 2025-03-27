@@ -1,67 +1,41 @@
-import { Action } from '@ngrx/store';
-import { KanbanDataModelUI, WipDataModelUI } from '../models/settings.models';
+import { createAction, props } from "@ngrx/store";
+import { KanbanDataModelUI, WipDataModelUI } from "../models/settings.models";
 
-export enum SettingsActionTypes {
+// Load combined WIP + KanBan
+export const loadSettingsData = createAction(
+  "[Settings] Load Data",
+  props<{ productId: number }>()
+);
 
-    LoadData = '[Settings] Load Data (WIP, KanBan, Alarm Settings)',
-    LoadDataSuccess = '[Settings] Load Data (WIP, KanBan, Alarm Settings) Success',
+export const loadSettingsDataSuccess = createAction(
+  "[Settings] Load Data Success",
+  props<{ wip: WipDataModelUI[]; kanban: KanbanDataModelUI[] }>()
+);
 
-    UpdateWip = '[Settings] Update WIP',
-    UpdateWipSuccess = '[Settings] Update WIP Success',
+// WIP
+export const updateWip = createAction(
+  "[Settings] Update WIP",
+  props<{ wip: WipDataModelUI[] }>()
+);
 
-    UpdateKanBan = '[Settings] Update Kan-Ban Limits',
-    UpdateKanBanSuccess = '[Settings] Update Kan-Ban Limits Success',
+export const updateWipSuccess = createAction(
+  "[Settings] Update WIP Success",
+  props<{ success: boolean }>()
+);
 
-    SettingsFailure = '[Settings] Settings Failed'
-}
+// KanBan
+export const updateKanBan = createAction(
+  "[Settings] Update KanBan",
+  props<{ kanban: KanbanDataModelUI[] }>()
+);
 
-export class LoadData implements Action {
-    public type = SettingsActionTypes.LoadData;
+export const updateKanBanSuccess = createAction(
+  "[Settings] Update KanBan Success",
+  props<{ success: boolean }>()
+);
 
-    constructor(public payload: number) {}
-}
-
-export class LoadDataSuccess implements Action {
-    public type = SettingsActionTypes.LoadDataSuccess;
-
-    constructor(public payload?: any) {}
-}
-
-export class UpdateWip implements Action {
-    public type = SettingsActionTypes.UpdateWip;
-
-    constructor(public payload: WipDataModelUI[]) {}
-}
-
-export class UpdateWipSuccess implements Action {
-    public type = SettingsActionTypes.UpdateWipSuccess;
-
-    constructor(public payload: boolean) {}
-}
-
-export class UpdateKanBan implements Action {
-    public type = SettingsActionTypes.UpdateKanBan;
-
-    constructor(public payload: KanbanDataModelUI[]) {}
-}
-
-export class UpdateKanBanSuccess implements Action {
-    public type = SettingsActionTypes.UpdateKanBanSuccess;
-
-    constructor(public payload: boolean) {}
-}
-
-export class SettingsFailure implements Action {
-    public type = SettingsActionTypes.SettingsFailure;
-
-    constructor(public payload: any) {}
-}
-
-export type SettingsActions =
-    | LoadData
-    | LoadDataSuccess
-    | UpdateWip
-    | UpdateWipSuccess
-    | UpdateKanBan
-    | UpdateKanBanSuccess
-    | SettingsFailure;
+// Failure
+export const settingsFailure = createAction(
+  "[Settings] Settings Failure",
+  props<{ error: any }>()
+);

@@ -1,4 +1,3 @@
-import * as fromSettingsReducerDefinition from "./reducers/settings.reducers";
 import * as fromConfigureReducerDefiniton from "./reducers/configure.reducers";
 import { createSelector, createFeatureSelector } from "@ngrx/store";
 import {
@@ -9,18 +8,24 @@ import {
   OverviewState,
 } from "./reducers/overview.reducers";
 import { DataGridCellModel } from "src/app/mims-ui/tables/data-grid/models/data-grid-cell.model";
+import {
+  getKanbanData,
+  getWipData,
+  settingsReducer,
+  SettingsState,
+} from "./reducers/settings.reducers";
 
 export const reducerName = "products";
 
 export interface ProductState {
   overview: OverviewState;
-  settings: fromSettingsReducerDefinition.SettingsState;
+  settings: SettingsState;
   configure: fromConfigureReducerDefiniton.ConfigureState;
 }
 
 export const reducers: any = {
   overview: overviewReducer,
-  settings: fromSettingsReducerDefinition.reducer,
+  settings: settingsReducer,
   configure: fromConfigureReducerDefiniton.reducer,
 };
 
@@ -60,15 +65,9 @@ const getSettingstate = createSelector(
   (state) => state.settings
 );
 
-export const getWipData = createSelector(
-  getSettingstate,
-  fromSettingsReducerDefinition.getWipData
-);
+export const getWip = createSelector(getSettingstate, getWipData);
 
-export const getKanBanData = createSelector(
-  getSettingstate,
-  fromSettingsReducerDefinition.getKanbanData
-);
+export const getKanBan = createSelector(getSettingstate, getKanbanData);
 
 // Configure
 

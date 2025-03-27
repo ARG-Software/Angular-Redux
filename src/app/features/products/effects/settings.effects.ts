@@ -1,43 +1,37 @@
 import { inject, Injectable } from "@angular/core";
-import { Actions, createEffect, ofType } from "@ngrx/effects";
+import { createEffect, Actions, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { catchError, finalize, map, switchMap, tap } from "rxjs/operators";
 import { of } from "rxjs";
+
+import * as SettingsActions from "../actions/settings.actions";
 import * as loadingActions from "../../../main/actions/loading.actions";
 import * as fromMain from "../../../main/main.reducers.index";
-import {
-  LoadData,
-  LoadDataSuccess,
-  SettingsActionTypes,
-  SettingsFailure,
-  UpdateKanBan,
-  UpdateKanBanSuccess,
-  UpdateWip,
-  UpdateWipSuccess,
-} from "../actions/settings.actions";
-import { KanbanDataModelUI, WipDataModelUI } from "../models/settings.models";
-import * as MimsModels from "src/app/api/models/apimodels";
+
 import { ISettingsService } from "src/app/api/services/interfaces/core/isettings.service";
+import * as MimsModels from "src/app/api/models/apimodels";
+import { convertDataInWipUIAndKanBanUIModels } from "src/app/utils/funtion.utils";
 
 @Injectable()
 export class SettingsEffects {
   private actions$ = inject(Actions);
-  constructor(
-    private settingsService: ISettingsService,
-    private mainStore$: Store<fromMain.MainState>
-  ) {}
+  private settingsService = inject(ISettingsService);
+  private mainStore$ = inject<Store<fromMain.MainState>>(Store);
 
-  public getData$ = createEffect(() =>
+  loadSettingsData$ = createEffect(() =>
     this.actions$.pipe(
-      ofType<LoadData>(SettingsActionTypes.LoadData),
+      ofType(SettingsActions.loadSettingsData),
       tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
-      switchMap((action) =>
-        this.settingsService.GetBuffersForProduct(action.payload).pipe(
+      switchMap(({ productId }) =>
+        this.settingsService.GetBuffersForProduct(productId).pipe(
           map((response: MimsModels.IBufferDto[]) => {
-            const processedData = convertDataInWipUIAndKanBanUIModels(response);
-            return new LoadDataSuccess(processedData);
+            const data = convertDataInWipUIAndKanBanUIModels(response);
+            return SettingsActions.loadSettingsDataSuccess({
+              wip: data.Wip,
+              kanban: data.Kanban,
+            });
           }),
-          catchError((error) => of(new SettingsFailure(error))),
+          catchError((error) => of(SettingsActions.settingsFailure({ error }))),
           finalize(() =>
             this.mainStore$.dispatch(new loadingActions.HideLoading())
           )
@@ -46,14 +40,14 @@ export class SettingsEffects {
     )
   );
 
-  public updateWipData$ = createEffect(() =>
+  updateWipData$ = createEffect(() =>
     this.actions$.pipe(
-      ofType<UpdateWip>(SettingsActionTypes.UpdateWip),
+      ofType(SettingsActions.updateWip),
       tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
-      switchMap((action) =>
-        this.settingsService.UpdateWip(action.payload).pipe(
-          map((wipData: boolean) => new UpdateWipSuccess(wipData)),
-          catchError((error) => of(new SettingsFailure(error))),
+      switchMap(({ wip }) =>
+        this.settingsService.UpdateWip(wip).pipe(
+          map((success) => SettingsActions.updateWipSuccess({ success })),
+          catchError((error) => of(SettingsActions.settingsFailure({ error }))),
           finalize(() =>
             this.mainStore$.dispatch(new loadingActions.HideLoading())
           )
@@ -62,14 +56,14 @@ export class SettingsEffects {
     )
   );
 
-  public updateKanbanData$ = createEffect(() =>
+  updateKanbanData$ = createEffect(() =>
     this.actions$.pipe(
-      ofType<UpdateKanBan>(SettingsActionTypes.UpdateKanBan),
+      ofType(SettingsActions.updateKanBan),
       tap(() => this.mainStore$.dispatch(new loadingActions.ShowLoading())),
-      switchMap((action) =>
-        this.settingsService.UpdateKanBan(action.payload).pipe(
-          map((kanbanData: boolean) => new UpdateKanBanSuccess(kanbanData)),
-          catchError((error) => of(new SettingsFailure(error))),
+      switchMap(({ kanban }) =>
+        this.settingsService.UpdateKanBan(kanban).pipe(
+          map((success) => SettingsActions.updateKanBanSuccess({ success })),
+          catchError((error) => of(SettingsActions.settingsFailure({ error }))),
           finalize(() =>
             this.mainStore$.dispatch(new loadingActions.HideLoading())
           )
@@ -78,37 +72,12 @@ export class SettingsEffects {
     )
   );
 
-  public settingsFailure$ = createEffect(
+  settingsFailure$ = createEffect(
     () =>
       this.actions$.pipe(
-        ofType<SettingsFailure>(SettingsActionTypes.SettingsFailure),
-        tap((error) => console.error("Settings Failure:", error))
+        ofType(SettingsActions.settingsFailure),
+        tap(({ error }) => console.error("Settings Failure:", error))
       ),
     { dispatch: false }
-  );
-}
-
-export function convertDataInWipUIAndKanBanUIModels(
-  data: MimsModels.IBufferDto[]
-) {
-  return data.reduce(
-    (acc, elem) => {
-      const item = {
-        Name: elem.Name,
-        Count: elem.Count,
-        Id: elem.Id,
-        ProductId: elem.ProductId,
-        LowAlertLowWarning: elem.LowAlertLowWarning,
-        LowWarningTarget: elem.LowWarningTarget,
-        TargetHighWarning: elem.TargetHighWarning,
-        HighWarningHighAlert: elem.HighWarningHighAlert,
-        NextOperationId: elem.NextOperationId,
-        PreviousOperationId: elem.PreviousOperationId,
-      };
-      acc.Wip.push(item);
-      acc.Kanban.push(item);
-      return acc;
-    },
-    { Wip: [] as WipDataModelUI[], Kanban: [] as KanbanDataModelUI[] }
   );
 }
