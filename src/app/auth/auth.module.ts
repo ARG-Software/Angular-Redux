@@ -11,10 +11,11 @@ import { StoreModule } from "@ngrx/store";
 import { reducers, reducerName } from "./auth.reducers.index";
 import { LogoutComponent } from "./containers/logout.component";
 import { AuthService } from "./services/auth.service";
+import { GuestGuard } from "./guards/guest.guard";
 
 const routes: Routes = [
   { path: "", redirectTo: "main", pathMatch: "full" },
-  { path: "login", component: LoginComponent },
+  { path: "login", canActivate: [GuestGuard], component: LoginComponent },
   { path: "logout", component: LogoutComponent },
   {
     path: "main",
@@ -33,6 +34,6 @@ const routes: Routes = [
     EffectsModule.forFeature([AuthEffects]),
   ],
   declarations: [AuthComponent, LoginComponent, LogoutComponent],
-  providers: [AuthGuard, AuthService],
+  providers: [AuthGuard, GuestGuard, AuthService],
 })
 export class AuthModule {}
