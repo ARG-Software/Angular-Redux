@@ -8,40 +8,45 @@ import { IMachineStateService } from "src/app/api/services/interfaces/core/produ
 
 @Injectable({ providedIn: "root" })
 export class MachineStateStore {
-  private readonly _machineData = signal<MachineStateLoadDataModelUI[]>([]);
-  private readonly _loading = signal(false);
+  private readonly machineDataSignal = signal<MachineStateLoadDataModelUI[]>(
+    []
+  );
+  private readonly loadingSignal = signal(false);
 
-  public readonly machineData = computed(() => this._machineData());
-  public readonly loading = computed(() => this._loading());
+  public readonly machineData = computed(() => this.machineDataSignal());
+  public readonly loading = computed(() => this.loadingSignal());
 
   private readonly service = inject(IMachineStateService);
 
   async loadMachineData(machineId: number): Promise<void> {
     try {
-      this._loading.set(true);
+      this.loadingSignal.set(true);
       const data = await firstValueFrom(
         this.service.fetchMachineData(machineId)
       );
-      this._machineData.set(data);
+      this.machineDataSignal.set(data);
     } catch (err) {
       console.error("Failed to load machine data", err);
     } finally {
-      this._loading.set(false);
+      this.loadingSignal.set(false);
     }
   }
 
   async updateMachineData(update: MachineStateSaveDataModelUI): Promise<void> {
     try {
-      this._loading.set(true);
-      await this.service.updateMachine(update);
-      const updated = this._machineData().map((m) =>
+      this.loadingSignal.set(true);
+
+      await firstValueFrom(this.service.updateMachine(update));
+
+      const updated = this.machineDataSignal().map((m) =>
         m.Id === update.Id ? { ...m, Option: update.Option } : m
       );
-      this._machineData.set(updated);
+
+      this.machineDataSignal.set(updated);
     } catch (err) {
       console.error("Failed to update machine", err);
     } finally {
-      this._loading.set(false);
+      this.loadingSignal.set(false);
     }
   }
 }

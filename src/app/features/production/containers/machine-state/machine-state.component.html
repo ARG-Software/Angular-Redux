@@ -5,11 +5,13 @@
 >
 </mims-header>
 
-<p *ngIf="loading()">Loading...</p>
+<ng-container *ngIf="!loading(); else loadingTpl">
+  <machine-state-information
+    [machineData]="machineData()"
+    (changedMachineEmitter)="saveMachine($event)"
+  ></machine-state-information>
+</ng-container>
 
-<machine-state-information
-  *ngIf="!loading() && machineData() as machineData"
-  [machineData]="machineData"
-  (changedMachineEmitter)="saveMachine($event)"
->
-</machine-state-information>
+<ng-template #loadingTpl>
+  <p>Loading...</p>
+</ng-template>
