@@ -1,9 +1,13 @@
-import { BaseMimsApi } from "../../../classes/base/base.mims.api";
 import { Injectable } from "@angular/core";
-import { IMachineStateService } from "../../../interfaces/core/production/imachine-state.service";
 import { Observable } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { GlobalEnvironmentService } from "src/app/global.environment.service";
+import { BaseMimsApi } from "../../../classes/base/base.mims.api";
+import { IMachineStateService } from "../../../interfaces/core/production/imachine-state.service";
+import {
+  MachineStateLoadDataModelUI,
+  MachineStateSaveDataModelUI,
+} from "src/app/features/production/models/machine-state.model";
 
 @Injectable()
 export class MachineStateService
@@ -19,11 +23,13 @@ export class MachineStateService
     super(http, serverSettings);
   }
 
-  public GetMachineStateData(obj: any): Observable<any> {
-    return this.getObjects(`${this.controllerRoute}/${obj}`);
+  public fetchMachineData(
+    machineId: number
+  ): Observable<MachineStateLoadDataModelUI[]> {
+    return this.getObjects(`${this.controllerRoute}/${machineId}`);
   }
 
-  public UpdateMachineStateData(obj: any): Observable<any> {
+  public updateMachine(obj: MachineStateSaveDataModelUI): Observable<any> {
     return this.updateObject(obj, `${this.controllerRoute}`);
   }
 }

@@ -9,7 +9,6 @@ import { reducerName, reducers } from "./production.reducers.index";
 
 import { MachineStateInformationComponent } from "./components/machine-state/machine-state-information.component";
 import { MachineStateComponent } from "./containers/machine-state/machine-state.component";
-import { MachineStateEffects } from "./effects/machine-state.effects";
 
 import { MessagingInformationComponent } from "./components/messaging/messaging-information.component";
 import { MessagingComponent } from "./containers/messaging/messaging.component";
@@ -31,7 +30,7 @@ const ProductionRoutingModule = RouterModule.forChild([
     FormsModule,
     ReactiveFormsModule,
     StoreModule.forFeature(reducerName, reducers),
-    EffectsModule.forFeature([MachineStateEffects, MessagingEffects]),
+    EffectsModule.forFeature([MessagingEffects]),
   ],
   declarations: [
     MachineStateInformationComponent,

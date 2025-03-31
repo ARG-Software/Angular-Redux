@@ -5,8 +5,10 @@
 >
 </mims-header>
 
+<p *ngIf="loading()">Loading...</p>
+
 <machine-state-information
-  *ngIf="machineData$ | async as machineData"
+  *ngIf="!loading() && machineData() as machineData"
   [machineData]="machineData"
   (changedMachineEmitter)="saveMachine($event)"
 >

@@ -389,6 +389,53 @@ server.post("/auth/login", (req, res) => {
   });
 });
 
+server.get("/Machine-State/:id", (req, res) => {
+  const { id } = req.params;
+
+  const mockMachineStateData = [
+    {
+      Id: 1,
+      Name: "Machine 1",
+      Image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyB9LjUJGYiB1swxel_dg03NiL-XujzRxowH0CWleWRzEOPEBw",
+      Options: [
+        { value: 1, name: "Running", selected: false },
+        { value: 2, name: "Stopped", selected: true },
+        { value: 3, name: "Maintenance", selected: false },
+      ],
+    },
+    {
+      Id: 2,
+      Name: "Machine 2",
+      Image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyB9LjUJGYiB1swxel_dg03NiL-XujzRxowH0CWleWRzEOPEBw",
+      Options: [
+        { value: 1, name: "Running", selected: true },
+        { value: 2, name: "Stopped", selected: false },
+        { value: 3, name: "Maintenance", selected: false },
+      ],
+    },
+    {
+      Id: 3,
+      Name: "Machine 3",
+      Image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyB9LjUJGYiB1swxel_dg03NiL-XujzRxowH0CWleWRzEOPEBw",
+      Options: [
+        { value: 1, name: "Running", selected: false },
+        { value: 2, name: "Stopped", selected: false },
+        { value: 3, name: "Maintenance", selected: true },
+      ],
+    },
+  ];
+
+  res.json({
+    Success: true,
+    Result: mockMachineStateData,
+    GeneratedAt: new Date().toISOString(),
+    Message: `Mock machine state data for machineId ${id}`,
+  });
+});
+
 router.render = (req, res) => {
   const body = res.locals.data;
 

@@ -1,55 +1,43 @@
-import { Observable } from "rxjs";
-import { Component, ChangeDetectionStrategy, OnInit } from "@angular/core";
-import {
-  MachineStateLoadDataModelUI,
-  MachineStateDataRequestModelUI,
-  MachineStateSaveDataModelUI,
-} from "../../models/machine-state.model";
-import { Store } from "@ngrx/store";
-import * as fromReducer from "../../production.reducers.index";
-import {
-  getMachineData,
-  updateMachineData,
-} from "../../actions/machine-state.actions";
+import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { MachineStateSaveDataModelUI } from "../../models/machine-state.model";
+import { MachineStateStore } from "../../stores/machine-state.store";
 
 @Component({
-  standalone: false,
+  selector: "app-machine-state",
   templateUrl: "machine-state.component.html",
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
-export class MachineStateComponent implements OnInit {
-  public header = {
+export class MachineStateComponent {
+  public readonly header = {
     HeaderTitle: "Pareto Chart",
     HeaderSubTitle: "Machines",
     Color: "#5965e7",
   };
 
-  public machineData$: Observable<MachineStateLoadDataModelUI[]>;
+  private readonly store = inject(MachineStateStore);
+  public machineData = this.store.machineData;
+  public loading = this.store.loading;
 
-  private request: MachineStateDataRequestModelUI = {
-    machineId: 1,
-  };
-
-  constructor(private store: Store<fromReducer.ProductionState>) {
-    this.machineData$ = this.store.select(fromReducer.getMachineData);
+  async ngOnInit(): Promise<void> {
+    try {
+      await this.store.loadMachineData(1);
+    } catch (err) {
+      console.error("Error loading machine data", err);
+    }
   }
 
-  public ngOnInit() {
-    this.store.dispatch(getMachineData({ payload: this.request }));
-  }
-
-  /**
-   * Dispatch action to update machine state with new option
-   */
-  public saveMachine(data: MachineStateSaveDataModelUI) {
-    const updatedData: MachineStateSaveDataModelUI = {
-      ...data,
-      Option: {
-        ...data.Option,
-        selected: true,
-      },
-    };
-
-    this.store.dispatch(updateMachineData({ payload: updatedData }));
+  async saveMachine(data: MachineStateSaveDataModelUI): Promise<void> {
+    try {
+      await this.store.updateMachineData({
+        ...data,
+        Option: {
+          ...data.Option,
+          selected: true,
+        },
+      });
+    } catch (err) {
+      console.error("Error updating machine data", err);
+    }
   }
 }
