@@ -6,7 +6,7 @@ import {
 import { firstValueFrom } from "rxjs";
 import { IMachineStateService } from "src/app/api/services/interfaces/core/production/imachine-state.service";
 
-@Injectable({ providedIn: "root" })
+@Injectable()
 export class MachineStateStore {
   private readonly machineDataSignal = signal<MachineStateLoadDataModelUI[]>(
     []
