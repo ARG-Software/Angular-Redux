@@ -1,12 +1,10 @@
-import { Observable } from "rxjs";
-import { Component, ChangeDetectionStrategy, OnInit } from "@angular/core";
+import { Component, ChangeDetectionStrategy, inject } from "@angular/core";
 import {
-  MachineStateLoadDataModelUI,
   MachineStateDataRequestModelUI,
   MachineStateSaveDataModelUI,
 } from "../../models/machine-state.model";
+import { MachineStateStore } from "../../store/machine-state.store";
 import { Store } from "@ngrx/store";
-import * as fromReducer from "../../production.reducers.index";
 import {
   getMachineData,
   updateMachineData,
@@ -17,31 +15,30 @@ import {
   templateUrl: "machine-state.component.html",
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MachineStateComponent implements OnInit {
-  public header = {
+export class MachineStateComponent {
+  public readonly header = {
     HeaderTitle: "Pareto Chart",
     HeaderSubTitle: "Machines",
     Color: "#5965e7",
   };
 
-  public machineData$: Observable<MachineStateLoadDataModelUI[]>;
+  private readonly machineStateStore = inject(MachineStateStore);
+  private store = inject(Store);
 
+  public readonly machineData = this.machineStateStore.machineData;
   private request: MachineStateDataRequestModelUI = {
     machineId: 1,
   };
 
-  constructor(private store: Store<fromReducer.ProductionState>) {
-    this.machineData$ = this.store.select(fromReducer.getMachineData);
+  ngOnInit() {
+    this.store.dispatch(
+      getMachineData({
+        payload: this.request,
+      })
+    );
   }
 
-  public ngOnInit() {
-    this.store.dispatch(getMachineData({ payload: this.request }));
-  }
-
-  /**
-   * Dispatch action to update machine state with new option
-   */
-  public saveMachine(data: MachineStateSaveDataModelUI) {
+  public saveMachine(data: MachineStateSaveDataModelUI): void {
     const updatedData: MachineStateSaveDataModelUI = {
       ...data,
       Option: {
