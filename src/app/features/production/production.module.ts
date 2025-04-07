@@ -15,6 +15,7 @@ import { MessagingInformationComponent } from "./components/messaging/messaging-
 import { MessagingComponent } from "./containers/messaging/messaging.component";
 import { MessagingEffects } from "./effects/messaging.effects";
 import { MimsUIModule } from "src/app/mims-ui/mims-ui.module";
+import { MachineStateStore } from "./store/machine-state.store";
 
 const ProductionRoutingModule = RouterModule.forChild([
   { path: "machine-state", component: MachineStateComponent },
@@ -33,6 +34,7 @@ const ProductionRoutingModule = RouterModule.forChild([
     StoreModule.forFeature(reducerName, reducers),
     EffectsModule.forFeature([MachineStateEffects, MessagingEffects]),
   ],
+  providers: [MachineStateStore],
   declarations: [
     MachineStateInformationComponent,
     MachineStateComponent,

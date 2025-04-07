@@ -3,74 +3,72 @@ import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { catchError, finalize, map, switchMap, tap } from "rxjs/operators";
 import { of } from "rxjs";
-import { apiRequest } from "../../../utils/funtion.utils";
 
 import * as loadingActions from "../../../main/actions/loading.actions";
 import * as fromMain from "../../../main/main.reducers.index";
-
 import {
   getMachineData,
-  getMachineDataSuccess,
   updateMachineData,
-  updateMachineDataSuccess,
   machineFailure,
 } from "../actions/machine-state.actions";
-
-import {
-  MachineStateSaveDataModelUI,
-  MachineStateLoadDataModelUIFactory,
-  MachineStateDataRequestModelUI,
-} from "../models/machine-state.model";
+import { MachineStateLoadDataModelUIFactory } from "../models/machine-state.model";
+import { MachineStateStore } from "../store/machine-state.store";
 import { IMachineStateService } from "src/app/api/services/interfaces/core/production/imachine-state.service";
 
 @Injectable()
 export class MachineStateEffects {
   private actions$ = inject(Actions);
   private mainStore$ = inject<Store<fromMain.MainState>>(Store);
+  private machineStore = inject(MachineStateStore);
 
   constructor(private machineStateService: IMachineStateService) {}
 
-  getMachineStateData$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(getMachineData),
-      tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
-      switchMap(({ payload }) =>
-        apiRequest().pipe(
-          map(() =>
-            getMachineDataSuccess({
-              payload: MachineStateLoadDataModelUIFactory,
-            })
-          ),
-          finalize(() =>
-            this.mainStore$.dispatch(loadingActions.hideLoading())
-          ),
-          catchError((error) => of(machineFailure({ payload: error })))
-        )
-      )
-    )
-  );
-
-  updateMachineState$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(updateMachineData),
-      tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
-      switchMap(({ payload }) =>
-        apiRequest().pipe(
-          map(() => updateMachineDataSuccess({ payload: true })),
-          finalize(() =>
-            this.mainStore$.dispatch(loadingActions.hideLoading())
-          ),
-          catchError((error) => of(machineFailure({ payload: error })))
-        )
-      )
-    )
-  );
-
-  machineStateFailure$ = createEffect(
+  getMachineStateData$ = createEffect(
     () =>
       this.actions$.pipe(
-        ofType(machineFailure),
-        tap((error) => console.error("MachineState Error:", error))
+        ofType(getMachineData),
+        tap(() => {
+          this.mainStore$.dispatch(loadingActions.showLoading());
+        }),
+        switchMap(({ payload }) =>
+          of(MachineStateLoadDataModelUIFactory).pipe(
+            tap((data) => {
+              this.machineStore.setMachineData(data);
+            }),
+            finalize(() => {
+              this.mainStore$.dispatch(loadingActions.hideLoading());
+            }),
+            catchError((error) => {
+              this.mainStore$.dispatch(machineFailure({ payload: error }));
+              return of();
+            })
+          )
+        )
+      ),
+    { dispatch: false }
+  );
+
+  updateMachineState$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(updateMachineData),
+        tap(() => {
+          this.mainStore$.dispatch(loadingActions.showLoading());
+        }),
+        switchMap(({ payload }) =>
+          of(true).pipe(
+            tap(() => {
+              this.machineStore.updateMachine(payload);
+            }),
+            finalize(() => {
+              this.mainStore$.dispatch(loadingActions.hideLoading());
+            }),
+            catchError((error) => {
+              this.mainStore$.dispatch(machineFailure({ payload: error }));
+              return of();
+            })
+          )
+        )
       ),
     { dispatch: false }
   );

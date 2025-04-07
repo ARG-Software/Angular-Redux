@@ -2,12 +2,9 @@
   [title]="header.HeaderTitle"
   [subTitle]="header.HeaderSubTitle"
   [color]="header.Color"
->
-</mims-header>
+></mims-header>
 
 <machine-state-information
-  *ngIf="machineData$ | async as machineData"
-  [machineData]="machineData"
+  [machineData]="machineData()"
   (changedMachineEmitter)="saveMachine($event)"
->
-</machine-state-information>
+></machine-state-information>
