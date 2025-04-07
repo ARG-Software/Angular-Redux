@@ -1,21 +1,17 @@
-import { Component, ChangeDetectionStrategy, OnInit } from "@angular/core";
-import { Store } from "@ngrx/store";
-import * as fromReducer from "../../../data-warehouse.reducers.index";
-import { Observable } from "rxjs";
-
 import {
-  ProcessDetailChartModelUI,
-  ProcessDetailTableModelUI,
-} from "../../../models/process-detail.models";
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  inject,
+} from "@angular/core";
+import { Store } from "@ngrx/store";
+import { ProcessDetailStore } from "../../../stores/process-detail.store";
+import { MachiningRequestModelUI } from "../../../models/downtime.models";
+import { getTodayDateMinusInputDays } from "src/app/utils/funtion.utils";
 import {
   getProcessDetailData,
   getProcessDetailDataSelectBoxes,
 } from "../../../actions/process-detail.actions";
-
-import { MachiningRequestModelUI } from "../../../models/downtime.models";
-import { getTodayDateMinusInputDays } from "../../../../../utils/funtion.utils";
-import { PagingModelUI } from "src/app/app.models";
-import { MimsSelectBoxModel } from "src/app/mims-ui/input/select-box/models/select-box.model";
 
 @Component({
   standalone: false,
@@ -24,11 +20,10 @@ import { MimsSelectBoxModel } from "src/app/mims-ui/input/select-box/models/sele
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProcessDetailComponent implements OnInit {
+  private readonly store = inject(Store);
+  private readonly processDetailStore = inject(ProcessDetailStore);
+
   protected chartSize = [1100, 400];
-  protected tableData$: Observable<ProcessDetailTableModelUI[]>;
-  protected tablePaging$: Observable<PagingModelUI>;
-  protected chartData$: Observable<ProcessDetailChartModelUI[]>;
-  protected machineSelectBoxData$: Observable<MimsSelectBoxModel[]>;
   protected tableHeaders = [
     "Machine State",
     "Reason",
@@ -36,7 +31,6 @@ export class ProcessDetailComponent implements OnInit {
     "Start Time",
     "End Time",
   ];
-
   protected columnNames = [
     "MachineState",
     "Reason",
@@ -44,6 +38,13 @@ export class ProcessDetailComponent implements OnInit {
     "StartTime",
     "EndTime",
   ];
+
+  protected readonly chartData = this.processDetailStore.chartData;
+  protected readonly tableData = this.processDetailStore.tableData;
+  protected readonly tablePaging = this.processDetailStore.paging;
+  protected readonly machineSelectBoxData =
+    this.processDetailStore.machineSelectBox;
+
   protected request: MachiningRequestModelUI = {
     Filters: {
       MachineId: 0,
@@ -65,27 +66,12 @@ export class ProcessDetailComponent implements OnInit {
     },
   };
 
-  constructor(private store: Store<fromReducer.DataWarehouseState>) {
-    this.chartData$ = this.store.select(fromReducer.getProcessDetailChart);
-    this.tableData$ = this.store.select(fromReducer.getProcessDetailTable);
-    this.tablePaging$ = this.store.select(
-      fromReducer.getProcessDetailTablePaging
-    );
-    this.machineSelectBoxData$ = this.store.select(
-      fromReducer.getProcessDetailMachineSelect
-    );
-  }
-
-  public ngOnInit() {
-    this.store.dispatch(getProcessDetailDataSelectBoxes({}));
+  ngOnInit(): void {
+    this.store.dispatch(getProcessDetailDataSelectBoxes());
     this.store.dispatch(getProcessDetailData({ payload: this.request }));
   }
 
-  /**
-   * Request new page to backend
-   * @param pageNumber the numer of the page that we want
-   */
-  protected requestNewPage(pageNumber: number) {
+  protected requestNewPage(pageNumber: number): void {
     this.request = {
       ...this.request,
       Paging: {
@@ -96,11 +82,7 @@ export class ProcessDetailComponent implements OnInit {
     this.store.dispatch(getProcessDetailData({ payload: this.request }));
   }
 
-  /**
-   * Request data with new filters
-   * @param filters new selected filters
-   */
-  protected filtersOptions(filters: any) {
+  protected filtersOptions(filters: any): void {
     this.request = {
       ...this.request,
       Filters: { ...filters },

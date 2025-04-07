@@ -3,7 +3,6 @@ import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { CommonModule } from "@angular/common";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { StoreModule } from "@ngrx/store";
 import { EffectsModule } from "@ngrx/effects";
 
 import { DataWarehouseComponent } from "./data-warehouse.component";
@@ -16,8 +15,6 @@ import { DowntimeInformationComponent } from "./components/machining/downtime/do
 import { OeeInformationComponent } from "./components/machining/oee/oee-information/oee-information.component";
 import { ProcessDetailInformationComponent } from "./components/machining/process-detail/process-detail-information/process-detail-information.component";
 
-import { reducerName, reducers } from "./data-warehouse.reducers.index";
-
 import { DowntimeEffects } from "./effects/downtime.effects";
 import { OeeEffects } from "./effects/oee.effects";
 import { ProcessDetailEffects } from "./effects/process-detail.effects";
@@ -27,6 +24,7 @@ import { OeeFilterBoxComponent } from "./components/machining/oee/oee-filter-box
 import { MimsUIModule } from "src/app/mims-ui/mims-ui.module";
 import { DowntimeStore } from "./stores/downtime.store";
 import { OeeStore } from "./stores/oee.store";
+import { ProcessDetailStore } from "./stores/process-detail.store";
 
 const DataWarehouseRoutingModule = RouterModule.forChild([
   { path: "downtime", component: DowntimeComponent },
@@ -43,14 +41,13 @@ const DataWarehouseRoutingModule = RouterModule.forChild([
     ClarityModule,
     FormsModule,
     ReactiveFormsModule,
-    StoreModule.forFeature(reducerName, reducers),
     EffectsModule.forFeature([
       DowntimeEffects,
       OeeEffects,
       ProcessDetailEffects,
     ]),
   ],
-  providers: [DowntimeStore, OeeStore],
+  providers: [DowntimeStore, OeeStore, ProcessDetailStore],
   declarations: [
     DataWarehouseComponent,
     DowntimeInformationComponent,

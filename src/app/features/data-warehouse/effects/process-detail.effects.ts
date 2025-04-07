@@ -1,165 +1,167 @@
-import { inject, Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
-import { of } from "rxjs";
 import { catchError, finalize, map, switchMap, tap } from "rxjs/operators";
+import { of } from "rxjs";
+
 import * as loadingActions from "../../../main/actions/loading.actions";
-import * as fromMain from "../../../main/main.reducers.index";
 import {
   getProcessDetailData,
-  getProcessDetailDataSuccess,
-  processDetailFailure,
   getProcessDetailDataSelectBoxes,
-  getProcessDetailDataSelectBoxesSuccess,
+  processDetailFailure,
 } from "../actions/process-detail.actions";
-
-import {
-  ProcessDetailDataModelUI,
-  ProcessDetailTableModelUI,
-  ProcessDetailTableInformationModelUI,
-  ProcessDetailChartModelUI,
-} from "../models/process-detail.models";
+import { ProcessDetailStore } from "../stores/process-detail.store";
 import { IProcessDetailMachiningService } from "src/app/api/services/interfaces/core/data-warehouse/iprocess-detail.service";
 import { IMachineService } from "src/app/api/services/interfaces/core/imachine.service";
 import { MimsSelectBoxModel } from "src/app/mims-ui/input/select-box/models/select-box.model";
+import {
+  ProcessDetailChartModelUI,
+  ProcessDetailTableInformationModelUI,
+  ProcessDetailTableModelUI,
+} from "../models/process-detail.models";
 
 @Injectable()
 export class ProcessDetailEffects {
-  private actions$ = inject(Actions);
-  private mainStore$ = inject<Store<fromMain.MainState>>(Store);
+  private readonly actions$ = inject(Actions);
+  private readonly mainStore$ = inject<Store>(Store);
+  private readonly processDetailStore = inject(ProcessDetailStore);
 
   constructor(
     private processDetailService: IProcessDetailMachiningService,
     private machineService: IMachineService
   ) {}
 
-  public getProcessDetailData$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(getProcessDetailData),
-      tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
-      map((action) => action.payload),
-      switchMap((payload) =>
-        of([
-          {
-            Id: null,
-            MachineState: "Not Scheduled",
-            Reason: "",
-            Duration: 60,
-            StartTime: "2018-11-08T00:00:00",
-            EndTime: "2018-11-08T01:00:00",
-          },
-          {
-            Id: null,
-            MachineState: "In Production",
-            Reason: "",
-            Duration: 300,
-            StartTime: "2018-11-08T01:00:00",
-            EndTime: "2018-11-08T06:00:00",
-          },
-          {
-            Id: null,
-            MachineState: "Unplanned Downtime",
-            Reason: "Tool Change",
-            Duration: 20,
-            StartTime: "2018-11-08T06:00:00",
-            EndTime: "2018-11-08T06:20:00",
-          },
-          {
-            Id: null,
-            MachineState: "In Production",
-            Reason: "",
-            Duration: 360,
-            StartTime: "2018-11-08T06:20:00",
-            EndTime: "2018-11-08T12:20:00",
-          },
-          {
-            Id: null,
-            MachineState: "Unplanned Downtime",
-            Reason: "No reason given",
-            Duration: 100,
-            StartTime: "2018-11-08T12:20:00",
-            EndTime: "2018-11-08T14:00:00",
-          },
-          {
-            Id: null,
-            MachineState: "In Production",
-            Reason: "",
-            Duration: 20,
-            StartTime: "2018-11-08T14:00:00",
-            EndTime: "2018-11-08T14:20:00",
-          },
-          {
-            Id: null,
-            MachineState: "Not Scheduled",
-            Reason: "",
-            Duration: 360,
-            StartTime: "2018-11-08T14:20:00",
-            EndTime: "2018-11-08T20:00:00",
-          },
-        ])
-          // TODO: When backend is finished, uncomment service and the load tests
-          // this.processDetailService.GetProcessDetailData(payload)
-          .pipe(
-            map((response: any[]) => {
-              const processDetailData: ProcessDetailDataModelUI = {
-                Chart: convertApiDataToProcessDetailChartModelUI(response),
-                Table: convertApiDataToProcessDetailTableModelUI(response),
-              };
+  getProcessDetailData$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(getProcessDetailData),
+        tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
+        map(({ payload }) => ({
+          request: payload,
+          originalPaging: payload.Paging,
+        })),
+        switchMap(({ request, originalPaging }) =>
+          //TODO this.processDetailService.GetProcessDetailData(request).pipe(
+          of(mockProcessDetailResponse).pipe(
+            tap((response) => {
+              const table = convertApiDataToProcessDetailTableModelUI(response);
 
-              return getProcessDetailDataSuccess({
-                payload: processDetailData,
-              });
+              this.processDetailStore.setProcessDetailData(
+                convertApiDataToProcessDetailChartModelUI(response),
+                table.Information,
+                { ...originalPaging, Total: table.Total }
+              );
             }),
             finalize(() =>
               this.mainStore$.dispatch(loadingActions.hideLoading())
             ),
-            catchError((error) => of(processDetailFailure({ payload: error })))
-          )
-      )
-    )
-  );
-
-  public getProcessDetailDataSelectBox$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(getProcessDetailDataSelectBoxes),
-      tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
-      switchMap(() =>
-        this.machineService.GetMachines().pipe(
-          map((response: any[]) =>
-            getProcessDetailDataSelectBoxesSuccess({
-              payload: convertApiDataToSelectBox(response),
+            catchError((error) => {
+              this.mainStore$.dispatch(
+                processDetailFailure({ payload: error })
+              );
+              return of();
             })
-          ),
-          finalize(() =>
-            this.mainStore$.dispatch(loadingActions.hideLoading())
-          ),
-          catchError((error) => of(processDetailFailure({ payload: error })))
+          )
         )
-      )
-    )
-  );
-
-  public getProcessDetailDataSuccess$ = createEffect(
-    () => this.actions$.pipe(ofType(getProcessDetailDataSuccess)),
+      ),
     { dispatch: false }
   );
 
-  public getProcessDetailDataSelectBoxSuccess$ = createEffect(
-    () => this.actions$.pipe(ofType(getProcessDetailDataSelectBoxesSuccess)),
+  getProcessDetailSelectBoxes$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(getProcessDetailDataSelectBoxes),
+        tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
+        switchMap(() =>
+          this.machineService.GetMachines().pipe(
+            tap((machines) => {
+              const machineSelectBox = convertApiDataToSelectBox(machines);
+              this.processDetailStore.setSelectBoxes(machineSelectBox);
+            }),
+            finalize(() =>
+              this.mainStore$.dispatch(loadingActions.hideLoading())
+            ),
+            catchError((error) => {
+              this.mainStore$.dispatch(
+                processDetailFailure({ payload: error })
+              );
+              return of();
+            })
+          )
+        )
+      ),
     { dispatch: false }
   );
 
-  public processDetailFailure$ = createEffect(
+  processDetailFailure$ = createEffect(
     () =>
       this.actions$.pipe(
         ofType(processDetailFailure),
-        tap((error) => {
-          console.error("Error:", error);
-        })
+        tap(({ payload }) => console.error("Process Detail Error:", payload))
       ),
     { dispatch: false }
   );
 }
+
+// mock fallback
+const mockProcessDetailResponse = [
+  {
+    Id: null,
+    MachineState: "Not Scheduled",
+    Reason: "",
+    Duration: 60,
+    StartTime: "2018-11-08T00:00:00",
+    EndTime: "2018-11-08T01:00:00",
+  },
+  {
+    Id: null,
+    MachineState: "In Production",
+    Reason: "",
+    Duration: 300,
+    StartTime: "2018-11-08T01:00:00",
+    EndTime: "2018-11-08T06:00:00",
+  },
+  {
+    Id: null,
+    MachineState: "Unplanned Downtime",
+    Reason: "Tool Change",
+    Duration: 20,
+    StartTime: "2018-11-08T06:00:00",
+    EndTime: "2018-11-08T06:20:00",
+  },
+  {
+    Id: null,
+    MachineState: "In Production",
+    Reason: "",
+    Duration: 360,
+    StartTime: "2018-11-08T06:20:00",
+    EndTime: "2018-11-08T12:20:00",
+  },
+  {
+    Id: null,
+    MachineState: "Unplanned Downtime",
+    Reason: "No reason given",
+    Duration: 100,
+    StartTime: "2018-11-08T12:20:00",
+    EndTime: "2018-11-08T14:00:00",
+  },
+  {
+    Id: null,
+    MachineState: "In Production",
+    Reason: "",
+    Duration: 20,
+    StartTime: "2018-11-08T14:00:00",
+    EndTime: "2018-11-08T14:20:00",
+  },
+  {
+    Id: null,
+    MachineState: "Not Scheduled",
+    Reason: "",
+    Duration: 360,
+    StartTime: "2018-11-08T14:20:00",
+    EndTime: "2018-11-08T20:00:00",
+  },
+];
 
 /**
  * Manipulate api data to be readable by table
