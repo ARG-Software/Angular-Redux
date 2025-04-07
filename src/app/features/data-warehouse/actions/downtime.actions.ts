@@ -1,28 +1,13 @@
 import { createAction, props } from "@ngrx/store";
-import {
-  MachiningRequestModelUI,
-  DowntimeDataModelUI,
-} from "../models/downtime.models";
-import { MimsSelectBoxModel } from "../../../mims-ui/input/select-box/models/select-box.model";
+import { MachiningRequestModelUI } from "../models/downtime.models";
 
 export const getDowntimeData = createAction(
   "[Downtime] Get Downtime data",
   props<{ payload: MachiningRequestModelUI }>()
 );
 
-export const getDowntimeDataSuccess = createAction(
-  "[Downtime] Get Downtime data Success",
-  props<{ payload: DowntimeDataModelUI }>()
-);
-
 export const getDowntimeDataSelectBoxes = createAction(
-  "[Downtime] Get Downtime data for select boxes",
-  props<{ payload?: any }>()
-);
-
-export const getDowntimeDataSelectBoxesSuccess = createAction(
-  "[Downtime] Get Downtime data for select boxes Success",
-  props<{ payload: [MimsSelectBoxModel[], MimsSelectBoxModel[]] }>()
+  "[Downtime] Get Downtime data for select boxes"
 );
 
 export const downtimeFailure = createAction(

@@ -1,33 +1,31 @@
 import { inject, Injectable } from "@angular/core";
-import { Store } from "@ngrx/store";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { catchError, finalize, map, switchMap, tap } from "rxjs/operators";
+import { of, forkJoin } from "rxjs";
 
-import { catchError, switchMap, map, tap, finalize } from "rxjs/operators";
-
-import * as MimsModels from "src/app/api/models/apimodels";
-
-import * as fromMain from "../../../main/main.reducers.index";
-import * as loadingActions from "../../../main/actions/loading.actions";
-
-import * as DowntimeModelsUI from "../models/downtime.models";
-
-import { forkJoin, of } from "rxjs";
-import { IDownTimeMachiningService } from "src/app/api/services/interfaces/core/data-warehouse/idowntime.service";
-import { IMachineService } from "src/app/api/services/interfaces/core/imachine.service";
-import { IProductService } from "src/app/api/services/interfaces/core/iproduct.service";
 import {
-  downtimeFailure,
   getDowntimeData,
   getDowntimeDataSelectBoxes,
-  getDowntimeDataSelectBoxesSuccess,
-  getDowntimeDataSuccess,
+  downtimeFailure,
 } from "../actions/downtime.actions";
-import { convertApiDataToSelectBoxes } from "src/app/utils/funtion.utils";
+
+import * as loadingActions from "../../../main/actions/loading.actions";
+import * as fromMain from "../../../main/main.reducers.index";
+import { IDownTimeMachiningService } from "src/app/api/services/interfaces/core/data-warehouse/idowntime.service";
+import { DowntimeStore } from "../stores/downtime.store";
+import { IMachineService } from "src/app/api/services/interfaces/core/imachine.service";
+import { IProductService } from "src/app/api/services/interfaces/core/iproduct.service";
+
+import * as MimsModels from "src/app/api/models/apimodels";
+import * as DowntimeModelsUI from "../models/downtime.models";
+import { MimsSelectBoxModel } from "src/app/mims-ui/input/select-box/models/select-box.model";
 
 @Injectable()
 export class DowntimeEffects {
-  private actions$ = inject(Actions);
-  private mainStore$ = inject<Store<fromMain.MainState>>(Store);
+  private readonly actions$ = inject(Actions);
+  private readonly mainStore$ = inject<Store<fromMain.MainState>>(Store);
+  private readonly downtimeStore = inject(DowntimeStore);
 
   constructor(
     private downtimeService: IDownTimeMachiningService,
@@ -35,84 +33,100 @@ export class DowntimeEffects {
     private productService: IProductService
   ) {}
 
-  public getDowntimeData$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(getDowntimeData),
-      tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
-      map((action) => {
-        const request: MimsModels.DWMachiningDowntimeScreenRequestDto = {
-          DWMachiningFilterDto: {
-            StartDate: new Date(action.payload.Filters.StartDate),
-            EndDate: new Date(action.payload.Filters.EndDate),
-            MachineId: action.payload.Filters.MachineId,
-            ProductId: action.payload.Filters.ProductId,
-          },
-          Paging: action.payload.Paging,
-        };
-
-        return request;
-      }),
-      switchMap((payload) =>
-        this.downtimeService.GetDownTimeData(payload).pipe(
-          map((response: MimsModels.IMachineDowntimeScreenDto) => {
-            const downtimeData: DowntimeModelsUI.DowntimeDataModelUI = {
-              Chart: converApiDataToChartData(response.ChartData),
-              Table: convertApiDataToTableData(response.TableData),
-            };
-            return getDowntimeDataSuccess({ payload: downtimeData });
-          }),
-          finalize(() =>
-            this.mainStore$.dispatch(loadingActions.hideLoading())
-          ),
-          catchError((error) => {
-            return of(downtimeFailure({ payload: error }));
-          })
-        )
-      )
-    )
-  );
-
-  public getDowntimeDataSelectBox$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(getDowntimeDataSelectBoxes),
-      tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
-      switchMap(() =>
-        forkJoin({
-          machines: this.machineService.GetMachines(),
-          products: this.productService.GetProductsList(),
-        }).pipe(
-          map(({ machines, products }) =>
-            getDowntimeDataSelectBoxesSuccess({
-              payload: convertApiDataToSelectBoxes([machines, products]),
-            })
-          ),
-          finalize(() =>
-            this.mainStore$.dispatch(loadingActions.hideLoading())
-          ),
-          catchError((error) => of(downtimeFailure({ payload: error })))
-        )
-      )
-    )
-  );
-
-  public downtimeFailure$ = createEffect(
+  getDowntimeData$ = createEffect(
     () =>
       this.actions$.pipe(
-        ofType(downtimeFailure),
-        tap(({ payload }) => {
-          console.log("Error:", payload);
-        })
+        ofType(getDowntimeData),
+        tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
+        map(({ payload }) => ({
+          request: {
+            DWMachiningFilterDto: {
+              StartDate: new Date(payload.Filters.StartDate),
+              EndDate: new Date(payload.Filters.EndDate),
+              MachineId: payload.Filters.MachineId,
+              ProductId: payload.Filters.ProductId,
+            },
+            Paging: payload.Paging,
+          },
+          originalPaging: payload.Paging,
+        })),
+        switchMap(({ request, originalPaging }) =>
+          this.downtimeService.GetDownTimeData(request).pipe(
+            tap((response) => {
+              const table = convertApiDataToTableData(response.TableData);
+
+              this.downtimeStore.setDowntimeData(
+                converApiDataToChartData(response.ChartData),
+                table.Information,
+                { ...originalPaging, Total: table.Total }
+              );
+            }),
+            finalize(() => {
+              this.mainStore$.dispatch(loadingActions.hideLoading());
+            }),
+            catchError((error) => {
+              this.mainStore$.dispatch(downtimeFailure({ payload: error }));
+              return of();
+            })
+          )
+        )
       ),
     { dispatch: false }
   );
 
-  public getDowntimeDataSuccess$ = createEffect(
-    () => this.actions$.pipe(ofType(getDowntimeDataSuccess)),
+  getDowntimeDataSelectBoxes$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(getDowntimeDataSelectBoxes),
+        tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
+        switchMap(() =>
+          forkJoin({
+            machines: this.machineService.GetMachines(),
+            products: this.productService.GetProductsList(),
+          }).pipe(
+            tap(({ machines, products }) => {
+              const machineSelectBox: MimsSelectBoxModel[] = machines.map(
+                (m) => ({
+                  value: m.Id,
+                  name: m.Name ?? `Machine ${m.Id}`,
+                  selected: false,
+                })
+              );
+
+              const productSelectBox: MimsSelectBoxModel[] = products.map(
+                (p) => ({
+                  value: p.Id,
+                  name: p.Name ?? `Product ${p.Id}`,
+                  selected: false,
+                })
+              );
+
+              this.downtimeStore.setSelectBoxes(
+                machineSelectBox,
+                productSelectBox
+              );
+            }),
+            finalize(() =>
+              this.mainStore$.dispatch(loadingActions.hideLoading())
+            ),
+            catchError((error) => {
+              this.mainStore$.dispatch(downtimeFailure({ payload: error }));
+              return of();
+            })
+          )
+        )
+      ),
     { dispatch: false }
   );
 
-  public getDowntimeDataSelectBoxSuccess$ = createEffect(
-    () => this.actions$.pipe(ofType(getDowntimeDataSelectBoxesSuccess)),
+  downtimeFailure$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(downtimeFailure),
+        tap(({ payload }) => {
+          console.error("Downtime Error:", payload);
+        })
+      ),
     { dispatch: false }
   );
 }
