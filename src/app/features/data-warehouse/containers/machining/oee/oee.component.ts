@@ -1,19 +1,17 @@
-import { Component, ChangeDetectionStrategy, OnInit } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  inject,
+} from "@angular/core";
 import { Store } from "@ngrx/store";
-import * as fromReducer from "../../../data-warehouse.reducers.index";
+import { OeeStore } from "../../../stores/oee.store";
+import { MachiningRequestModelUI } from "../../../models/downtime.models";
+import { getTodayDateMinusInputDays } from "src/app/utils/funtion.utils";
 import {
   getOeeData,
   getOeeDataSelectBoxes,
 } from "../../../actions/oee.actions";
-import {
-  OeeChartDataModelUI,
-  OeeTableDataModelUI,
-} from "../../../models/oee.models";
-import { MachiningRequestModelUI } from "../../../models/downtime.models";
-import { getTodayDateMinusInputDays } from "../../../../../utils/funtion.utils";
-import { PagingModelUI } from "src/app/app.models";
-import { Observable } from "rxjs";
-import { MimsSelectBoxModel } from "src/app/mims-ui/input/select-box/models/select-box.model";
 
 @Component({
   standalone: false,
@@ -23,11 +21,22 @@ import { MimsSelectBoxModel } from "src/app/mims-ui/input/select-box/models/sele
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OeeComponent implements OnInit {
-  public chartData$: Observable<OeeChartDataModelUI[]>;
-  public tableData$: Observable<OeeTableDataModelUI[]>;
-  public tablePaging$: Observable<PagingModelUI>;
-  public machineSelectBoxData$: Observable<MimsSelectBoxModel[]>;
-  public productSelectBoxData$: Observable<MimsSelectBoxModel[]>;
+  private readonly store = inject(Store);
+  private readonly oeeStore = inject(OeeStore);
+
+  public readonly chartData = this.oeeStore.oeeChartData;
+  public readonly tableData = this.oeeStore.oeeTableData;
+  public readonly tablePaging = this.oeeStore.currentPaging;
+  public readonly machineSelectBoxData = this.oeeStore.machineSelectBox;
+  public readonly productSelectBoxData = this.oeeStore.productSelectBox;
+
+  public readonly tableHeaders = [
+    "Product",
+    "Availability",
+    "Production",
+    "Quality",
+  ];
+  public readonly chartSize = [1100, 400];
 
   public request: MachiningRequestModelUI = {
     Filters: {
@@ -50,40 +59,17 @@ export class OeeComponent implements OnInit {
     },
   };
 
-  public tableHeaders = ["Product", "Availability", "Production", "Quality"];
-
-  public chartSize = [1100, 400];
-
-  constructor(private store: Store<fromReducer.DataWarehouseState>) {
-    this.chartData$ = this.store.select(fromReducer.getOeeChart);
-    this.tableData$ = this.store.select(fromReducer.getOeeTable);
-    this.tablePaging$ = this.store.select(fromReducer.getOeeTablePaging);
-    this.machineSelectBoxData$ = this.store.select(
-      fromReducer.getOeeMachineSelect
-    );
-    this.productSelectBoxData$ = this.store.select(
-      fromReducer.getOeeProductSelect
-    );
-  }
-
-  public ngOnInit() {
-    this.store.dispatch(getOeeDataSelectBoxes({}));
+  ngOnInit(): void {
+    this.store.dispatch(getOeeDataSelectBoxes());
     this.store.dispatch(getOeeData({ payload: this.request }));
   }
-  /**
-   * Request new page to backend
-   * @param pageNumber the numer of the page that we want
-   */
-  public requestNewPage(pageNumber: number) {
+
+  public requestNewPage(pageNumber: number): void {
     this.request.Paging.CurrentIndex = pageNumber - 1;
     this.store.dispatch(getOeeData({ payload: this.request }));
   }
 
-  /**
-   * Request data with new filters
-   * @param filters new selected filters
-   */
-  public filtersOptions(filters: any) {
+  public filtersOptions(filters: any): void {
     this.request = {
       ...this.request,
       Filters: { ...filters },
