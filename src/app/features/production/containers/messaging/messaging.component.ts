@@ -2,30 +2,24 @@ import {
   Component,
   ChangeDetectionStrategy,
   OnInit,
-  OnDestroy,
+  inject,
 } from "@angular/core";
-import { Observable, Subscription } from "rxjs";
 import { Store } from "@ngrx/store";
-import {
-  MessagingLoadDataModelUI,
-  MessagingRequestModelUI,
-  MessagingSaveDataModelUI,
-} from "../../models/messaging.model";
+import { MessagingRequestModelUI } from "../../models/messaging.model";
 
-import * as fromReducer from "../../production.reducers.index";
 import {
   getMessagingData,
-  changeCheckbox,
-  changeSelectbox,
   updateMessagingData,
 } from "../../actions/messaging.actions";
+import { MessagingStore } from "../../store/messaging.store";
+import { MimsSelectBoxModel } from "src/app/mims-ui/input/select-box/models/select-box.model";
 
 @Component({
   standalone: false,
   templateUrl: "messaging.component.html",
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MessagingComponent implements OnInit, OnDestroy {
+export class MessagingComponent implements OnInit {
   public header = {
     HeaderTitle: "Production",
     HeaderSubTitle: "Notifications",
@@ -34,52 +28,32 @@ export class MessagingComponent implements OnInit, OnDestroy {
 
   public buttonText = "SUBMIT";
 
-  public messagingToSave: MessagingSaveDataModelUI[] = [];
-  public messagingData$: Observable<MessagingLoadDataModelUI[]>;
-  public _messagingToSave$: Subscription;
+  private readonly store = inject(Store);
+  private readonly messagingStore = inject(MessagingStore);
 
-  private request: MessagingRequestModelUI = {
+  public readonly messagingData = this.messagingStore.messagingData;
+  public readonly messagingToSave = this.messagingStore.messagingToSave;
+
+  private readonly request: MessagingRequestModelUI = {
     Id: 1,
   };
-
-  constructor(private store: Store<fromReducer.ProductionState>) {
-    this.messagingData$ = this.store.select(fromReducer.getMessagingData);
-    this._messagingToSave$ = this.store
-      .select(fromReducer.getMessagingToSave)
-      .subscribe((toSave) => (this.messagingToSave = toSave));
-  }
 
   public ngOnInit() {
     this.store.dispatch(getMessagingData({ payload: this.request }));
   }
 
-  public ngOnDestroy() {
-    this._messagingToSave$.unsubscribe();
-  }
-
-  /**
-   * Dispatch action to save checked object
-   * @param checkboxId Id from the checked object
-   */
   public checkboxChange(checkboxId: number) {
-    this.store.dispatch(changeCheckbox({ payload: checkboxId }));
+    this.messagingStore.toggleCheckbox(checkboxId);
   }
 
-  /**
-   * Dispatch action to update select box changes
-   * @param data information with Id and the new selected option
-   */
-  public selectboxChange(data: { Id: number; Option: any }) {
-    this.store.dispatch(changeSelectbox({ payload: data }));
+  public selectboxChange(data: { Id: number; Option: MimsSelectBoxModel }) {
+    this.messagingStore.updateSelectBox(data.Id, data.Option);
   }
 
-  /**
-   * Dispatch action to save messaging changes
-   */
   public saveMessaging() {
-    if (this.messagingToSave.length > 0) {
+    if (this.messagingToSave().length > 0) {
       this.store.dispatch(
-        updateMessagingData({ payload: this.messagingToSave })
+        updateMessagingData({ payload: this.messagingToSave() })
       );
     }
   }

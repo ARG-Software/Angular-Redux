@@ -2,15 +2,12 @@
   [title]="header.HeaderTitle"
   [subTitle]="header.HeaderSubTitle"
   [color]="header.Color"
->
-</mims-header>
+></mims-header>
 
 <messaging-information
-  *ngIf="messagingData$ | async as messagingData"
-  [messagingData]="messagingData"
+  [messagingData]="messagingData()"
   [buttonText]="buttonText"
   (checkboxEmitter)="checkboxChange($event)"
   (selectboxEmitter)="selectboxChange($event)"
   (saveEmitter)="saveMessaging()"
->
-</messaging-information>
+></messaging-information>
