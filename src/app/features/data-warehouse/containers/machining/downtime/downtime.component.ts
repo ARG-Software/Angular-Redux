@@ -6,12 +6,20 @@ import {
 } from "@angular/core";
 
 import { Store } from "@ngrx/store";
+import * as fromReducer from "../../../data-warehouse.reducers.index";
+import { Observable } from "rxjs";
+import {
+  ComboChartDataModelUI,
+  DowntimeTableDataModelUI,
+} from "../../../models/downtime.models";
 import {
   getDowntimeData,
   getDowntimeDataSelectBoxes,
 } from "../../../actions/downtime.actions";
 import { getTodayDateMinusInputDays } from "../../../../../utils/funtion.utils";
 import { MachiningRequestModelUI } from "../../../models/downtime.models";
+import { PagingModelUI } from "src/app/app.models";
+import { MimsSelectBoxModel } from "src/app/mims-ui/input/select-box/models/select-box.model";
 import { DowntimeStore } from "../../../stores/downtime.store";
 
 @Component({
