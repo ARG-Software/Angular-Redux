@@ -1,5 +1,13 @@
 import { createSelector, createFeatureSelector } from "@ngrx/store";
 import {
+  getDownTimeRecordChartData,
+  getMachineOperationsTableHeaderNameData,
+  getMachineOperationTableColumnsData,
+  overviewReducer,
+  OverviewState,
+} from "./reducers/overview.reducers";
+import { DataGridCellModel } from "src/app/mims-ui/tables/data-grid/models/data-grid-cell.model";
+import {
   getKanbanData,
   getWipData,
   settingsReducer,
@@ -29,16 +37,46 @@ import {
 export const reducerName = "products";
 
 export interface ProductState {
+  overview: OverviewState;
   settings: SettingsState;
   configure: ConfigureState;
 }
 
 export const reducers: any = {
+  overview: overviewReducer,
   settings: settingsReducer,
   configure: configureReducer,
 };
 
 const getProductsState = createFeatureSelector<ProductState>(reducerName);
+
+// Overview
+
+const getOverviewState = createSelector(
+  getProductsState,
+  (state) => state.overview
+);
+
+export const getDownTimeRecordChart = createSelector(
+  getOverviewState,
+  getDownTimeRecordChartData
+);
+
+export const getMachineOperationTableData = createSelector(
+  getOverviewState,
+  (state: OverviewState): DataGridCellModel[] =>
+    (state?.machineOperationTableData as DataGridCellModel[]) ?? []
+);
+
+export const getMachineOperationTableColumns = createSelector(
+  getOverviewState,
+  getMachineOperationTableColumnsData
+);
+
+export const getMachineOperationsTableHeaderName = createSelector(
+  getOverviewState,
+  getMachineOperationsTableHeaderNameData
+);
 
 // Settings
 const getSettingstate = createSelector(

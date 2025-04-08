@@ -27,7 +27,6 @@ import { ConfigureSelectBoxEffects } from "./effects/configure/selectbox.effects
 import { ConfigureSensorsEffects } from "./effects/configure/sensors.effects";
 import { ResumeWizardComponent } from "./components/configure/resume-wizard/resume-wizard.component";
 import { MimsUIModule } from "src/app/mims-ui/mims-ui.module";
-import { OverviewStore } from "./stores/overview.store";
 
 const ProductsRoutingModule = RouterModule.forChild([
   { path: "settings", component: SettingsComponent },
@@ -56,7 +55,6 @@ const ProductsRoutingModule = RouterModule.forChild([
       ConfigureSelectBoxEffects,
     ]),
   ],
-  providers: [OverviewStore],
   declarations: [
     MachineWizardComponent,
     ConfigureComponent,

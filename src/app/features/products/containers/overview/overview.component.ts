@@ -1,10 +1,7 @@
-import {
-  Component,
-  OnInit,
-  ChangeDetectionStrategy,
-  inject,
-} from "@angular/core";
-import { Store } from "@ngrx/store";
+import { Observable, startWith, map } from "rxjs";
+import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
+import { Store, select } from "@ngrx/store";
+import * as fromModule from "./../../products.reducers.index";
 import {
   getDownTimeChart,
   getMachineOperationTable,
@@ -12,8 +9,9 @@ import {
 import {
   DownTimeStatisticsChartRequestModel,
   MachineOperationsRequestModel,
+  DownTimeRecordChartModel,
 } from "../../models/overview.models";
-import { OverviewStore } from "../../stores/overview.store";
+import { DataGridCellModel } from "src/app/mims-ui/tables/data-grid/models/data-grid-cell.model";
 
 @Component({
   standalone: false,
@@ -106,24 +104,21 @@ export class OverviewComponent implements OnInit {
       legend: "Inspect-Dowa",
     },
   ];
+
   public gaugeLabels = ["20-30", "30-40", "50-Inspect", "Inspect-Dowa"];
 
-  public readonly chartData = inject(OverviewStore).downTimeRecordChartData;
-  public readonly tableData = inject(OverviewStore).machineOperationTableData;
-  public readonly columnNames =
-    inject(OverviewStore).machineOperationTableColumns;
-  public readonly headerNames =
-    inject(OverviewStore).machineOperationsTableHeaderName;
+  public chartData$: Observable<DownTimeRecordChartModel[]>;
+  public tableData$: Observable<DataGridCellModel[]>;
+  public headerNames$: Observable<string[]>;
+  public columnNames$: Observable<string[]>;
 
-  private readonly store = inject(Store);
-  private readonly date = new Date();
+  private date = new Date();
 
-  public ngOnInit(): void {
+  public constructor(private store: Store<fromModule.ProductState>) {
     const requestChartModel: DownTimeStatisticsChartRequestModel = {
       productId: 1,
       startDate: this.date,
     };
-
     const requestTableModel: MachineOperationsRequestModel = {
       productId: 1,
     };
@@ -132,5 +127,27 @@ export class OverviewComponent implements OnInit {
     this.store.dispatch(
       getMachineOperationTable({ payload: requestTableModel })
     );
+
+    this.chartData$ = this.store.pipe(
+      select(fromModule.getDownTimeRecordChart),
+      map((data) => data ?? [])
+    );
+
+    this.tableData$ = this.store.pipe(
+      select(fromModule.getMachineOperationTableData),
+      startWith([])
+    );
+
+    this.headerNames$ = this.store.pipe(
+      select(fromModule.getMachineOperationsTableHeaderName),
+      map((data) => data ?? [])
+    );
+
+    this.columnNames$ = this.store.pipe(
+      select(fromModule.getMachineOperationTableColumns),
+      map((data) => data ?? [])
+    );
   }
+
+  public ngOnInit(): void {}
 }
