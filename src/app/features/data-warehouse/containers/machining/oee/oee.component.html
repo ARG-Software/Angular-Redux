@@ -1,17 +1,17 @@
 <mims-header [title]="'Line Chart'" [subTitle]="'OEE'" [color]="'#5965e7'">
   <oee-filter-box
-    *ngIf="productSelectBoxData() as productSelectBoxData"
+    *ngIf="productSelectBoxData$ | async as productSelectBoxData"
     [productSelectBoxData]="productSelectBoxData"
-    [machineSelectBoxData]="machineSelectBoxData()"
+    [machineSelectBoxData]="(machineSelectBoxData$ | async) || []"
     [defaultFilters]="request.Filters"
     (OnFilterApply)="filtersOptions($event)"
   >
   </oee-filter-box>
 </mims-header>
 
-<ng-container *ngIf="chartData() as chartData">
-  <ng-container *ngIf="tableData() as tableData">
-    <ng-container *ngIf="tablePaging() as paginationDetails">
+<ng-container *ngIf="chartData$ | async as chartData">
+  <ng-container *ngIf="tableData$ | async as tableData">
+    <ng-container *ngIf="tablePaging$ | async as paginationDetails">
       <oee-information
         [chartData]="chartData"
         [tableData]="tableData"
