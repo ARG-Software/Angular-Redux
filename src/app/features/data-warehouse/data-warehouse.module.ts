@@ -25,7 +25,6 @@ import { ProcessDetailFilterBoxComponent } from "./components/machining/process-
 import { DowntimeFilterBoxComponent } from "./components/machining/downtime/downtime-filter-box/downtime-filter-box.component";
 import { OeeFilterBoxComponent } from "./components/machining/oee/oee-filter-box/oee-filter-box.component";
 import { MimsUIModule } from "src/app/mims-ui/mims-ui.module";
-import { DowntimeStore } from "./stores/downtime.store";
 
 const DataWarehouseRoutingModule = RouterModule.forChild([
   { path: "downtime", component: DowntimeComponent },
@@ -49,7 +48,6 @@ const DataWarehouseRoutingModule = RouterModule.forChild([
       ProcessDetailEffects,
     ]),
   ],
-  providers: [DowntimeStore],
   declarations: [
     DataWarehouseComponent,
     DowntimeInformationComponent,

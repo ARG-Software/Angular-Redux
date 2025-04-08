@@ -1,9 +1,4 @@
-import {
-  Component,
-  ChangeDetectionStrategy,
-  OnInit,
-  inject,
-} from "@angular/core";
+import { Component, ChangeDetectionStrategy, OnInit } from "@angular/core";
 
 import { Store } from "@ngrx/store";
 import * as fromReducer from "../../../data-warehouse.reducers.index";
@@ -20,7 +15,6 @@ import { getTodayDateMinusInputDays } from "../../../../../utils/funtion.utils";
 import { MachiningRequestModelUI } from "../../../models/downtime.models";
 import { PagingModelUI } from "src/app/app.models";
 import { MimsSelectBoxModel } from "src/app/mims-ui/input/select-box/models/select-box.model";
-import { DowntimeStore } from "../../../stores/downtime.store";
 
 @Component({
   standalone: false,
@@ -30,6 +24,14 @@ import { DowntimeStore } from "../../../stores/downtime.store";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DowntimeComponent implements OnInit {
+  public chartData$: Observable<ComboChartDataModelUI>;
+
+  public tableData$: Observable<DowntimeTableDataModelUI[]>;
+
+  public tablePaging$: Observable<PagingModelUI>;
+  public machineSelectBoxData$: Observable<MimsSelectBoxModel[]>;
+  public productSelectBoxData$: Observable<MimsSelectBoxModel[]>;
+
   public chartColors = {
     Bar: {
       domain: ["#01579b"],
@@ -38,17 +40,6 @@ export class DowntimeComponent implements OnInit {
       domain: ["#996633", "#a8385d", "#00bfa5", "#ff0000", "#00ff99"],
     },
   };
-
-  public chartSize = [1100, 400];
-
-  private readonly store = inject(Store);
-  private readonly downtimeStore = inject(DowntimeStore);
-
-  public readonly chartData = this.downtimeStore.downtimeChartData;
-  public readonly tableData = this.downtimeStore.downtimeTableData;
-  public readonly tablePaging = this.downtimeStore.currentPaging;
-  public readonly machineSelectBoxData = this.downtimeStore.machineSelectBox;
-  public readonly productSelectBoxData = this.downtimeStore.productSelectBox;
 
   public request: MachiningRequestModelUI = {
     Filters: {
@@ -71,16 +62,39 @@ export class DowntimeComponent implements OnInit {
     },
   };
 
-  ngOnInit() {
-    this.store.dispatch(getDowntimeDataSelectBoxes());
+  private public = ["Machine", "Downtime", "Instances"];
+
+  public chartSize = [1100, 400];
+
+  constructor(private store: Store<fromReducer.DataWarehouseState>) {
+    this.chartData$ = this.store.select(fromReducer.getDowntimeChart);
+    this.tableData$ = this.store.select(fromReducer.getDowntimeTable);
+    this.tablePaging$ = this.store.select(fromReducer.getDowntimeTablePaging);
+    this.machineSelectBoxData$ = this.store.select(
+      fromReducer.getDowntimeMachineSelect
+    );
+    this.productSelectBoxData$ = this.store.select(
+      fromReducer.getDowntimeProductSelect
+    );
+  }
+
+  public ngOnInit() {
+    this.store.dispatch(getDowntimeDataSelectBoxes({}));
     this.store.dispatch(getDowntimeData({ payload: this.request }));
   }
 
+  /**
+   * Request new page to backend
+   * @param pageNumber the numer of the page that we want
+   */
   public requestNewPage(pageNumber: number) {
     this.request.Paging.CurrentIndex = pageNumber - 1;
     this.store.dispatch(getDowntimeData({ payload: this.request }));
   }
-
+  /**
+   * Request data with new filters
+   * @param filters new selected filters
+   */
   public filtersOptions(filters: any) {
     this.request = {
       ...this.request,
