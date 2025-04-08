@@ -4,7 +4,7 @@
   [color]="'#5965e7'"
 >
   <process-detail-filter-box
-    *ngIf="machineSelectBoxData() as machineSelectBoxData"
+    *ngIf="machineSelectBoxData$ | async as machineSelectBoxData"
     [machineSelectBoxData]="machineSelectBoxData"
     [defaultFilters]="request.Filters"
     (OnFilterApply)="filtersOptions($event)"
@@ -12,9 +12,9 @@
   </process-detail-filter-box>
 </mims-header>
 
-<ng-container *ngIf="chartData() as chartData">
-  <ng-container *ngIf="tableData() as tableData">
-    <ng-container *ngIf="tablePaging() as paginationDetails">
+<ng-container *ngIf="chartData$ | async as chartData">
+  <ng-container *ngIf="tableData$ | async as tableData">
+    <ng-container *ngIf="tablePaging$ | async as paginationDetails">
       <process-detail-information
         [chartData]="chartData"
         [tableData]="tableData"
