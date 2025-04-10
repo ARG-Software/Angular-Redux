@@ -1,4 +1,4 @@
-﻿import { NgModule } from "@angular/core";
+﻿import { isDevMode, NgModule } from "@angular/core";
 
 import { BrowserModule } from "@angular/platform-browser";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
@@ -45,7 +45,7 @@ const metaReducers: Array<MetaReducer<any, any>> = [localStorageSyncReducer];
     EffectsModule.forRoot([]),
     ApiModule.forRoot(),
     StoreModule.forRoot({}, { metaReducers }),
-    StoreDevtoolsModule.instrument({ maxAge: 15 }),
+    StoreDevtoolsModule.instrument({ maxAge: 15, logOnly: !isDevMode() }),
   ],
   providers: [
     provideHttpClient(),
