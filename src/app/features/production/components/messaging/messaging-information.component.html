@@ -5,6 +5,7 @@
         <tr *ngFor="let message of messagingData">
           <td>
             <mims-checkbox
+              [id]="'msg-' + message.Id"
               [label]="message.DowntimeName"
               [data]="message.Id"
               (OnChangeSaveInformation)="checkboxChange($event)"

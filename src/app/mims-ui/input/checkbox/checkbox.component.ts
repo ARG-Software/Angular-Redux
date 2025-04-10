@@ -36,6 +36,7 @@ export class CheckboxComponent extends BaseControlComponent<any> {
   @Input() public data: any = "";
   @Input() public override label: string = "";
   @Input() public checkboxLabel: string = "";
+  @Input() public id: string = "";
 
   @Output() public OnChangeSaveInformation: EventEmitter<any> =
     new EventEmitter();

@@ -1,5 +1,7 @@
-<mims-label [text]="label"></mims-label>
+<mims-label [for]="id" [text]="label"></mims-label>
 <clr-checkbox
+  style="display: block; height: 25px; width: 25px"
+  [clrId]="id"
   [(ngModel)]="value"
   [clrChecked]="checked"
   (change)="changeCheckOption()"
