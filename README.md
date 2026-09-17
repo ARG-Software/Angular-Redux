@@ -2,10 +2,10 @@
 
 This repository is the runnable companion to ARG Software's account of migrating a production-shaped Angular 5 and NgRx application to Angular 19.
 
-The branches preserve both ends of the migration:
+The repository history preserves both ends of the migration:
 
-- [`master`](https://github.com/ARG-Software/Angular-Redux/tree/master) contains the original Angular 5 application.
-- [`main`](https://github.com/ARG-Software/Angular-Redux/tree/main) contains the reviewed Angular 19 result.
+- [`master`](https://github.com/ARG-Software/Angular-Redux/tree/master) contains the reviewed Angular 19 result.
+- The original Angular 5 application remains available at commit [`2841a1d`](https://github.com/ARG-Software/Angular-Redux/tree/2841a1db3ff666ffb0b6f3a4c938a5426673e512).
 
 ## Support Status
 
