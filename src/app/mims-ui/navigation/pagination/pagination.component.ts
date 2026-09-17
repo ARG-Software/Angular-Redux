@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 
 @Component({
   standalone: false,
@@ -6,13 +6,13 @@ import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
   templateUrl: "./pagination.component.html",
   styleUrls: ["./pagination.component.css"],
 })
-export class PaginationComponent implements OnInit {
+export class PaginationComponent {
   @Input()
   public get numItems(): number {
     return this._numItems;
   }
   public set numItems(value: number) {
-    if (value !== this._numItems && value > 0) {
+    if (value !== this._numItems && value >= 0) {
       this._numItems = value;
 
       this.buildPages();
@@ -36,13 +36,13 @@ export class PaginationComponent implements OnInit {
     return this._page;
   }
   public set page(value: number) {
-    this._page = value;
+    this.setPage(value);
   }
   public get totalPages(): number {
     return this._numberOfPages;
   }
 
-  @Output() public OnChangePage = new EventEmitter();
+  @Output() public OnChangePage = new EventEmitter<number>();
 
   private _page: number;
   private _numItems: number;
@@ -50,19 +50,15 @@ export class PaginationComponent implements OnInit {
   private _numberOfPages: number;
 
   constructor() {
-    this._numItems = 100;
+    this._numItems = 0;
     this._itemsPerPage = 10;
     this._page = 1;
-    this._numberOfPages = this._numItems / this._itemsPerPage;
+    this._numberOfPages = 1;
   }
 
-  public ngOnInit() {
-    this.buildPages();
-  }
-
-  public changePage(value: number) {
+  public changePage(value: number): void {
     this.page = value;
-    this.OnChangePage.emit(value);
+    this.OnChangePage.emit(this.page);
   }
 
   public hasPrevious(): boolean {
@@ -85,11 +81,12 @@ export class PaginationComponent implements OnInit {
     return middlePages;
   }
 
-  private buildPages() {
+  private buildPages(): void {
+    this._numberOfPages = Math.max(1, Math.ceil(this._numItems / this._itemsPerPage));
     this.setPage(this._page);
   }
 
-  private setPage(p: number) {
-    this._page = Math.min(1, Math.max(this.totalPages, p));
+  private setPage(p: number): void {
+    this._page = Math.min(this.totalPages, Math.max(1, p));
   }
 }

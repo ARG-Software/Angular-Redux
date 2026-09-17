@@ -1,223 +1,124 @@
-import "jest";
-import { faker } from "@faker-js/faker";
-import * as Factory from "factory.ts";
-import { Observable } from "rxjs";
-import { cold, hot } from "jest-marbles";
-import { provideMockActions } from "@ngrx/effects/testing";
 import { TestBed } from "@angular/core/testing";
-import { StoreModule } from "@ngrx/store";
-
-import { IProcessDetailMachiningService } from "@api/services/interfaces/core/data-warehouse/iprocess-detail.service";
+import { provideMockActions } from "@ngrx/effects/testing";
+import { Action, Store } from "@ngrx/store";
+import { firstValueFrom, of, Subject, throwError } from "rxjs";
+import { IProcessDetailMachiningService } from "../../../api/services/interfaces/core/data-warehouse/iprocess-detail.service";
+import { IMachineService } from "../../../api/services/interfaces/core/imachine.service";
 import {
-  ProcessDetailEffects,
-  convertApiDataToProcessDetailTableModelUI,
-  convertApiDataToProcessDetailChartModelUI,
-} from "../effects/process-detail.effects";
-import { ProcessDetailDataModelUI } from "../models/process-detail.models";
+  getProcessDetailData,
+  getProcessDetailDataSelectBoxes,
+  getProcessDetailDataSelectBoxesSuccess,
+  getProcessDetailDataSuccess,
+  processDetailFailure,
+} from "../actions/process-detail.actions";
+import { ProcessDetailEffects } from "./process-detail.effects";
 
-import {
-  MachiningRequestModelUIFactory,
-  MachiningRequestModelUI,
-} from "../models/downtime.models";
-
-import {
-  GetProcessDetailData,
-  GetProcessDetailDataSuccess,
-  GetProcessDetailDataSelectBoxes,
-  GetProcessDetailDataSelectBoxesSuccess,
-  ProcessDetailFailure,
-} from "./../actions/process-detail.actions";
-
-import { mainReducers } from "../../../main/main.reducers.index";
-import { IPagedSet } from "@api/models/apimodels";
-import { IMachineService } from "@api/services/interfaces/core/imachine.service";
-import { convertApiDataToSelectBox } from "./process-detail.effects";
-import {
-  generateMachineSelectBoxResponseFromApi,
-  generateProductSelectBoxResponseFromApi,
-} from "./downtime.effects.spec";
-
-describe("Process Detail Effects", () => {
-  let actions: Observable<any>;
+describe("ProcessDetailEffects", () => {
+  let actions$: Subject<Action>;
   let effects: ProcessDetailEffects;
-  let processDetailService: IProcessDetailMachiningService;
-  let machineService: IMachineService;
+  let processDetailService: jasmine.SpyObj<IProcessDetailMachiningService>;
+  let machineService: jasmine.SpyObj<IMachineService>;
 
-  beforeAll(() => {
+  const request = {
+    Filters: {
+      MachineId: 1,
+      ProductId: 2,
+      StartDate: "2025-01-01T00:00:00Z",
+      EndDate: "2025-01-02T00:00:00Z",
+    },
+    Paging: { CurrentIndex: 0, HowManyPerPage: 10 },
+  };
+
+  beforeEach(() => {
+    actions$ = new Subject<Action>();
+    processDetailService =
+      jasmine.createSpyObj<IProcessDetailMachiningService>(
+        "IProcessDetailMachiningService",
+        ["GetProcessDetailData"]
+      );
+    machineService = jasmine.createSpyObj<IMachineService>("IMachineService", [
+      "GetMachines",
+    ]);
+
     TestBed.configureTestingModule({
-      imports: [StoreModule.forRoot(mainReducers)],
       providers: [
         ProcessDetailEffects,
-        provideMockActions(() => actions),
+        provideMockActions(() => actions$),
+        { provide: IMachineService, useValue: machineService },
         {
           provide: IProcessDetailMachiningService,
-          useValue: {
-            GetProcessDetailData: jest.fn(),
-          },
+          useValue: processDetailService,
         },
         {
-          provide: IMachineService,
-          useValue: {
-            GetMachines: jest.fn(),
-          },
+          provide: Store,
+          useValue: jasmine.createSpyObj<Store>("Store", ["dispatch"]),
         },
       ],
-    }).compileComponents();
+    });
 
-    effects = TestBed.get(ProcessDetailEffects);
-    processDetailService = TestBed.get(IProcessDetailMachiningService);
-    machineService = TestBed.get(IMachineService);
+    effects = TestBed.inject(ProcessDetailEffects);
   });
 
-  it("should be created", () => {
-    expect(effects).toBeTruthy();
-  });
-
-  describe("load", () => {
-    let request: MachiningRequestModelUI;
-    let mockedResponseFromApi: any[];
-    let mockedConvertDataFromApi: ProcessDetailDataModelUI;
-
-    beforeEach(() => {
-      request = MachiningRequestModelUIFactory.build();
-      mockedResponseFromApi = [
+  it("requests and converts process-detail data", async () => {
+    processDetailService.GetProcessDetailData.and.returnValue(
+      of([
         {
-          Id: null,
-          MachineState: "Not Scheduled",
+          MachineState: "Running",
           Reason: "",
           Duration: 60,
-          StartTime: "2018-11-08T00:00:00",
-          EndTime: "2018-11-08T01:00:00",
+          StartTime: "2025-01-01T00:00:00Z",
+          EndTime: "2025-01-01T01:00:00Z",
         },
-        {
-          Id: null,
-          MachineState: "In Production",
-          Reason: "",
-          Duration: 300,
-          StartTime: "2018-11-08T01:00:00",
-          EndTime: "2018-11-08T06:00:00",
-        },
-        {
-          Id: null,
-          MachineState: "Unplanned Downtime",
-          Reason: "Tool Change",
-          Duration: 20,
-          StartTime: "2018-11-08T06:00:00",
-          EndTime: "2018-11-08T06:20:00",
-        },
-        {
-          Id: null,
-          MachineState: "In Production",
-          Reason: "",
-          Duration: 360,
-          StartTime: "2018-11-08T06:20:00",
-          EndTime: "2018-11-08T12:20:00",
-        },
-        {
-          Id: null,
-          MachineState: "Unplanned Downtime",
-          Reason: "No reason given",
-          Duration: 100,
-          StartTime: "2018-11-08T12:20:00",
-          EndTime: "2018-11-08T14:00:00",
-        },
-        {
-          Id: null,
-          MachineState: "In Production",
-          Reason: "",
-          Duration: 20,
-          StartTime: "2018-11-08T14:00:00",
-          EndTime: "2018-11-08T14:20:00",
-        },
-        {
-          Id: null,
-          MachineState: "Not Scheduled",
-          Reason: "",
-          Duration: 360,
-          StartTime: "2018-11-08T14:20:00",
-          EndTime: "2018-11-08T20:00:00",
-        },
-      ];
-      mockedConvertDataFromApi = {
-        Chart: convertApiDataToProcessDetailChartModelUI(mockedResponseFromApi),
-        Table: convertApiDataToProcessDetailTableModelUI(mockedResponseFromApi),
-      };
-    });
+      ])
+    );
+    const resultPromise = firstValueFrom(effects.getProcessDetailData$);
+    actions$.next(getProcessDetailData({ payload: request }));
+    const result = await resultPromise;
 
-    it("should return a GetProcessDetailDataSuccess action, with process detail data for chart and table, on success", () => {
-      const action = new GetProcessDetailData(request);
-      const outcome = new GetProcessDetailDataSuccess(mockedConvertDataFromApi);
-
-      actions = hot("a", { a: action });
-      const response = cold("a|", { a: mockedResponseFromApi });
-      const expected = cold("b", { b: outcome });
-
-      processDetailService.GetProcessDetailData = jest.fn(() => response);
-
-      expect(effects.getProcessDetailData$).toBeObservable(expected);
-    });
+    expect(result.type).toBe(getProcessDetailDataSuccess.type);
+    expect(result.payload.Chart[0].series).toEqual([
+      jasmine.objectContaining({
+        name: "2025-01-01T01:00:00.000Z",
+        value: 60,
+      }),
+    ]);
+    expect(result.payload.Table.Information).toEqual([
+      jasmine.objectContaining({ MachineState: "Running", Duration: 60 }),
+    ]);
+    expect(result.payload.Table.Total).toBe(1);
+    expect(processDetailService.GetProcessDetailData).toHaveBeenCalledWith(
+      request
+    );
   });
 
-  describe("load select boxes", () => {
-    let mockedResponseFromApi: any[];
-    let mockedConvertDataFromApi: any[];
+  it("loads and converts machine select-box data", async () => {
+    machineService.GetMachines.and.returnValue(
+      of([{ Id: 1, Name: "Machine" }] as any)
+    );
 
-    beforeEach(() => {
-      mockedResponseFromApi = generateMachineSelectBoxResponseFromApi();
-      mockedConvertDataFromApi = convertApiDataToSelectBox(
-        mockedResponseFromApi
-      );
-    });
+    const resultPromise = firstValueFrom(
+      effects.getProcessDetailDataSelectBox$
+    );
+    actions$.next(getProcessDetailDataSelectBoxes({}));
 
-    it("should return a GetProcessDetailDataSelectBoxesSuccess action, with select boxes data, on success", () => {
-      const action = new GetProcessDetailDataSelectBoxes();
-      const outcome = new GetProcessDetailDataSelectBoxesSuccess(
-        mockedConvertDataFromApi
-      );
+    expect(await resultPromise).toEqual(
+      getProcessDetailDataSelectBoxesSuccess({
+        payload: [{ name: "Machine", value: 1, selected: false }],
+      })
+    );
+  });
 
-      actions = hot("a", { a: action });
-      const responseMachine = cold("a|", { a: mockedResponseFromApi });
-      const expected = cold("b", { b: outcome });
+  it("maps machine select-box errors to processDetailFailure", async () => {
+    const error = new Error("machines failed");
+    machineService.GetMachines.and.returnValue(throwError(() => error));
 
-      machineService.GetMachines = jest.fn(() => responseMachine);
+    const resultPromise = firstValueFrom(
+      effects.getProcessDetailDataSelectBox$
+    );
+    actions$.next(getProcessDetailDataSelectBoxes({}));
 
-      expect(effects.getProcessDetailDataSelectBox$).toBeObservable(expected);
-    });
-
-    it("should return an ProcessDetailFailure action when load machine select box fails, with an error, on failure", () => {
-      const action = new GetProcessDetailDataSelectBoxes();
-      const error = new Error();
-      const outcome = new ProcessDetailFailure("error");
-
-      actions = hot("a", { a: action });
-      const responseMachine = cold("-#|", { a: error });
-      const expected = cold("-b", { b: outcome });
-
-      machineService.GetMachines = jest.fn(() => responseMachine);
-
-      expect(effects.getProcessDetailDataSelectBox$).toBeObservable(expected);
-    });
+    expect(await resultPromise).toEqual(
+      processDetailFailure({ payload: error })
+    );
   });
 });
-
-function generateProcessDetailResponseFromApi(): any {
-  const chartData = Factory.makeFactory<any>({
-    Id: faker.random.number(),
-    MachineState: faker.random.word(),
-    Reason: faker.random.word(),
-    Duration: faker.random.number(),
-    StartTime: faker.random.locale(),
-  }).buildList(3);
-
-  const tableData = Factory.makeFactory<IPagedSet<any>>({
-    Result: chartData,
-    Total: faker.random.number(),
-  }).build();
-
-  const processDetail = Factory.makeFactory<any>({
-    ChartData: chartData,
-    TableData: tableData,
-  }).build();
-
-  return processDetail;
-}

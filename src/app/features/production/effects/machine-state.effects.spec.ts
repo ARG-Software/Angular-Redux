@@ -1,139 +1,87 @@
-import 'jest';
-import { Observable } from 'rxjs';
-import { cold, hot } from 'jest-marbles';
-import { provideMockActions } from '@ngrx/effects/testing';
-import { TestBed } from '@angular/core/testing';
-import { StoreModule } from '@ngrx/store';
-
-import { IMachineStateService } from '@api/services/interfaces/core/production/imachine-state.service';
-import { MachineStateEffects } from '../effects/machine-state.effects';
+import { TestBed } from "@angular/core/testing";
+import { provideMockActions } from "@ngrx/effects/testing";
+import { Action, Store } from "@ngrx/store";
+import { firstValueFrom, of, Subject } from "rxjs";
+import { IMachineStateService } from "../../../api/services/interfaces/core/production/imachine-state.service";
 import {
-    MachineStateDataRequestModelUI,
-    MachineStateLoadDataModelUI,
-    MachineStateSaveDataModelUI,
-    MachineStateDataRequestModelUIFactory,
-    MachineStateLoadDataModelUIFactory,
-    MachineStateSaveDataModelUIFactory
-} from '../models/machine-state.model';
-
+  getMachineData,
+  updateMachineData,
+} from "../actions/machine-state.actions";
 import {
-    GetMachineData,
-    GetMachineDataSuccess,
-    MachineFailure,
-    UpdateMachineData,
-    UpdateMachineDataSuccess
-} from '../actions/machine-state.actions';
+  MachineStateDataRequestModelUIFactory,
+  MachineStateLoadDataModelUIFactory,
+  MachineStateSaveDataModelUIFactory,
+} from "../models/machine-state.model";
+import { MachineStateStore } from "../store/machine-state.store";
+import { MachineStateEffects } from "./machine-state.effects";
 
-import { mainReducers } from '../../../main/main.reducers.index';
+describe("MachineStateEffects", () => {
+  let actions$: Subject<Action>;
+  let effects: MachineStateEffects;
+  let store: jasmine.SpyObj<Store>;
+  let machineStore: jasmine.SpyObj<InstanceType<typeof MachineStateStore>>;
+  let service: jasmine.SpyObj<IMachineStateService>;
 
-describe('Machine State Effects', () => {
+  beforeEach(() => {
+    actions$ = new Subject<Action>();
+    store = jasmine.createSpyObj<Store>("Store", ["dispatch"]);
+    machineStore = jasmine.createSpyObj("MachineStateStore", [
+      "setMachineData",
+      "updateMachine",
+    ]);
+    service = jasmine.createSpyObj<IMachineStateService>(
+      "IMachineStateService",
+      ["GetMachineStateData", "UpdateMachineStateData"]
+    );
 
-    const functionUtils = require('../../../utils/funtion.utils');
-
-    let actions: Observable<any>;
-    let effects: MachineStateEffects;
-    let machineStateService: IMachineStateService;
-
-    beforeAll(() => {
-        TestBed.configureTestingModule({
-        imports: [
-            StoreModule.forRoot(mainReducers),
-        ],
-        providers: [
-            MachineStateEffects,
-            provideMockActions(() => actions),
-            {
-                provide: IMachineStateService,
-                useValue: {
-                    GetMachineStateData: jest.fn(),
-                    UpdateMachineStateData: jest.fn()
-                }
-            }
-        ]
-        }).compileComponents();
-
-        effects = TestBed.get(MachineStateEffects);
-        machineStateService = TestBed.get(IMachineStateService);
+    TestBed.configureTestingModule({
+      providers: [
+        MachineStateEffects,
+        provideMockActions(() => actions$),
+        { provide: Store, useValue: store },
+        { provide: MachineStateStore, useValue: machineStore },
+        { provide: IMachineStateService, useValue: service },
+      ],
     });
 
-    it('should be created', () => {
-        expect(effects).toBeTruthy();
-    });
+    effects = TestBed.inject(MachineStateEffects);
+  });
 
-    describe('load', () => {
-        let request: MachineStateDataRequestModelUI;
-        let mockedResponseFromApi: MachineStateLoadDataModelUI[];
+  it("loads current machine data into the signal store", async () => {
+    service.GetMachineStateData.and.returnValue(
+      of(MachineStateLoadDataModelUIFactory)
+    );
+    const resultPromise = firstValueFrom(effects.getMachineStateData$);
 
-        beforeEach(() => {
-            request = MachineStateDataRequestModelUIFactory;
-            mockedResponseFromApi = MachineStateLoadDataModelUIFactory;
-        });
+    actions$.next(
+      getMachineData({ payload: MachineStateDataRequestModelUIFactory })
+    );
+    await resultPromise;
 
-        it('should return a GetMachineDataSuccess action, with machine state data, on success', () => {
-            const action = new GetMachineData(request);
-            const outcome = new GetMachineDataSuccess(mockedResponseFromApi);
+    expect(machineStore.setMachineData).toHaveBeenCalledWith(
+      MachineStateLoadDataModelUIFactory
+    );
+    expect(service.GetMachineStateData).toHaveBeenCalledWith(
+      MachineStateDataRequestModelUIFactory
+    );
+    expect(store.dispatch).toHaveBeenCalledTimes(2);
+  });
 
-            actions = hot('a', { a: action });
-            const response = cold('a|', { a: mockedResponseFromApi });
-            const expected = cold('b', { b: outcome });
+  it("updates a machine in the signal store", async () => {
+    service.UpdateMachineStateData.and.returnValue(of(true));
+    const resultPromise = firstValueFrom(effects.updateMachineState$);
 
-            functionUtils.apiRequest = jest.fn(() => response);
+    actions$.next(
+      updateMachineData({ payload: MachineStateSaveDataModelUIFactory })
+    );
+    await resultPromise;
 
-            expect(effects.getMachineStateData$).toBeObservable(expected);
-        });
-
-        it('should return an MachineFailure action, with an error, on failure', () => {
-
-            const action = new GetMachineData(request);
-            const error = new Error();
-            const outcome = new MachineFailure('error');
-
-            actions = hot('a', { a: action });
-            const response = cold('-#|', { a: error });
-            const expected = cold('-b', { b: outcome });
-
-            functionUtils.apiRequest = jest.fn(() => response);
-
-            expect(effects.getMachineStateData$).toBeObservable(expected);
-        });
-    });
-
-    describe('update', () => {
-        let mockedMachineStateData: MachineStateSaveDataModelUI;
-        let mockedResponseFromApi: boolean;
-
-        beforeEach(() => {
-            mockedMachineStateData = MachineStateSaveDataModelUIFactory;
-            mockedResponseFromApi = true;
-        });
-
-        it('should return a UpdateMachineDataSuccess action, with a boolean, on success', () => {
-            const action = new UpdateMachineData(mockedMachineStateData);
-            const outcome = new UpdateMachineDataSuccess(mockedResponseFromApi);
-
-            actions = hot('a', { a: action });
-            const response = cold('a|', { a: mockedResponseFromApi });
-            const expected = cold('b', { b: outcome });
-
-            functionUtils.apiRequest = jest.fn(() => response);
-
-            expect(effects.updateMachineState$).toBeObservable(expected);
-
-        });
-
-        it('should return an MachineFailure action, with an error, on failure', () => {
-
-            const action = new UpdateMachineData(mockedMachineStateData);
-            const error = new Error();
-            const outcome = new MachineFailure('error');
-
-            actions = hot('a', { a: action });
-            const response = cold('-#|', { a: error });
-            const expected = cold('-b', { b: outcome });
-
-            functionUtils.apiRequest = jest.fn(() => response);
-
-            expect(effects.updateMachineState$).toBeObservable(expected);
-        });
-    });
+    expect(machineStore.updateMachine).toHaveBeenCalledWith(
+      MachineStateSaveDataModelUIFactory
+    );
+    expect(service.UpdateMachineStateData).toHaveBeenCalledWith(
+      MachineStateSaveDataModelUIFactory
+    );
+    expect(store.dispatch).toHaveBeenCalledTimes(2);
+  });
 });

@@ -58,35 +58,7 @@ export class OeeEffects {
         return request;
       }),
       switchMap((payload) =>
-        of({
-          ChartData: [
-            {
-              Name: "Series",
-              Series: [
-                { Name: "Value One", Value: 1.5 },
-                { Name: "Value two", Value: 3 },
-                { Name: "Value three", Value: 5 },
-              ],
-            },
-            {
-              Name: "Series 2",
-              Series: [
-                { Name: "Value One", Value: 1 },
-                { Name: "Value two", Value: 4 },
-                { Name: "Value three", Value: 2 },
-              ],
-            },
-          ],
-          TableData: {
-            Result: [
-              { Name: "Value One", Availability: 1, Production: 1, Quality: 1 },
-              { Name: "Value Two", Availability: 2, Production: 2, Quality: 2 },
-            ],
-            Total: 2,
-          },
-        }).pipe(
-          // TODO: When backend is finished, uncomment service and the load tests
-          // this.oeeService.GetOeeData(payload)
+        this.oeeService.GetOeeData(payload).pipe(
           map((response: MimsModels.IOEEScreenDto) => {
             const oeeData: OeeDataModelUI = {
               Chart: convertApiDataToChartData(response.ChartData),

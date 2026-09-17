@@ -1,4 +1,3 @@
-import { Observable, of } from "rxjs";
 import { MimsSelectBoxModel } from "../mims-ui/input/select-box/models/select-box.model";
 import { IBufferDto } from "../api/models/apimodels";
 import {
@@ -49,14 +48,6 @@ export function getDiferenceBetweenObjectArraysByProperty(
     });
   });
   return difference;
-}
-
-/**
- * Simulate api request
- * @returns empty Observable
- */
-export function apiRequest(): Observable<any> {
-  return of({});
 }
 
 export function convertApiDataToSelectBoxes(

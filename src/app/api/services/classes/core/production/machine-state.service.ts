@@ -20,7 +20,7 @@ export class MachineStateService
   }
 
   public GetMachineStateData(obj: any): Observable<any> {
-    return this.getObjects(`${this.controllerRoute}/${obj}`);
+    return this.getObjectByParams(this.controllerRoute, obj);
   }
 
   public UpdateMachineStateData(obj: any): Observable<any> {

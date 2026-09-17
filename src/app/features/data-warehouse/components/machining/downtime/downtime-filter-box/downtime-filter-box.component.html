@@ -1,22 +1,22 @@
 <form [formGroup]="downtimeForm" class="clr-form clr-form-horizontal">
     <div class="form-group row">
         <div class="col-lg-2">
-            <mims-select-box [data]="machineSelectBoxData"
+            <mims-select-box id="downtime-machine" label="Machine" [data]="machineSelectBoxData"
                              formControlName="Machine">
             </mims-select-box>
         </div>
         <div class="col-lg-2">
-            <mims-select-box [data]="productSelectBoxData"
+            <mims-select-box id="downtime-product" label="Product" [data]="productSelectBoxData"
                              formControlName="Product">
             </mims-select-box>
         </div>
         <div class="col-lg-3">
-            <mims-date-picker [size]="11"
+            <mims-date-picker id="downtime-start-date" label="Start date" [size]="11"
                               formControlName="StartDate">
             </mims-date-picker>
         </div>
         <div class="col-lg-3">
-            <mims-date-picker [size]="11"
+            <mims-date-picker id="downtime-end-date" label="End date" [size]="11"
                               formControlName="EndDate">
             </mims-date-picker>
         </div>

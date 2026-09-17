@@ -26,7 +26,7 @@ export class OeeInformationComponent {
   @Input() public chartSize: any;
   @Input() public tableHeaders: any;
 
-  @Output() private changePage: EventEmitter<number> = new EventEmitter();
+  @Output() public changePage: EventEmitter<number> = new EventEmitter();
 
   public changePagination(pageNumber: number) {
     this.changePage.emit(pageNumber);

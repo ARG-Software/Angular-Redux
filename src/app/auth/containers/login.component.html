@@ -11,6 +11,7 @@
         type="text"
         formControlName="username"
         id="login_username"
+        aria-label="Username"
         placeholder="Username"
       />
       <input
@@ -18,6 +19,7 @@
         type="password"
         formControlName="password"
         id="login_password"
+        aria-label="Password"
         placeholder="Password"
       />
       <div class="error" [ngClass]="{ active: loginError$ | async }">

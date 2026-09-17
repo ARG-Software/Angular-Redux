@@ -1,228 +1,135 @@
-import "jest";
-import { faker } from "@faker-js/faker";
-import * as Factory from "factory.ts";
-import { Observable } from "rxjs";
-import { cold, hot } from "jest-marbles";
-import { provideMockActions } from "@ngrx/effects/testing";
 import { TestBed } from "@angular/core/testing";
-import { StoreModule } from "@ngrx/store";
-
-import { IDownTimeMachiningService } from "@api/services/interfaces/core/data-warehouse/idowntime.service";
-import { IMachineService } from "@api/services/interfaces/core/imachine.service";
-import { IProductService } from "@api/services/interfaces/core/iproduct.service";
+import { provideMockActions } from "@ngrx/effects/testing";
+import { Action, Store } from "@ngrx/store";
+import { firstValueFrom, of, Subject, throwError } from "rxjs";
+import { IDownTimeMachiningService } from "../../../api/services/interfaces/core/data-warehouse/idowntime.service";
+import { IMachineService } from "../../../api/services/interfaces/core/imachine.service";
+import { IProductService } from "../../../api/services/interfaces/core/iproduct.service";
 import {
-  DowntimeEffects,
+  downtimeFailure,
+  getDowntimeData,
+  getDowntimeDataSelectBoxes,
+  getDowntimeDataSelectBoxesSuccess,
+  getDowntimeDataSuccess,
+} from "../actions/downtime.actions";
+import {
   converApiDataToChartData,
   convertApiDataToTableData,
-} from "../effects/downtime.effects";
-import {
-  MachiningRequestModelUIFactory,
-  MachiningRequestModelUI,
-  DowntimeDataModelUI,
-} from "../models/downtime.models";
+  DowntimeEffects,
+} from "./downtime.effects";
 
-import {
-  GetDowntimeData,
-  GetDowntimeDataSuccess,
-  GetDowntimeDataSelectBoxes,
-  GetDowntimeDataSelectBoxesSuccess,
-  DowntimeFailure,
-} from "./../actions/downtime.actions";
-
-import { mainReducers } from "../../../main/main.reducers.index";
-import {
-  IMachineDowntimeScreenDto,
-  IDowntimeMachineParetoDto,
-  IPagedSet,
-} from "@api/models/apimodels";
-import { convertApiDataToSelectBoxes } from "./downtime.effects";
-
-describe("Downtime Effects", () => {
-  let actions: Observable<any>;
+describe("DowntimeEffects", () => {
+  let actions$: Subject<Action>;
   let effects: DowntimeEffects;
-  let downtimeService: IDownTimeMachiningService;
-  let machineService: IMachineService;
-  let productService: IProductService;
+  let downtimeService: jasmine.SpyObj<IDownTimeMachiningService>;
+  let machineService: jasmine.SpyObj<IMachineService>;
+  let productService: jasmine.SpyObj<IProductService>;
 
-  beforeAll(() => {
+  const request = {
+    Filters: {
+      MachineId: 1,
+      ProductId: 2,
+      StartDate: "2025-01-01T00:00:00Z",
+      EndDate: "2025-01-02T00:00:00Z",
+    },
+    Paging: { CurrentIndex: 0, HowManyPerPage: 10 },
+  };
+
+  beforeEach(() => {
+    actions$ = new Subject<Action>();
+    downtimeService = jasmine.createSpyObj<IDownTimeMachiningService>(
+      "IDownTimeMachiningService",
+      ["GetDownTimeData"]
+    );
+    machineService = jasmine.createSpyObj<IMachineService>("IMachineService", [
+      "GetMachines",
+    ]);
+    productService = jasmine.createSpyObj<IProductService>("IProductService", [
+      "GetProductsList",
+    ]);
+
     TestBed.configureTestingModule({
-      imports: [StoreModule.forRoot(mainReducers)],
       providers: [
         DowntimeEffects,
-        provideMockActions(() => actions),
+        provideMockActions(() => actions$),
+        { provide: IDownTimeMachiningService, useValue: downtimeService },
+        { provide: IMachineService, useValue: machineService },
+        { provide: IProductService, useValue: productService },
         {
-          provide: IDownTimeMachiningService,
-          useValue: {
-            GetDownTimeData: jest.fn(),
-          },
-        },
-        {
-          provide: IMachineService,
-          useValue: {
-            GetMachines: jest.fn(),
-          },
-        },
-        {
-          provide: IProductService,
-          useValue: {
-            GetProductsList: jest.fn(),
-          },
+          provide: Store,
+          useValue: jasmine.createSpyObj<Store>("Store", ["dispatch"]),
         },
       ],
-    }).compileComponents();
+    });
 
-    effects = TestBed.get(DowntimeEffects);
-    downtimeService = TestBed.get(IDownTimeMachiningService);
-    machineService = TestBed.get(IMachineService);
-    productService = TestBed.get(IProductService);
+    effects = TestBed.inject(DowntimeEffects);
   });
 
-  it("should be created", () => {
-    expect(effects).toBeTruthy();
+  it("requests and converts downtime data", async () => {
+    const chartData = [
+      { AssetNumber: "M1", DowntimeInMinutes: 12, InstancesOfDowntime: 3 },
+    ];
+    const response = {
+      ChartData: chartData,
+      TableData: { Result: chartData, Total: 1 },
+    };
+    downtimeService.GetDownTimeData.and.returnValue(of(response as any));
+
+    const resultPromise = firstValueFrom(effects.getDowntimeData$);
+    actions$.next(getDowntimeData({ payload: request }));
+
+    expect(await resultPromise).toEqual(
+      getDowntimeDataSuccess({
+        payload: {
+          Chart: converApiDataToChartData(chartData as any),
+          Table: convertApiDataToTableData(response.TableData as any),
+        },
+      })
+    );
+    expect(downtimeService.GetDownTimeData).toHaveBeenCalledWith(
+      jasmine.objectContaining({ Paging: request.Paging })
+    );
   });
 
-  describe("load", () => {
-    let request: MachiningRequestModelUI;
-    let mockedResponseFromApi: IMachineDowntimeScreenDto;
-    let mockedConvertDataFromApi: DowntimeDataModelUI;
+  it("maps downtime request errors to downtimeFailure", async () => {
+    const error = new Error("load failed");
+    downtimeService.GetDownTimeData.and.returnValue(throwError(() => error));
 
-    beforeEach(() => {
-      request = MachiningRequestModelUIFactory.build();
-      mockedResponseFromApi = generateMachineDowntimeResponseFromApi();
-      mockedConvertDataFromApi = {
-        Chart: converApiDataToChartData(mockedResponseFromApi.ChartData),
-        Table: convertApiDataToTableData(mockedResponseFromApi.TableData),
-      };
-    });
+    const resultPromise = firstValueFrom(effects.getDowntimeData$);
+    actions$.next(getDowntimeData({ payload: request }));
 
-    it("should return a GetDowntimeDataSuccess action, with downtime data for chart and table, on success", () => {
-      const action = new GetDowntimeData(request);
-      const outcome = new GetDowntimeDataSuccess(mockedConvertDataFromApi);
-
-      actions = hot("a", { a: action });
-      const response = cold("a|", { a: mockedResponseFromApi });
-      const expected = cold("b", { b: outcome });
-
-      downtimeService.GetDownTimeData = jest.fn(() => response);
-
-      expect(effects.getDowntimeData$).toBeObservable(expected);
-    });
-
-    it("should return an DowntimeFailure action, with an error, on failure", () => {
-      const action = new GetDowntimeData(request);
-      const error = new Error();
-      const outcome = new DowntimeFailure("error");
-
-      actions = hot("a", { a: action });
-      const response = cold("-#|", { a: error });
-      const expected = cold("-b", { b: outcome });
-
-      downtimeService.GetDownTimeData = jest.fn(() => response);
-
-      expect(effects.getDowntimeData$).toBeObservable(expected);
-    });
+    expect(await resultPromise).toEqual(downtimeFailure({ payload: error }));
   });
 
-  describe("load select boxes", () => {
-    let machineSelectBoxData: any[];
-    let productSelectBoxData: any[];
-    let mockedResponseFromApi: any[];
-    let mockedConvertDataFromApi: any[];
+  it("loads and converts machine and product select boxes", async () => {
+    machineService.GetMachines.and.returnValue(
+      of([{ Id: 1, Name: "Machine" }] as any)
+    );
+    productService.GetProductsList.and.returnValue(
+      of([{ Id: 2, Name: "Product" }] as any)
+    );
 
-    beforeEach(() => {
-      machineSelectBoxData = generateMachineSelectBoxResponseFromApi();
-      productSelectBoxData = generateProductSelectBoxResponseFromApi();
-      mockedResponseFromApi = [machineSelectBoxData, productSelectBoxData];
-      mockedConvertDataFromApi = convertApiDataToSelectBoxes(
-        mockedResponseFromApi
-      );
-    });
+    const resultPromise = firstValueFrom(effects.getDowntimeDataSelectBox$);
+    actions$.next(getDowntimeDataSelectBoxes({}));
 
-    it("should return a GetDowntimeDataSelectBoxesSuccess action, with select boxes data, on success", () => {
-      const action = new GetDowntimeDataSelectBoxes();
-      const outcome = new GetDowntimeDataSelectBoxesSuccess(
-        mockedConvertDataFromApi
-      );
+    expect(await resultPromise).toEqual(
+      getDowntimeDataSelectBoxesSuccess({
+        payload: [
+          [{ name: "Machine", value: 1, selected: false }],
+          [{ name: "Product", value: 2, selected: false }],
+        ],
+      })
+    );
+  });
 
-      actions = hot("a", { a: action });
-      const responseMachine = cold("a|", { a: machineSelectBoxData });
-      const responseProduct = cold("a|", { a: productSelectBoxData });
-      const expected = cold("-b", { b: outcome });
+  it("maps select-box errors to downtimeFailure", async () => {
+    const error = new Error("machines failed");
+    machineService.GetMachines.and.returnValue(throwError(() => error));
+    productService.GetProductsList.and.returnValue(of([]));
 
-      machineService.GetMachines = jest.fn(() => responseMachine);
-      productService.GetProductsList = jest.fn(() => responseProduct);
+    const resultPromise = firstValueFrom(effects.getDowntimeDataSelectBox$);
+    actions$.next(getDowntimeDataSelectBoxes({}));
 
-      expect(effects.getDowntimeDataSelectBox$).toBeObservable(expected);
-    });
-
-    it("should return an DowntimeFailure action when load machine select box fails, with an error, on failure", () => {
-      const action = new GetDowntimeDataSelectBoxes();
-      const error = new Error();
-      const outcome = new DowntimeFailure("error");
-
-      actions = hot("a", { a: action });
-      const responseMachine = cold("-#|", { a: error });
-      const responseProduct = cold("a|", { a: productSelectBoxData });
-      const expected = cold("-b", { b: outcome });
-
-      machineService.GetMachines = jest.fn(() => responseMachine);
-      productService.GetProductsList = jest.fn(() => responseProduct);
-
-      expect(effects.getDowntimeDataSelectBox$).toBeObservable(expected);
-    });
-
-    it("should return an DowntimeFailure action when load product select box fails, with an error, on failure", () => {
-      const action = new GetDowntimeDataSelectBoxes();
-      const error = new Error();
-      const outcome = new DowntimeFailure("error");
-
-      actions = hot("a", { a: action });
-      const responseProduct = cold("-#|", { a: error });
-      const responseMachine = cold("a|", { a: machineSelectBoxData });
-      const expected = cold("-b", { b: outcome });
-
-      machineService.GetMachines = jest.fn(() => responseMachine);
-      productService.GetProductsList = jest.fn(() => responseProduct);
-
-      expect(effects.getDowntimeDataSelectBox$).toBeObservable(expected);
-    });
+    expect(await resultPromise).toEqual(downtimeFailure({ payload: error }));
   });
 });
-
-function generateMachineDowntimeResponseFromApi(): IMachineDowntimeScreenDto {
-  const chartData = Factory.makeFactory<IDowntimeMachineParetoDto>({
-    AssetNumber: faker.random.word(),
-    DowntimeInMinutes: faker.random.number(),
-    InstancesOfDowntime: faker.random.number(),
-  }).buildList(3);
-
-  const tableData = Factory.makeFactory<IPagedSet<IDowntimeMachineParetoDto>>({
-    Result: chartData,
-    Total: faker.random.number(),
-  }).build();
-
-  const downtime = Factory.makeFactory<IMachineDowntimeScreenDto>({
-    ChartData: chartData,
-    TableData: tableData,
-  }).build();
-
-  return downtime;
-}
-
-export function generateMachineSelectBoxResponseFromApi(): any[] {
-  const machine = Factory.makeFactory<any>({
-    Name: faker.random.word(),
-    Id: faker.random.number(),
-  }).buildList(3);
-
-  return machine;
-}
-
-export function generateProductSelectBoxResponseFromApi(): any[] {
-  const product = Factory.makeFactory<any>({
-    Name: faker.random.word(),
-    Id: faker.random.number(),
-  }).buildList(2);
-
-  return product;
-}

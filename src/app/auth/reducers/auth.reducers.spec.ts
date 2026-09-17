@@ -1,65 +1,50 @@
-import { reducer, initialState } from './auth.reducers';
-import { Login, LoginSuccess, LoginFailure, Logout } from '../actions/auth.actions';
-import { LoginModelUIFactory, UserModelUIFactory } from './../models/auth.models';
+import { login, loginFailure, loginSuccess, logout } from "../actions/auth.actions";
+import { authReducer, initialState } from "./auth.reducers";
 
-describe('Auth Reducer', () => {
+describe("Auth Reducer", () => {
+  const user = {
+    Id: 1,
+    Name: "Test User",
+    Email: "test@example.com",
+    Login: "tester",
+  };
 
-    const mockedUserLoginCredentials = LoginModelUIFactory.build();
-    const mockedUser = UserModelUIFactory.build();
+  it("returns the initial state for an unknown action", () => {
+    expect(authReducer(undefined, { type: "Unknown" })).toEqual(initialState);
+  });
 
-    describe('Undefined Action', () => {
-        it('should return the default state', () => {
+  it("sets loading while login is in progress", () => {
+    expect(
+      authReducer(initialState, login({ username: "tester", password: "secret" }))
+    ).toEqual({ ...initialState, loading: true });
+  });
 
-            const action = { type: 'Not defined action' } as any;
-            const result = reducer(undefined, action);
-
-            expect(result).toEqual(initialState);
-        });
+  it("stores the authenticated user after a successful login", () => {
+    expect(
+      authReducer(
+        { ...initialState, loading: true, hasLoginError: true },
+        loginSuccess({ user, accessToken: "access", refreshToken: "refresh" })
+      )
+    ).toEqual({
+      ...initialState,
+      authorized: true,
+      loggedUser: user,
     });
+  });
 
-    describe('[Auth] Login', () => {
-        it('should toggle loading state when user tries to login', () => {
-            const action = new Login(mockedUserLoginCredentials);
-            const result = reducer(initialState, action );
-            expect(result).toEqual({
-                ...initialState,
-                loading: true
-            });
-        });
-    });
+  it("records a failed login and stops loading", () => {
+    expect(
+      authReducer({ ...initialState, loading: true }, loginFailure())
+    ).toEqual({ ...initialState, hasLoginError: true });
+  });
 
-    describe('[Auth] Login Success', () => {
+  it("resets authentication state on logout", () => {
+    const authenticatedState = {
+      ...initialState,
+      authorized: true,
+      loggedUser: user,
+    };
 
-    it('should add the user to state upon login success', () => {
-        const action = new LoginSuccess(mockedUser);
-        const result = reducer(initialState, action );
-        expect(result).toEqual({
-            ...initialState,
-            loggedUser: {...mockedUser},
-            authorized: true
-        });
-        });
-    });
-
-    describe('[Auth] Login Failure', () => {
-
-        it('should set the loginFailureField to true if login fails', () => {
-            const action = new LoginFailure({});
-            const result = reducer(initialState, action );
-            expect(result).toEqual({
-                ...initialState,
-                hasLoginError: true
-            });
-            });
-        });
-
-    describe('[Auth] Logout', () => {
-            it('should set the state to default when user log out', () => {
-                const action = new Logout({});
-                const result = reducer(initialState, action );
-                expect(result).toEqual({
-                    ...initialState
-                });
-                });
-            });
+    expect(authReducer(authenticatedState, logout())).toEqual(initialState);
+  });
 });

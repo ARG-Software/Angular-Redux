@@ -5,6 +5,7 @@
   <select
     [id]="id"
     [name]="id"
+    [attr.aria-label]="label || null"
     [(ngModel)]="selected"
     (change)="onSelectValue($event)"
     [attr.disabled]="disable ? 'disabled' : null"

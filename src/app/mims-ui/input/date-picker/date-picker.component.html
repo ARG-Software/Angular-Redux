@@ -1,5 +1,6 @@
 <input
   id="{{ id }}"
+  [attr.aria-label]="label || null"
   [attr.disabled]="disable ? 'disabled' : null"
   [attr.size]="size"
   [(ngModel)]="value"
