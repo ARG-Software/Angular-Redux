@@ -2,7 +2,7 @@ import { inject, Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { of } from "rxjs";
-import { catchError, finalize, map, switchMap, tap } from "rxjs/operators";
+import { catchError, finalize, switchMap, tap } from "rxjs/operators";
 
 import * as loadingActions from "../../../main/actions/loading.actions";
 import * as fromMain from "../../../main/main.reducers.index";
@@ -12,9 +12,6 @@ import {
   messagingFailure,
 } from "../actions/messaging.actions";
 
-import { MessagingLoadDataModelUIFactory } from "../models/messaging.model";
-
-import { apiRequest } from "../../../utils/funtion.utils";
 import { IMessagingService } from "src/app/api/services/interfaces/core/production/imessaging.service";
 import { MessagingStore } from "../store/messaging.store";
 
@@ -32,11 +29,9 @@ export class MessagingEffects {
         ofType(getMessagingData),
         tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
         switchMap(({ payload }) =>
-          apiRequest().pipe(
-            tap(() => {
-              this.messagingStore.setMessagingData(
-                MessagingLoadDataModelUIFactory
-              );
+          this.messagingService.GetMessagingData(payload).pipe(
+            tap((data) => {
+              this.messagingStore.setMessagingData(data);
             }),
             finalize(() =>
               this.mainStore$.dispatch(loadingActions.hideLoading())
@@ -57,7 +52,7 @@ export class MessagingEffects {
         ofType(updateMessagingData),
         tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
         switchMap(({ payload }) =>
-          apiRequest().pipe(
+          this.messagingService.UpdateMessagingData(payload).pipe(
             finalize(() =>
               this.mainStore$.dispatch(loadingActions.hideLoading())
             ),

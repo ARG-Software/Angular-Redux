@@ -160,6 +160,185 @@ server.put("/Product", (req, res) => {
   });
 });
 
+server.get("/Machine-State", (req, res) => {
+  res.json({
+    Success: true,
+    Result: [
+      {
+        Id: 101,
+        Name: "CNC Machine 1",
+        Image: "https://placehold.co/600x400?text=CNC+Machine+1",
+        Options: [
+          { value: 1, name: "In Production", selected: true },
+          { value: 2, name: "Not Scheduled", selected: false },
+        ],
+      },
+      {
+        Id: 102,
+        Name: "Laser Cutter",
+        Image: "https://placehold.co/600x400?text=Laser+Cutter",
+        Options: [
+          { value: 1, name: "In Production", selected: false },
+          { value: 3, name: "Unplanned Downtime", selected: true },
+        ],
+      },
+    ],
+    GeneratedAt: new Date().toISOString(),
+    Message: "Mock machine state data.",
+  });
+});
+
+server.put("/Machine-State", (req, res) => {
+  res.json({
+    Success: true,
+    Result: req.body,
+    GeneratedAt: new Date().toISOString(),
+    Message: "Mock machine state updated.",
+  });
+});
+
+server.get("/Messaging", (req, res) => {
+  res.json({
+    Success: true,
+    Result: [
+      {
+        Id: 1,
+        DowntimeName: "Tool Change",
+        Duration: 20,
+        StartTime: "2018-11-08T06:00:00",
+        EndTime: "2018-11-08T06:20:00",
+        Options: [
+          { value: 1, name: "Acknowledged", selected: true },
+          { value: 2, name: "Needs review", selected: false },
+        ],
+      },
+      {
+        Id: 2,
+        DowntimeName: "No reason given",
+        Duration: 100,
+        StartTime: "2018-11-08T12:20:00",
+        EndTime: "2018-11-08T14:00:00",
+        Options: [
+          { value: 1, name: "Acknowledged", selected: false },
+          { value: 2, name: "Needs review", selected: true },
+        ],
+      },
+    ],
+    GeneratedAt: new Date().toISOString(),
+    Message: "Mock messaging data.",
+  });
+});
+
+server.put("/Messaging", (req, res) => {
+  res.json({
+    Success: true,
+    Result: req.body,
+    GeneratedAt: new Date().toISOString(),
+    Message: "Mock messaging data updated.",
+  });
+});
+
+server.post("/DataWarehouse/graphics/Oee", (req, res) => {
+  res.json({
+    Success: true,
+    Result: {
+      ChartData: [
+        {
+          Name: "Series",
+          Series: [
+            { Name: "Value One", Value: 1.5 },
+            { Name: "Value two", Value: 3 },
+            { Name: "Value three", Value: 5 },
+          ],
+        },
+        {
+          Name: "Series 2",
+          Series: [
+            { Name: "Value One", Value: 1 },
+            { Name: "Value two", Value: 4 },
+            { Name: "Value three", Value: 2 },
+          ],
+        },
+      ],
+      TableData: {
+        Result: [
+          { Name: "Value One", Availability: 1, Production: 1, Quality: 1 },
+          { Name: "Value Two", Availability: 2, Production: 2, Quality: 2 },
+        ],
+        Total: 2,
+      },
+    },
+    GeneratedAt: new Date().toISOString(),
+    Message: "Mock OEE chart and table data.",
+  });
+});
+
+server.post("/Process-Detail", (req, res) => {
+  res.json({
+    Success: true,
+    Result: [
+      {
+        Id: null,
+        MachineState: "Not Scheduled",
+        Reason: "",
+        Duration: 60,
+        StartTime: "2018-11-08T00:00:00",
+        EndTime: "2018-11-08T01:00:00",
+      },
+      {
+        Id: null,
+        MachineState: "In Production",
+        Reason: "",
+        Duration: 300,
+        StartTime: "2018-11-08T01:00:00",
+        EndTime: "2018-11-08T06:00:00",
+      },
+      {
+        Id: null,
+        MachineState: "Unplanned Downtime",
+        Reason: "Tool Change",
+        Duration: 20,
+        StartTime: "2018-11-08T06:00:00",
+        EndTime: "2018-11-08T06:20:00",
+      },
+      {
+        Id: null,
+        MachineState: "In Production",
+        Reason: "",
+        Duration: 360,
+        StartTime: "2018-11-08T06:20:00",
+        EndTime: "2018-11-08T12:20:00",
+      },
+      {
+        Id: null,
+        MachineState: "Unplanned Downtime",
+        Reason: "No reason given",
+        Duration: 100,
+        StartTime: "2018-11-08T12:20:00",
+        EndTime: "2018-11-08T14:00:00",
+      },
+      {
+        Id: null,
+        MachineState: "In Production",
+        Reason: "",
+        Duration: 20,
+        StartTime: "2018-11-08T14:00:00",
+        EndTime: "2018-11-08T14:20:00",
+      },
+      {
+        Id: null,
+        MachineState: "Not Scheduled",
+        Reason: "",
+        Duration: 360,
+        StartTime: "2018-11-08T14:20:00",
+        EndTime: "2018-11-08T20:00:00",
+      },
+    ],
+    GeneratedAt: new Date().toISOString(),
+    Message: "Mock process detail data.",
+  });
+});
+
 server.get("/Operations/productId/:productId", (req, res) => {
   const { productId } = req.params;
 

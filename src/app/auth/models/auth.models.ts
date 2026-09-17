@@ -16,7 +16,7 @@ export interface UserModelUI {
 }
 
 export const LoginModelUIFactory = Factory.Sync.makeFactory<LoginModelUI>({
-  username: faker.internet.userName(),
+  username: faker.internet.username(),
   password: faker.internet.password(),
 });
 
@@ -24,5 +24,5 @@ export const UserModelUIFactory = Factory.Sync.makeFactory<UserModelUI>({
   Id: faker.number.int({ min: 1, max: 10000 }),
   Name: faker.person.fullName(),
   Email: faker.internet.email(),
-  Login: faker.internet.userName(),
+  Login: faker.internet.username(),
 });

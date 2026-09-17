@@ -20,6 +20,6 @@ export class ProcessDetailMachiningService
   }
 
   public GetProcessDetailData(obj: any): Observable<any> {
-    return this.getObjects(`${this.controllerRoute}/${obj}`);
+    return this.getObjectUsingQueryingObjectPOST(obj, this.controllerRoute);
   }
 }

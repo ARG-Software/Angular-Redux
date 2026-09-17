@@ -3,6 +3,7 @@
     class="block-display"
     [ngStyle]="setFullWidthStyleIfRequired()"
     [id]="id"
+    [attr.aria-label]="label || null"
     [attr.type]="type != null ? type : 'text'"
     [attr.disabled]="disable ? 'disabled' : null"
     [attr.size]="size"
@@ -15,11 +16,13 @@
 <ng-template #textareatemplate>
   <textarea
     [ngStyle]="setFullWidthStyleIfRequired()"
+    [id]="id"
+    [attr.aria-label]="label || null"
     [attr.disabled]="disable ? 'disabled' : null"
+    [attr.rows]="rows || null"
+    [attr.cols]="cols || null"
     [(ngModel)]="value"
     #txt="ngModel"
-    rows="size"
-  >
-  ></textarea
-  >
+    [placeholder]="placeholder"
+  ></textarea>
 </ng-template>

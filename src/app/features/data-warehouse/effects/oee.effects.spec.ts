@@ -1,267 +1,126 @@
-import "jest";
-import { faker } from "@faker-js/faker";
-import * as Factory from "factory.ts";
-import { Observable } from "rxjs";
-import { cold, hot } from "jest-marbles";
-import { provideMockActions } from "@ngrx/effects/testing";
 import { TestBed } from "@angular/core/testing";
-import { StoreModule } from "@ngrx/store";
+import { provideMockActions } from "@ngrx/effects/testing";
+import { Action, Store } from "@ngrx/store";
+import { firstValueFrom, of, Subject, throwError } from "rxjs";
+import { IOeeMachiningService } from "../../../api/services/interfaces/core/data-warehouse/ioee.service";
+import { IMachineService } from "../../../api/services/interfaces/core/imachine.service";
+import { IProductService } from "../../../api/services/interfaces/core/iproduct.service";
+import {
+  getOeeData,
+  getOeeDataSelectBoxes,
+  getOeeDataSelectBoxesSuccess,
+  getOeeDataSuccess,
+  oeeFailure,
+} from "../actions/oee.actions";
+import { OeeEffects } from "./oee.effects";
 
-import { IOeeMachiningService } from "@api/services/interfaces/core/data-warehouse/ioee.service";
-import { IMachineService } from "@api/services/interfaces/core/imachine.service";
-import { IProductService } from "@api/services/interfaces/core/iproduct.service";
-import {
-  OeeEffects,
-  convertApiDataToChartData,
-  convertApiDataToTableData,
-} from "../effects/oee.effects";
-import { OeeDataModelUI } from "../models/oee.models";
-import {
-  MachiningRequestModelUIFactory,
-  MachiningRequestModelUI,
-} from "../models/downtime.models";
-
-import {
-  GetOeeData,
-  GetOeeDataSuccess,
-  GetOeeDataSelectBoxes,
-  GetOeeDataSelectBoxesSuccess,
-  OeeFailure,
-} from "./../actions/oee.actions";
-
-import { mainReducers } from "../../../main/main.reducers.index";
-import {
-  IOEEScreenDto,
-  IPagedSet,
-  IOEEChartDto,
-  IOEETableDto,
-  IOEEChartSeries,
-} from "@api/models/apimodels";
-import { convertApiDataToSelectBoxes } from "./downtime.effects";
-import {
-  generateMachineSelectBoxResponseFromApi,
-  generateProductSelectBoxResponseFromApi,
-} from "./downtime.effects.spec";
-
-describe("Downtime Effects", () => {
-  let actions: Observable<any>;
+describe("OeeEffects", () => {
+  let actions$: Subject<Action>;
   let effects: OeeEffects;
-  let oeeService: IOeeMachiningService;
-  let machineService: IMachineService;
-  let productService: IProductService;
+  let oeeService: jasmine.SpyObj<IOeeMachiningService>;
+  let machineService: jasmine.SpyObj<IMachineService>;
+  let productService: jasmine.SpyObj<IProductService>;
 
-  beforeAll(() => {
+  const request = {
+    Filters: {
+      MachineId: 1,
+      ProductId: 2,
+      StartDate: "2025-01-01T00:00:00Z",
+      EndDate: "2025-01-02T00:00:00Z",
+    },
+    Paging: { CurrentIndex: 0, HowManyPerPage: 10 },
+  };
+
+  beforeEach(() => {
+    actions$ = new Subject<Action>();
+    oeeService = jasmine.createSpyObj<IOeeMachiningService>(
+      "IOeeMachiningService",
+      ["GetOeeData"]
+    );
+    machineService = jasmine.createSpyObj<IMachineService>("IMachineService", [
+      "GetMachines",
+    ]);
+    productService = jasmine.createSpyObj<IProductService>("IProductService", [
+      "GetProductsList",
+    ]);
+
     TestBed.configureTestingModule({
-      imports: [StoreModule.forRoot(mainReducers)],
       providers: [
         OeeEffects,
-        provideMockActions(() => actions),
+        provideMockActions(() => actions$),
+        { provide: IMachineService, useValue: machineService },
+        { provide: IProductService, useValue: productService },
+        { provide: IOeeMachiningService, useValue: oeeService },
         {
-          provide: IOeeMachiningService,
-          useValue: {
-            GetOeeData: jest.fn(),
-          },
-        },
-        {
-          provide: IMachineService,
-          useValue: {
-            GetMachines: jest.fn(),
-          },
-        },
-        {
-          provide: IProductService,
-          useValue: {
-            GetProductsList: jest.fn(),
-          },
+          provide: Store,
+          useValue: jasmine.createSpyObj<Store>("Store", ["dispatch"]),
         },
       ],
-    }).compileComponents();
+    });
 
-    effects = TestBed.get(OeeEffects);
-    oeeService = TestBed.get(IOeeMachiningService);
-    machineService = TestBed.get(IMachineService);
-    productService = TestBed.get(IProductService);
+    effects = TestBed.inject(OeeEffects);
   });
 
-  it("should be created", () => {
-    expect(effects).toBeTruthy();
-  });
-
-  describe("load", () => {
-    let request: MachiningRequestModelUI;
-    let mockedResponseFromApi: IOEEScreenDto;
-    let mockedConvertDataFromApi: OeeDataModelUI;
-
-    beforeEach(() => {
-      request = MachiningRequestModelUIFactory.build();
-      mockedResponseFromApi = {
+  it("requests and converts OEE data", async () => {
+    oeeService.GetOeeData.and.returnValue(
+      of({
         ChartData: [
-          {
-            Name: "Series",
-            Series: [
-              {
-                Name: "Value One",
-                Value: 1.5,
-              },
-              {
-                Name: "Value two",
-                Value: 3,
-              },
-              {
-                Name: "Value three",
-                Value: 5,
-              },
-            ],
-          },
-          {
-            Name: "Series 2",
-            Series: [
-              {
-                Name: "Value One",
-                Value: 1,
-              },
-              {
-                Name: "Value two",
-                Value: 4,
-              },
-              {
-                Name: "Value three",
-                Value: 2,
-              },
-            ],
-          },
+          { Name: "Series", Series: [{ Name: "Value", Value: 1.5 }] },
         ],
         TableData: {
           Result: [
-            {
-              Name: "Value One",
-              Availability: 1,
-              Production: 1,
-              Quality: 1,
-            },
-            {
-              Name: "Value Two",
-              Availability: 2,
-              Production: 2,
-              Quality: 2,
-            },
+            { Name: "Product", Availability: 1, Production: 2, Quality: 3 },
           ],
-          Total: 2,
+          Total: 1,
         },
-      };
-      mockedConvertDataFromApi = {
-        Chart: convertApiDataToChartData(mockedResponseFromApi.ChartData),
-        Table: convertApiDataToTableData(mockedResponseFromApi.TableData),
-      };
-    });
+      } as any)
+    );
+    const resultPromise = firstValueFrom(effects.getOeeData$);
+    actions$.next(getOeeData({ payload: request }));
+    const result = await resultPromise;
 
-    it("should return a GetOeeDataSuccess action, with oee data for chart and table, on success", () => {
-      const action = new GetOeeData(request);
-      const outcome = new GetOeeDataSuccess(mockedConvertDataFromApi);
-
-      actions = hot("a", { a: action });
-      const response = cold("a|", { a: mockedResponseFromApi });
-      const expected = cold("b", { b: outcome });
-
-      oeeService.GetOeeData = jest.fn(() => response);
-
-      expect(effects.getOeeData$).toBeObservable(expected);
-    });
+    expect(result.type).toBe(getOeeDataSuccess.type);
+    expect(result.payload.Chart).toEqual([
+      { name: "Series", series: [{ name: "Value", value: 1.5 }] },
+    ]);
+    expect(result.payload.Table.Information).toEqual([
+      { Product: "Product", Availability: 1, Production: 2, Quality: 3 },
+    ]);
+    expect(result.payload.Table.Total).toBe(1);
+    expect(oeeService.GetOeeData).toHaveBeenCalledWith(
+      jasmine.objectContaining({ Paging: request.Paging })
+    );
   });
 
-  describe("load select boxes", () => {
-    let machineSelectBoxData: any[];
-    let productSelectBoxData: any[];
-    let mockedResponseFromApi: any[];
-    let mockedConvertDataFromApi: any[];
+  it("loads and converts machine and product select boxes", async () => {
+    machineService.GetMachines.and.returnValue(
+      of([{ Id: 1, Name: "Machine" }] as any)
+    );
+    productService.GetProductsList.and.returnValue(
+      of([{ Id: 2, Name: "Product" }] as any)
+    );
 
-    beforeEach(() => {
-      machineSelectBoxData = generateMachineSelectBoxResponseFromApi();
-      productSelectBoxData = generateProductSelectBoxResponseFromApi();
-      mockedResponseFromApi = [machineSelectBoxData, productSelectBoxData];
-      mockedConvertDataFromApi = convertApiDataToSelectBoxes(
-        mockedResponseFromApi
-      );
-    });
+    const resultPromise = firstValueFrom(effects.getOeeDataSelectBox$);
+    actions$.next(getOeeDataSelectBoxes({}));
 
-    it("should return a GetOeeDataSelectBoxesSuccess action, with select boxes data, on success", () => {
-      const action = new GetOeeDataSelectBoxes();
-      const outcome = new GetOeeDataSelectBoxesSuccess(
-        mockedConvertDataFromApi
-      );
+    expect(await resultPromise).toEqual(
+      getOeeDataSelectBoxesSuccess({
+        payload: [
+          [{ name: "Machine", value: 1, selected: false }],
+          [{ name: "Product", value: 2, selected: false }],
+        ],
+      })
+    );
+  });
 
-      actions = hot("a", { a: action });
-      const responseMachine = cold("a|", { a: machineSelectBoxData });
-      const responseProduct = cold("a|", { a: productSelectBoxData });
-      const expected = cold("-b", { b: outcome });
+  it("maps select-box errors to oeeFailure", async () => {
+    const error = new Error("products failed");
+    machineService.GetMachines.and.returnValue(of([]));
+    productService.GetProductsList.and.returnValue(throwError(() => error));
 
-      machineService.GetMachines = jest.fn(() => responseMachine);
-      productService.GetProductsList = jest.fn(() => responseProduct);
+    const resultPromise = firstValueFrom(effects.getOeeDataSelectBox$);
+    actions$.next(getOeeDataSelectBoxes({}));
 
-      expect(effects.getOeeDataSelectBox$).toBeObservable(expected);
-    });
-
-    it("should return an OeeFailure action when load machine select box fails, with an error, on failure", () => {
-      const action = new GetOeeDataSelectBoxes();
-      const error = new Error();
-      const outcome = new OeeFailure("error");
-
-      actions = hot("a", { a: action });
-      const responseMachine = cold("-#|", { a: error });
-      const responseProduct = cold("a|", { a: productSelectBoxData });
-      const expected = cold("-b", { b: outcome });
-
-      machineService.GetMachines = jest.fn(() => responseMachine);
-      productService.GetProductsList = jest.fn(() => responseProduct);
-
-      expect(effects.getOeeDataSelectBox$).toBeObservable(expected);
-    });
-
-    it("should return an OeeFailure action when load product select box fails, with an error, on failure", () => {
-      const action = new GetOeeDataSelectBoxes();
-      const error = new Error();
-      const outcome = new OeeFailure("error");
-
-      actions = hot("a", { a: action });
-      const responseProduct = cold("-#|", { a: error });
-      const responseMachine = cold("a|", { a: machineSelectBoxData });
-      const expected = cold("-b", { b: outcome });
-
-      machineService.GetMachines = jest.fn(() => responseMachine);
-      productService.GetProductsList = jest.fn(() => responseProduct);
-
-      expect(effects.getOeeDataSelectBox$).toBeObservable(expected);
-    });
+    expect(await resultPromise).toEqual(oeeFailure({ payload: error }));
   });
 });
-
-function generateMachineOeeResponseFromApi(): IOEEScreenDto {
-  const series = Factory.makeFactory<IOEEChartSeries>({
-    Name: faker.random.word(),
-    Value: faker.random.number(),
-  }).buildList(2);
-
-  const chartData = Factory.makeFactory<IOEEChartDto>({
-    Name: faker.random.word(),
-    Series: series,
-  }).buildList(3);
-
-  const tableRows = Factory.makeFactory<IOEETableDto>({
-    Name: faker.random.word(),
-    Availability: faker.random.number(),
-    Production: faker.random.number(),
-    Quality: faker.random.number(),
-  }).buildList(3);
-
-  const tableData = Factory.makeFactory<IPagedSet<IOEETableDto>>({
-    Result: tableRows,
-    Total: faker.random.number(),
-  }).build();
-
-  const oee = Factory.makeFactory<IOEEScreenDto>({
-    ChartData: chartData,
-    TableData: tableData,
-  }).build();
-
-  return oee;
-}

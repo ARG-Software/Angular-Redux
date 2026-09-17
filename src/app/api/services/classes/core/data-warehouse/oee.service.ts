@@ -11,7 +11,7 @@ export class OeeMachiningService
   extends BaseMimsApi
   implements IOeeMachiningService
 {
-  private controllerRoute = "graphics/Oee";
+  private controllerRoute = "DataWarehouse/graphics/Oee";
 
   constructor(
     protected http: HttpClient,
@@ -21,6 +21,6 @@ export class OeeMachiningService
   }
 
   public GetOeeData(obj: any): Observable<IOEEScreenDto> {
-    return this.getObjects(`${this.controllerRoute}/${obj}`);
+    return this.getObjectUsingQueryingObjectPOST(obj, this.controllerRoute);
   }
 }

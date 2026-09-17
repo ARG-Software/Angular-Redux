@@ -1,59 +1,63 @@
-# AngularReduxUpdated
+# Angular 5 to Angular 19 Migration
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.1.6.
+This repository is the runnable companion to ARG Software's account of migrating a production-shaped Angular 5 and NgRx application to Angular 19.
 
-## Development server
+The branches preserve both ends of the migration:
 
-To start a local development server, run:
+- [`master`](https://github.com/ARG-Software/Angular-Redux/tree/master) contains the original Angular 5 application.
+- [`main`](https://github.com/ARG-Software/Angular-Redux/tree/main) contains the reviewed Angular 19 result.
 
-```bash
-ng serve
-```
+## Support Status
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Angular 19 is no longer supported upstream. This branch is a historical migration reference, not a currently supported production starter. Before deploying a derivative application, migrate it to a supported Angular release and complete a fresh dependency and security review.
 
-## Code scaffolding
+## What It Demonstrates
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+- NgRx action creators, reducers, selectors, and effects
+- NgRx Signal Store examples alongside the existing global store
+- Angular 19 template and module compatibility changes
+- HTTP-backed effects against a local JSON Server fixture API
+- Jasmine and Karma tests for reducers, effects, service interactions, and pagination
+- A fixture API contract smoke test
+- AOT production builds and CI verification
 
-```bash
-ng generate component component-name
-```
+## Requirements
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+- Node.js 20.19+, 22.13+, or a newer supported release
+- Google Chrome or Chromium for the Karma test suite
 
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+## Install
 
 ```bash
-ng build
+npm ci
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## Run Locally
 
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+Start the fixture API:
 
 ```bash
-ng test
+npm run mock:server
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+In another terminal, start Angular:
 
 ```bash
-ng e2e
+npm start
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+Open `http://localhost:4200/`. The local API listens on `http://localhost:3000/`.
 
-## Additional Resources
+The fixture routes are deterministic demonstrations. Update requests are acknowledged but are not persisted, and process-detail fixtures do not implement server-side filtering or pagination.
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Verify
+
+```bash
+npm run verify
+```
+
+This creates an AOT production build, runs the browser test suite once in headless Chrome, and probes the local fixture API's core contracts. For watch-mode tests during development, use `npm test`.
+
+## Related Article
+
+Read [From Angular 5 to Angular 19: A Migration Story](https://arg.software/blog/angular-5-to-19-migration/).

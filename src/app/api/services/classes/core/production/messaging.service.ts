@@ -17,7 +17,7 @@ export class MessagingService extends BaseMimsApi implements IMessagingService {
   }
 
   public GetMessagingData(obj: any): Observable<any> {
-    return this.getObjects(`${this.controllerRoute}/${obj}`);
+    return this.getObjectByParams(this.controllerRoute, obj);
   }
 
   public UpdateMessagingData(obj: any): Observable<any> {

@@ -1,177 +1,104 @@
-import "jest";
-import { faker } from "@faker-js/faker";
-import * as Factory from "factory.ts";
-import { Observable } from "rxjs";
-import { cold, hot } from "jest-marbles";
-import { provideMockActions } from "@ngrx/effects/testing";
 import { TestBed } from "@angular/core/testing";
-import { StoreModule } from "@ngrx/store";
-
-import { IMachineOperationService } from "@api/services/interfaces/core/imachineoperation.service";
-import { IDownTimeRecordService } from "@api/services/interfaces/core/idowntimerecord.service";
-
-import { OverviewEffects } from "../effects/overview.effects";
-
+import { provideMockActions } from "@ngrx/effects/testing";
+import { Action, Store } from "@ngrx/store";
+import { firstValueFrom, of, Subject, throwError } from "rxjs";
+import { IDownTimeRecordService } from "../../../api/services/interfaces/core/idowntimerecord.service";
+import { IMachineOperationService } from "../../../api/services/interfaces/core/imachineoperation.service";
 import {
-  DownTimeStatisticsChartRequestModel,
-  DownTimeStatisticsChartRequestModelUIFactory,
-  MachineOperationsRequestModel,
-  MachineOperationsRequestModelUIFactory,
-} from "../models/overview.models";
+  getDownTimeChart,
+  getDownTimeChartSuccess,
+  getMachineOperationTable,
+  getMachineOperationTableSuccess,
+  overviewFailure,
+} from "../actions/overview.actions";
+import { OverviewEffects } from "./overview.effects";
 
-import {
-  GetDownTimeChart,
-  GetDownTimeChartSuccess,
-  GetMachineOperationTable,
-  GetMachineOperationTableSuccess,
-  OverviewFailure,
-} from "./../actions/overview.actions";
-
-import { IMachineOperationsDto, IShiftGraphicDto } from "@api/models/apimodels";
-import * as fromMain from "../../../main/main.reducers.index";
-
-describe("Overview Effects", () => {
-  let actions: Observable<any>;
+describe("OverviewEffects", () => {
+  let actions$: Subject<Action>;
   let effects: OverviewEffects;
-  let machineOperationService: IMachineOperationService;
-  let downtimeRecordService: IDownTimeRecordService;
+  let machineService: jasmine.SpyObj<IMachineOperationService>;
+  let downtimeService: jasmine.SpyObj<IDownTimeRecordService>;
 
-  beforeAll(() => {
+  beforeEach(() => {
+    actions$ = new Subject<Action>();
+    machineService = jasmine.createSpyObj<IMachineOperationService>(
+      "IMachineOperationService",
+      ["GetMachineOperationsofProduct"]
+    );
+    downtimeService = jasmine.createSpyObj<IDownTimeRecordService>(
+      "IDownTimeRecordService",
+      ["getDowntimeOfProductShiftGraphic"]
+    );
+
     TestBed.configureTestingModule({
-      imports: [StoreModule.forRoot(fromMain.mainReducers)],
       providers: [
         OverviewEffects,
-        provideMockActions(() => actions),
+        provideMockActions(() => actions$),
+        { provide: IMachineOperationService, useValue: machineService },
+        { provide: IDownTimeRecordService, useValue: downtimeService },
         {
-          provide: IMachineOperationService,
-          useValue: {
-            GetMachineOperationsofProduct: jest.fn(),
-          },
-        },
-        {
-          provide: IDownTimeRecordService,
-          useValue: {
-            getDowntimeOfProductShiftGraphic: jest.fn(),
-          },
+          provide: Store,
+          useValue: jasmine.createSpyObj<Store>("Store", ["dispatch"]),
         },
       ],
-    }).compileComponents();
+    });
 
-    effects = TestBed.get(OverviewEffects);
-    machineOperationService = TestBed.get(IMachineOperationService);
-    downtimeRecordService = TestBed.get(IDownTimeRecordService);
+    effects = TestBed.inject(OverviewEffects);
   });
 
-  it("should be created", () => {
-    expect(effects).toBeTruthy();
+  it("loads machine operation table data", async () => {
+    const data = [
+      {
+        Id: 1,
+        MachineName: "Machine",
+        OperationName: "Cut",
+        MachineId: 2,
+        OperationId: 3,
+        AssetNumber: 4,
+        OEE: 80,
+        MDE: 90,
+      },
+    ];
+    machineService.GetMachineOperationsofProduct.and.returnValue(of(data));
+
+    const resultPromise = firstValueFrom(effects.getMachineOperationTable$);
+    actions$.next(
+      getMachineOperationTable({ payload: { productId: 5 } as any })
+    );
+
+    expect(await resultPromise).toEqual(
+      getMachineOperationTableSuccess({ payload: data })
+    );
+    expect(machineService.GetMachineOperationsofProduct).toHaveBeenCalledWith(5);
   });
 
-  describe("load machine operation", () => {
-    let request: MachineOperationsRequestModel;
-    let mockedResponseFromApi: IMachineOperationsDto[];
+  it("loads downtime chart data", async () => {
+    const startDate = new Date("2025-01-01");
+    const data = [{ Name: "Shift", Uptime: 0.8, Downtime: 0.2 }];
+    downtimeService.getDowntimeOfProductShiftGraphic.and.returnValue(of(data));
 
-    beforeEach(() => {
-      request = MachineOperationsRequestModelUIFactory.build();
-      mockedResponseFromApi = generateMachineOperationResponseFromApi();
-    });
+    const resultPromise = firstValueFrom(effects.getDownTimeStatisticChart$);
+    actions$.next(
+      getDownTimeChart({ payload: { productId: 5, startDate } as any })
+    );
 
-    it("should return a GetMachineOperationTableSuccess action, with the machine operations data, on success", () => {
-      const action = new GetMachineOperationTable(request);
-      const outcome = new GetMachineOperationTableSuccess(
-        mockedResponseFromApi
-      );
-
-      actions = hot("a", { a: action });
-      const response = cold("a|", { a: mockedResponseFromApi });
-      const expected = cold("b", { b: outcome });
-
-      machineOperationService.GetMachineOperationsofProduct = jest.fn(
-        () => response
-      );
-
-      expect(effects.getMachineOperationTable$).toBeObservable(expected);
-    });
-
-    it("should return an OverviewFailure action, with an error, on failure", () => {
-      const action = new GetMachineOperationTable(request);
-      const error = new Error();
-      const outcome = new OverviewFailure("error");
-
-      actions = hot("a", { a: action });
-      const response = cold("-#|", { a: error });
-      const expected = cold("-b", { b: outcome });
-
-      machineOperationService.GetMachineOperationsofProduct = jest.fn(
-        () => response
-      );
-
-      expect(effects.getMachineOperationTable$).toBeObservable(expected);
-    });
+    expect(await resultPromise).toEqual(getDownTimeChartSuccess({ payload: data }));
+    expect(
+      downtimeService.getDowntimeOfProductShiftGraphic
+    ).toHaveBeenCalledWith(5, startDate);
   });
 
-  describe("load downtime record", () => {
-    let request: DownTimeStatisticsChartRequestModel;
-    let mockedResponseFromApi: IShiftGraphicDto[];
+  it("maps service errors to overviewFailure", async () => {
+    const error = new Error("load failed");
+    machineService.GetMachineOperationsofProduct.and.returnValue(
+      throwError(() => error)
+    );
 
-    beforeEach(() => {
-      request = DownTimeStatisticsChartRequestModelUIFactory.build();
-      mockedResponseFromApi = generateDowntimeRecordResponseFromApi();
-    });
+    const resultPromise = firstValueFrom(effects.getMachineOperationTable$);
+    actions$.next(
+      getMachineOperationTable({ payload: { productId: 5 } as any })
+    );
 
-    it("should return a GetDownTimeChartSuccess action, with the downtime record data, on success", () => {
-      const action = new GetDownTimeChart(request);
-      const outcome = new GetDownTimeChartSuccess(mockedResponseFromApi);
-
-      actions = hot("a", { a: action });
-      const response = cold("a|", { a: mockedResponseFromApi });
-      const expected = cold("b", { b: outcome });
-
-      downtimeRecordService.getDowntimeOfProductShiftGraphic = jest.fn(
-        () => response
-      );
-
-      expect(effects.getDownTimeStatisticChart$).toBeObservable(expected);
-    });
-
-    it("should return an OverviewFailure action, with an error, on failure", () => {
-      const action = new GetDownTimeChart(request);
-      const error = new Error();
-      const outcome = new OverviewFailure("error");
-
-      actions = hot("a", { a: action });
-      const response = cold("-#|", { a: error });
-      const expected = cold("-b", { b: outcome });
-
-      downtimeRecordService.getDowntimeOfProductShiftGraphic = jest.fn(
-        () => response
-      );
-
-      expect(effects.getDownTimeStatisticChart$).toBeObservable(expected);
-    });
+    expect(await resultPromise).toEqual(overviewFailure({ payload: error }));
   });
 });
-
-export function generateMachineOperationResponseFromApi(): IMachineOperationsDto[] {
-  const operations = Factory.makeFactory<IMachineOperationsDto>({
-    Id: faker.random.number(),
-    MachineName: faker.random.word(),
-    OperationName: faker.random.word(),
-    MachineId: faker.random.number(),
-    OperationId: faker.random.number(),
-    AssetNumber: faker.random.number(),
-    OEE: faker.random.number(),
-    MDE: faker.random.number(),
-  });
-
-  return operations.buildList(2);
-}
-
-export function generateDowntimeRecordResponseFromApi(): IShiftGraphicDto[] {
-  const downtimeRecord = Factory.makeFactory<IShiftGraphicDto>({
-    Uptime: faker.random.number(),
-    Downtime: faker.random.number(),
-    Name: faker.random.word(),
-  });
-
-  return downtimeRecord.buildList(2);
-}

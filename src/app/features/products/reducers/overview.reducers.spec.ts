@@ -1,65 +1,59 @@
-import { reducer, initialState, convertShiftGraphicListTodownTimeRecordChartDataModel } from './overview.reducers';
-import * as ApiModels from '../../../api/models/apimodels';
 import {
-    GetDownTimeChartSuccess,
-    GetMachineOperationTableSuccess,
-    OverviewFailure
-} from '../actions/overview.actions';
+  getDownTimeChartSuccess,
+  getMachineOperationTableSuccess,
+  overviewFailure,
+} from "../actions/overview.actions";
+import { initialState, overviewReducer } from "./overview.reducers";
 
-import {
-    generateMachineOperationResponseFromApi,
-    generateDowntimeRecordResponseFromApi
-} from '../effects/overview.effects.spec';
+describe("Overview Reducer", () => {
+  it("returns the initial state for an unknown action", () => {
+    expect(overviewReducer(undefined, { type: "Unknown" })).toEqual(initialState);
+  });
 
-describe('Statistics Reducer', () => {
+  it("converts downtime percentages into chart data", () => {
+    const result = overviewReducer(
+      initialState,
+      getDownTimeChartSuccess({
+        payload: [{ Name: "Shift A", Uptime: 0.75, Downtime: 0.25 }],
+      })
+    );
 
-    const mockedShiftGraphicData: ApiModels.IShiftGraphicDto[] = generateDowntimeRecordResponseFromApi();
-    const mockedRequestTableModel: ApiModels.IMachineOperationsDto[] = generateMachineOperationResponseFromApi();
+    expect(result.downTimeRecordChartData).toEqual([
+      {
+        name: "Shift A",
+        series: [
+          { name: "Uptime", value: 75 },
+          { name: "Downtime", value: 25 },
+        ],
+      },
+    ]);
+  });
 
-    describe('Undefined Action', () => {
-        it('should return the default state', () => {
+  it("stores machine operation table data", () => {
+    const payload = [
+      {
+        Id: 1,
+        MachineName: "Machine A",
+        OperationName: "Cut",
+        MachineId: 2,
+        OperationId: 3,
+        AssetNumber: 4,
+        OEE: 80,
+        MDE: 90,
+      },
+    ];
 
-            const action = { type: 'Not defined action' } as any;
-            const result = reducer(undefined, action);
+    expect(
+      overviewReducer(
+        initialState,
+        getMachineOperationTableSuccess({ payload })
+      ).machineOperationTableData
+    ).toEqual(payload);
+  });
 
-            expect(result).toEqual(initialState);
-        });
-    });
-
-    describe('[Overview] Overview Failed', () => {
-        it('should return the default state', () => {
-
-            const action = new OverviewFailure({});
-            const result = reducer(undefined, action);
-
-            expect(result).toEqual(initialState);
-        });
-    });
-
-    describe('[Overview] Get DownTime Chart Success', () => {
-       it('should return downtime chart data when action GetDownTimeChartSuccess is dispatched', () => {
-
-            const action = new GetDownTimeChartSuccess(mockedShiftGraphicData);
-            const result = reducer(initialState, action);
-
-            expect(result).toEqual({
-                ...initialState,
-                downTimeRecordChartData: convertShiftGraphicListTodownTimeRecordChartDataModel(action.payload)
-            });
-        });
-    });
-
-    describe('[Overview] Get Machine Operation Table Success', () => {
-        it('should return machine operation table data when action GetMachineOperationTable is dispatched', () => {
-
-            const action = new GetMachineOperationTableSuccess(mockedRequestTableModel);
-            const result = reducer(initialState, action);
-
-            expect(result).toEqual({
-                ...initialState,
-                machineOperationTableData: action.payload
-            });
-        });
-    });
-
+  it("ignores failure actions", () => {
+    expect(
+      overviewReducer(initialState, overviewFailure({ payload: "failed" }))
+    ).toBe(initialState);
+  });
 });

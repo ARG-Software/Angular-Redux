@@ -1,125 +1,124 @@
-import "jest";
-import { faker } from "@faker-js/faker";
-import { Observable } from "rxjs";
-import { cold, hot } from "jest-marbles";
-import { provideMockActions } from "@ngrx/effects/testing";
 import { TestBed } from "@angular/core/testing";
-import { IAuthorizationService } from "@api/services/interfaces/core/iauthorization.service";
-import { AuthEffects } from "./auth.effect";
-import { Router, ActivatedRoute } from "@angular/router";
+import { Router } from "@angular/router";
+import { provideMockActions } from "@ngrx/effects/testing";
+import { Action } from "@ngrx/store";
+import { firstValueFrom, of, Subject, throwError } from "rxjs";
+import { IAuthorizationService } from "../../api/services/interfaces/core/iauthorization.service";
 import { APP_CONFIG } from "../../app.config";
-import {
-  Login,
-  LoginSuccess,
-  LoginFailure,
-  Logout,
-} from "../actions/auth.actions";
-import {
-  LoginModelUIFactory,
-  UserModelUIFactory,
-  UserModelUI,
-} from "../models/auth.models";
-import { ILoginSession } from "@api/models/apimodels";
+import { login, loginFailure, loginSuccess, logout } from "../actions/auth.actions";
+import { AuthService } from "../services/auth.service";
+import { AuthEffects } from "./auth.effect";
 
 describe("AuthEffects", () => {
-  let actions: Observable<any>;
+  let actions$: Subject<Action>;
   let effects: AuthEffects;
-  let authService: IAuthorizationService;
-  let router: any;
-  let spy: jest.SpyInstance<any>;
-  beforeAll(() => {
+  let authorization: jasmine.SpyObj<IAuthorizationService>;
+  let authService: jasmine.SpyObj<AuthService>;
+  let router: jasmine.SpyObj<Router>;
+
+  beforeEach(() => {
+    actions$ = new Subject<Action>();
+    authorization = jasmine.createSpyObj<IAuthorizationService>(
+      "IAuthorizationService",
+      ["login"]
+    );
+    authService = jasmine.createSpyObj<AuthService>("AuthService", [
+      "saveTokens",
+      "clearTokens",
+    ]);
+    router = jasmine.createSpyObj<Router>("Router", ["navigate"]);
+
     TestBed.configureTestingModule({
       providers: [
         AuthEffects,
-        provideMockActions(() => actions),
+        provideMockActions(() => actions$),
+        { provide: IAuthorizationService, useValue: authorization },
+        { provide: AuthService, useValue: authService },
+        { provide: Router, useValue: router },
         {
-          provide: IAuthorizationService,
+          provide: APP_CONFIG,
           useValue: {
-            login: jest.fn(),
+            loginAppPath: "login",
+            accessTokenKey: "access",
+            refreshTokenKey: "refresh",
           },
         },
-        {
-          provide: Router,
-          useValue: { navigate: jest.fn() },
-        },
-        {
-          provide: ActivatedRoute,
-          useValue: {},
-        },
-        { provide: APP_CONFIG, useValue: {} },
       ],
-    }).compileComponents();
+    });
 
-    effects = TestBed.get(AuthEffects);
-    authService = TestBed.get(IAuthorizationService);
-    router = TestBed.get(Router);
-    spy = jest.spyOn(router, "navigate");
+    effects = TestBed.inject(AuthEffects);
   });
 
-  it("should be created", () => {
-    expect(effects).toBeTruthy();
-  });
+  it("maps a successful login response to loginSuccess", async () => {
+    const session = {
+      AccessToken: "access-token",
+      RefreshToken: "refresh-token",
+      User: {
+        Id: 1,
+        Name: "Test User",
+        Email: "test@example.com",
+        Login: "tester",
+      },
+    };
+    authorization.login.and.returnValue(of(session));
 
-  describe("login", () => {
-    let mockedUserLoginCredentials;
-    let mockedUser;
-    let mockedResponseFromApi;
+    const resultPromise = firstValueFrom(effects.loginUser$);
+    actions$.next(login({ username: "tester", password: "secret" }));
 
-    beforeEach(() => {
-      mockedUserLoginCredentials = LoginModelUIFactory.build();
-      mockedUser = UserModelUIFactory.build();
-      mockedResponseFromApi = generateLoginResponseFromApi(mockedUser);
-    });
-
-    it("should return a LoginSuccess action, with the user session, on success", () => {
-      const action = new Login(mockedUserLoginCredentials);
-      const outcome = new LoginSuccess(mockedUser);
-
-      actions = hot("a", { a: action });
-      const response = cold("a|", { a: mockedResponseFromApi });
-      const expected = cold("b", { b: outcome });
-      authService.login = jest.fn(() => response);
-      expect(effects.loginUser$ as any).toBeObservable(expected);
-    });
-
-    it("should return an LoginFailure action, with an error, on failure", () => {
-      const action = new Login(mockedUserLoginCredentials);
-      const error = new Error();
-      const outcome = new LoginFailure(error);
-
-      actions = hot("a", { a: action });
-      const response = cold("-#|", { a: error });
-      const expected = cold("-b", { b: outcome });
-      authService.login = jest.fn(() => response);
-
-      expect(effects.loginUser$).toBeObservable(expected);
-    });
-
-    it("should change route when LoginSuccess action is dispatched", () => {
-      const action = new LoginSuccess(mockedUser);
-      actions = hot("-a---", { a: action });
-      effects.loginSuccess$.subscribe(() => {
-        expect(spy).toHaveBeenCalledWith(["main"]);
-      });
+    expect(await resultPromise).toEqual(
+      loginSuccess({
+        user: session.User,
+        accessToken: session.AccessToken,
+        refreshToken: session.RefreshToken,
+      })
+    );
+    expect(authorization.login).toHaveBeenCalledWith({
+      UserName: "tester",
+      Password: "secret",
     });
   });
 
-  describe("logout", () => {
-    it("should change route when Logout action is dispatched", () => {
-      const action = new Logout({});
-      actions = hot("-a---", { a: action });
-      effects.loginSuccess$.subscribe(() => {
-        expect(spy).toHaveBeenCalledWith(["login"]);
-      });
+  it("maps login errors to loginFailure", async () => {
+    authorization.login.and.returnValue(
+      throwError(() => new Error("authentication failed"))
+    );
+
+    const resultPromise = firstValueFrom(effects.loginUser$);
+    actions$.next(login({ username: "tester", password: "bad" }));
+
+    expect(await resultPromise).toEqual(loginFailure());
+  });
+
+  it("saves tokens and navigates after login succeeds", async () => {
+    const action = loginSuccess({
+      user: {
+        Id: 1,
+        Name: "Test User",
+        Email: "test@example.com",
+        Login: "tester",
+      },
+      accessToken: "access-token",
+      refreshToken: "refresh-token",
     });
+    const resultPromise = firstValueFrom(effects.loginSuccess$);
+
+    actions$.next(action);
+    await resultPromise;
+
+    expect(authService.saveTokens).toHaveBeenCalledWith(
+      "access-token",
+      "refresh-token"
+    );
+    expect(router.navigate).toHaveBeenCalledWith(["main"]);
+  });
+
+  it("clears tokens and navigates to login on logout", async () => {
+    const resultPromise = firstValueFrom(effects.logout$);
+
+    actions$.next(logout());
+    await resultPromise;
+
+    expect(authService.clearTokens).toHaveBeenCalled();
+    expect(router.navigate).toHaveBeenCalledWith(["login"]);
   });
 });
-
-function generateLoginResponseFromApi(user: UserModelUI): ILoginSession {
-  const response: ILoginSession = {
-    AccessToken: faker.random.alphaNumeric(),
-    RefreshToken: faker.random.alphaNumeric(),
-    User: { ...user },
-  };
-  return response;
-}

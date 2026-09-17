@@ -1,7 +1,7 @@
 import { inject, Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
-import { catchError, finalize, map, switchMap, tap } from "rxjs/operators";
+import { catchError, finalize, switchMap, tap } from "rxjs/operators";
 import { of } from "rxjs";
 
 import * as loadingActions from "../../../main/actions/loading.actions";
@@ -11,7 +11,6 @@ import {
   updateMachineData,
   machineFailure,
 } from "../actions/machine-state.actions";
-import { MachineStateLoadDataModelUIFactory } from "../models/machine-state.model";
 import { MachineStateStore } from "../store/machine-state.store";
 import { IMachineStateService } from "src/app/api/services/interfaces/core/production/imachine-state.service";
 
@@ -31,7 +30,7 @@ export class MachineStateEffects {
           this.mainStore$.dispatch(loadingActions.showLoading());
         }),
         switchMap(({ payload }) =>
-          of(MachineStateLoadDataModelUIFactory).pipe(
+          this.machineStateService.GetMachineStateData(payload).pipe(
             tap((data) => {
               this.machineStore.setMachineData(data);
             }),
@@ -56,7 +55,7 @@ export class MachineStateEffects {
           this.mainStore$.dispatch(loadingActions.showLoading());
         }),
         switchMap(({ payload }) =>
-          of(true).pipe(
+          this.machineStateService.UpdateMachineStateData(payload).pipe(
             tap(() => {
               this.machineStore.updateMachine(payload);
             }),

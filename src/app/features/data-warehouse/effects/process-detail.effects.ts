@@ -39,67 +39,7 @@ export class ProcessDetailEffects {
       tap(() => this.mainStore$.dispatch(loadingActions.showLoading())),
       map((action) => action.payload),
       switchMap((payload) =>
-        of([
-          {
-            Id: null,
-            MachineState: "Not Scheduled",
-            Reason: "",
-            Duration: 60,
-            StartTime: "2018-11-08T00:00:00",
-            EndTime: "2018-11-08T01:00:00",
-          },
-          {
-            Id: null,
-            MachineState: "In Production",
-            Reason: "",
-            Duration: 300,
-            StartTime: "2018-11-08T01:00:00",
-            EndTime: "2018-11-08T06:00:00",
-          },
-          {
-            Id: null,
-            MachineState: "Unplanned Downtime",
-            Reason: "Tool Change",
-            Duration: 20,
-            StartTime: "2018-11-08T06:00:00",
-            EndTime: "2018-11-08T06:20:00",
-          },
-          {
-            Id: null,
-            MachineState: "In Production",
-            Reason: "",
-            Duration: 360,
-            StartTime: "2018-11-08T06:20:00",
-            EndTime: "2018-11-08T12:20:00",
-          },
-          {
-            Id: null,
-            MachineState: "Unplanned Downtime",
-            Reason: "No reason given",
-            Duration: 100,
-            StartTime: "2018-11-08T12:20:00",
-            EndTime: "2018-11-08T14:00:00",
-          },
-          {
-            Id: null,
-            MachineState: "In Production",
-            Reason: "",
-            Duration: 20,
-            StartTime: "2018-11-08T14:00:00",
-            EndTime: "2018-11-08T14:20:00",
-          },
-          {
-            Id: null,
-            MachineState: "Not Scheduled",
-            Reason: "",
-            Duration: 360,
-            StartTime: "2018-11-08T14:20:00",
-            EndTime: "2018-11-08T20:00:00",
-          },
-        ])
-          // TODO: When backend is finished, uncomment service and the load tests
-          // this.processDetailService.GetProcessDetailData(payload)
-          .pipe(
+        this.processDetailService.GetProcessDetailData(payload).pipe(
             map((response: any[]) => {
               const processDetailData: ProcessDetailDataModelUI = {
                 Chart: convertApiDataToProcessDetailChartModelUI(response),

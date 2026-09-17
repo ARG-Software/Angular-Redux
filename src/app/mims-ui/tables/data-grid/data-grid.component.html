@@ -10,7 +10,7 @@
   </clr-dg-row>
 
   <clr-dg-footer>
-    <ng-container *ngIf="(rowData?.length ?? 0) > pageSize && hasPagination">
+    <ng-container *ngIf="totalItems > pageSize && hasPagination">
       <mims-pagination
         (OnChangePage)="OnChangePage($event)"
         [hasNavigation]="true"

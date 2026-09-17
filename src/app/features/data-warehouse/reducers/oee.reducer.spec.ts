@@ -1,97 +1,68 @@
-import { reducer, initialState } from './oee.reducer';
 import {
-    GetOeeData,
-    GetOeeDataSuccess,
-    GetOeeDataSelectBoxesSuccess,
-    OeeFailure
-} from '../actions/oee.actions';
-import { OeeDataModelUIFactory } from '../models/oee.models';
-import { MachiningRequestModelUIFactory } from '../models/downtime.models';
-import { generateProductSelectBoxResponseFromApi, generateMachineSelectBoxResponseFromApi } from '../effects/downtime.effects.spec';
-import { convertApiDataToSelectBoxes } from '../effects/downtime.effects';
+  getOeeData,
+  getOeeDataSelectBoxesSuccess,
+  getOeeDataSuccess,
+  oeeFailure,
+} from "../actions/oee.actions";
+import { initialState, oeeReducer } from "./oee.reducer";
 
-describe('Oee Reducer', () => {
+describe("OEE Reducer", () => {
+  const request = {
+    Filters: {
+      MachineId: 1,
+      ProductId: 2,
+      StartDate: "2025-01-01",
+      EndDate: "2025-01-02",
+    },
+    Paging: { CurrentIndex: 2, HowManyPerPage: 20 },
+  };
+  const machines = [{ name: "Machine A", value: 1, selected: false }];
+  const products = [{ name: "Product A", value: 2, selected: false }];
 
-    const mockedRequest = MachiningRequestModelUIFactory.build();
-    const mockedOeeData = OeeDataModelUIFactory.build();
-    const mockedSelectBoxesData = convertApiDataToSelectBoxes(
-        [
-            generateMachineSelectBoxResponseFromApi(),
-            generateProductSelectBoxResponseFromApi()
-        ]
+  it("returns the initial state for an unknown action", () => {
+    expect(oeeReducer(undefined, { type: "Unknown" })).toEqual(initialState);
+  });
+
+  it("stores select-box options", () => {
+    const result = oeeReducer(
+      initialState,
+      getOeeDataSelectBoxesSuccess({ payload: [machines, products] })
     );
 
-    describe('Undefined Action', () => {
-        it('should return the default state', () => {
+    expect(result.machineSelectBox).toEqual(machines);
+    expect(result.productSelectBox).toEqual(products);
+  });
 
-            const action = { type: 'Not defined action' } as any;
-            const result = reducer(undefined, action);
+  it("tracks requested paging and stores returned OEE data", () => {
+    const pending = oeeReducer(initialState, getOeeData({ payload: request }));
+    const payload = {
+      Chart: [{ name: "OEE", series: [{ name: "A", value: 95 }] }],
+      Table: {
+        Information: [
+          { Product: "A", Availability: 1, Production: 2, Quality: 3 },
+        ],
+        Total: 1,
+      },
+    };
+    const loaded = oeeReducer(pending, getOeeDataSuccess({ payload }));
 
-            expect(result).toEqual(initialState);
-        });
-    });
+    expect(pending.oeeTableData.RequestedPaging).toEqual(
+      jasmine.objectContaining(request.Paging)
+    );
+    expect(loaded.oeeTableData.Information).toEqual(payload.Table.Information);
+    expect(loaded.oeeTableData.CurrentPaging).toEqual(
+      jasmine.objectContaining(request.Paging)
+    );
+    expect(loaded.oeeTableData.RequestedPaging).toBeNull();
+    expect(loaded.oeeChartData).toEqual(payload.Chart);
+  });
 
-    describe('[Oee] Get Oee data for select boxes Success', () => {
-        it('should save select boxes data (machine and product)', () => {
+  it("clears requested paging after a failure", () => {
+    const pending = oeeReducer(initialState, getOeeData({ payload: request }));
 
-            const action = new GetOeeDataSelectBoxesSuccess(mockedSelectBoxesData);
-            const result = reducer(initialState, action);
-
-            expect(result).toEqual({
-                ...initialState,
-                machineSelectBox: Object.assign([], initialState.machineSelectBox, action.payload[0]),
-                productSelectBox: Object.assign([], initialState.productSelectBox, action.payload[1]),
-            });
-        });
-    });
-
-    describe('[OEE] Get Oee Data', () => {
-        it('should save requested paging properties', () => {
-
-            const action = new GetOeeData(mockedRequest);
-            const result = reducer(initialState, action);
-
-            expect(result).toEqual({
-                ...initialState,
-                oeeTableData: {
-                    ...initialState.oeeTableData,
-                    RequestedPaging: Object.assign({}, initialState.oeeTableData.RequestedPaging, action.payload.Paging)
-                }
-            });
-        });
-    });
-
-    describe('[OEE] Get Oee Data Success', () => {
-        it('should return oee data for chart and table, add a new paging object to CurrentPaging and reset to null the RequestedPaging', () => {
-
-            const action = new GetOeeDataSuccess(mockedOeeData);
-            const result = reducer(initialState, action);
-
-            expect(result).toEqual({
-                ...initialState,
-                oeeTableData: {
-                    Information: Object.assign([], action.payload.Table.Information),
-                    CurrentPaging: Object.assign({}, initialState.oeeTableData.RequestedPaging),
-                    RequestedPaging: null,
-                },
-                oeeChartData: Object.assign([], action.payload.Chart),
-            });
-       });
-    });
-
-    describe('[OEE] Oee Failed', () => {
-        test('it should return actual state if failure action is dispatched and reset to null the RequestedPaging', () => {
-
-            const action = new OeeFailure({});
-            const result = reducer(initialState, action);
-
-            expect(result).toEqual({
-                ...initialState,
-                oeeTableData: {
-                    ...initialState.oeeTableData,
-                    RequestedPaging: null,
-                }
-            });
-        });
-    });
+    expect(
+      oeeReducer(pending, oeeFailure({ payload: "failed" })).oeeTableData
+        .RequestedPaging
+    ).toBeNull();
+  });
 });

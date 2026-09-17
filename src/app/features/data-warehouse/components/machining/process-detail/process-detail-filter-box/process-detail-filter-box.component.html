@@ -1,12 +1,12 @@
 <form [formGroup]="processDetailForm" class="clr-form clr-form-horizontal">
     <div class="form-group row">
         <div class="col-lg-4">
-            <mims-select-box [data]="machineSelectBoxData"
+            <mims-select-box id="process-detail-machine" label="Machine" [data]="machineSelectBoxData"
                              formControlName="Machine">
             </mims-select-box>
         </div>
         <div class="col-lg-5">
-            <mims-date-picker [size]="11"
+            <mims-date-picker id="process-detail-start-date" label="Start date" [size]="11"
                               formControlName="StartDate">
             </mims-date-picker>
         </div>

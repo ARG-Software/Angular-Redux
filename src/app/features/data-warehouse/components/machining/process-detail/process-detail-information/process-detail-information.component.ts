@@ -26,7 +26,7 @@ export class ProcessDetailInformationComponent {
   @Input() public columnNames: any;
   @Input() public paginationDetails!: PagingModelUI;
 
-  @Output() protected changePage: EventEmitter<number> = new EventEmitter();
+  @Output() public changePage: EventEmitter<number> = new EventEmitter();
 
   protected startDate = new Date("2018-11-08T00:00:00");
 
